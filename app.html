@@ -1193,7 +1193,7 @@ async function createCafe(e){
   const wa = $('#cfWa').value.trim();
   if(!name || !slug || !wa){ toast('عمر الحقول اللي فيهم *'); return; }
   const cafe = {
-    id: uid(), owner_id: USER.id, name, slug, type: $('#cfType').value || 'restaurant',
+    owner_id: USER.id, name, slug, type: $('#cfType').value || 'restaurant',
     tagline:'', whatsapp: wa, kitchen_whatsapp: $('#cfKitchenWa').value.trim(), cashier_whatsapp: $('#cfCashierWa').value.trim(),
     phone: wa, facebook: normUrl($('#cfFb').value),
     logo_url: photoData('cfLogoPrev'), currency: $('#cfCur').value,
@@ -1201,6 +1201,8 @@ async function createCafe(e){
     trial_ends_at: new Date(Date.now() + CONFIG.TRIAL_DAYS*86400000).toISOString(),
     is_active:false, founder:false, created_at: new Date().toISOString()
   };
+  // في وضع Supabase القاعدة تولّد الـ id (uuid) بروحها — الـ id المحلي (x...) يرفضو Postgres
+  if(MODE!=='sb') cafe.id = uid();
   try{
     MY_CAFE = await Store.createCafe(cafe);
     toast('✅ تنشأ مشروعك — زيد الأقسام والأطباق');
@@ -1303,7 +1305,9 @@ async function addCategory(e){
   const name = $('#catName').value.trim();
   if(!name) return;
   const cats = await Store.listCats(MY_CAFE.id);
-  await Store.addCat({id: uid(), cafe_id: MY_CAFE.id, name, sort: cats.length + 1});
+  const cat = {cafe_id: MY_CAFE.id, name, sort: cats.length + 1};
+  if(MODE!=='sb') cat.id = uid();
+  await Store.addCat(cat);
   $('#catName').value = '';
   renderMenuEditor();
   toast('✅ زاد القسم');
@@ -1333,7 +1337,9 @@ async function saveItem(e){
       toast('✅ تحفظ التعديل');
     } else {
       const items = await Store.listItems(MY_CAFE.id);
-      await Store.addItem({id: uid(), cafe_id: MY_CAFE.id, ...data, available:true, sort: items.length + 1});
+      const item = {cafe_id: MY_CAFE.id, ...data, available:true, sort: items.length + 1};
+      if(MODE!=='sb') item.id = uid();
+      await Store.addItem(item);
       toast('✅ زاد الطبق');
     }
     cancelEditItem();
