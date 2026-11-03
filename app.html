@@ -1067,7 +1067,7 @@ async function doAuth(e){
         if(data.session){ USER = data.session.user; }
         else if(data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0){
           // الإيميل مسجل أصلاً — Supabase ما يبعثش إيميل تأكيد جديد
-          okBox.textContent = '⚠️ هاد الإيميل مسجل أصلاً — ادخل مباشرة من تبويب «دخول»، وما راح يوصلك إيميل تأكيد جديد';
+          okBox.textContent = '⚠️ هاد الإيميل مسجل أصلاً — ادخل مباشرة من تبويب «دخول»';
           okBox.classList.add('warn');
           okBox.classList.remove('hidden'); return;
         }
