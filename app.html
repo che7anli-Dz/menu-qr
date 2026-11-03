@@ -1008,9 +1008,11 @@ const Store = {
   async addOrder(order){
     if(MODE==='sb'){
       // الـ id يولّدو السيرفر (uuid) — ما نبعثوش id محلي
-      const {data, error} = await sb.from('menu_orders').insert(order).select().single();
+      // بلا .select(): الزبون (anon) ما عندوش صلاحية قراءة الطلبات (فيها أرقام الزبائن)،
+      // وselect بعد الإدخال يفشل بـ 42501 — الإدخال بروحو ينجح بلا رجوع
+      const {error} = await sb.from('menu_orders').insert(order);
       if(error) throw error;
-      return data;
+      return order;
     }
     seedLocal();
     const orders = LS.get('orders', []);
