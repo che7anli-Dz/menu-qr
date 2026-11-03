@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Menu QR 🍽 — Menu إلكتروني لمطعمك أو مقهاك</title>
-<meta name="description" content="Menu QR 🍽: دير Menu إلكتروني لمطعمك أو مقهاك، طبع الـ QR وحطو على الطاولات، والزبون يطلب عبر واتساب.">
+<meta name="description" content="Menu QR 🍽: دير Menu إلكتروني لمطعمك أو مقهاك، طبع الـ QR وحطو على الطاولات، والزبون يطلب ديركت من التطبيق.">
 <link rel="icon" href="menu-qr-icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -105,6 +105,18 @@ section{padding:44px 0}
 .pill-amber{background:rgba(232,163,23,.18);color:#FCD34D}
 .pill-red{background:rgba(220,38,38,.20);color:#FCA5A5}
 .pill-grey{background:#2A3D31;color:#A8B8AC}
+.pill-blue{background:rgba(56,189,248,.18);color:#7DD3FC}
+/* الطلبات — شاشة المطبخ والكاشير */
+.ord{border:1px solid #2A3D31;border-radius:14px;padding:14px;margin-bottom:12px;background:#16261D}
+.ord.new{border-color:#E8A317;box-shadow:0 0 0 1px #E8A317}
+.ord.preparing{border-color:#38BDF8}
+.ord.done,.ord.cancelled{opacity:.7}
+.ord-head{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.ord-total{font-size:20px;color:#E8A317;font-weight:800}
+.ord-items{margin:8px 0}
+.ord-items div{display:flex;justify-content:space-between;padding:2px 0;gap:10px}
+.ord-meta{color:#A8B8AC;font-size:14px}
+.ord-acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .dash-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:18px}
 .dash-tabs button{flex-shrink:0;border:1.5px solid var(--line);background:#16261D;border-radius:99px;padding:8px 18px;font-weight:800;font-size:14px;color:var(--muted)}
 .dash-tabs button.on{background:var(--green-900);color:#fff;border-color:var(--green-900)}
@@ -468,9 +480,8 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
           <div class="form-row"><label>اسم المطعم أو المقهى *</label><input id="cfName" required placeholder="مثال: مطعم الديوان"></div>
           <div class="form-row"><label>نوع المحل *</label><select id="cfType"><option value="restaurant">🍽️ مطعم</option><option value="cafe">☕ مقهى</option><option value="patisserie">🍰 باتيسري</option><option value="fastfood">🍔 فاست فود</option><option value="snack">🥪 سناك</option><option value="juice">🧃 عصير</option></select><p class="hint">خلفية Menu تتبدل حسب نوع المحل تاعك.</p></div>
           <div class="form-row"><label>الرابط (slug) *</label><input id="cfSlug" required dir="ltr" placeholder="diwan"><p class="hint">الرابط تاع Menu تاعك راح يكون: <span id="slugPreview" dir="ltr">…?cafe=diwan</span> — حروف وأرقام وشرطات برك.</p></div>
-          <div class="form-row"><label>رقم الواتساب *</label><input id="cfWa" required dir="ltr" placeholder="0550123456"><p class="hint">الطلبات توصلك على هاد الرقم.</p></div>
-          <div class="form-row"><label>رقم واتساب المطبخ (اختياري)</label><input id="cfKitchenWa" dir="ltr" placeholder="0550123456"><p class="hint">طلبات الطاولات توصل على هاد الرقم — إذا ما دخلتوش، توصل على رقم الواتساب الرئيسي.</p></div>
-          <div class="form-row"><label>رقم واتساب الكاشير (اختياري)</label><input id="cfCashierWa" dir="ltr" placeholder="0550123456"><p class="hint">المجموع تاع كل طلب يتبعث لهاد الرقم — لي شاد لاكاس.</p></div>
+          <div class="form-row"><label>رقم الواتساب *</label><input id="cfWa" required dir="ltr" placeholder="0550123456"><p class="hint">رقم تواصل المطعم — يظهر في Menu باش الزبون يعيطلك ولا يبعثلك واتساب.</p></div>
+          <div class="form-row"><label><input type="checkbox" id="cfDelivery" style="width:auto"> 🚚 كاين توصيل للدار؟</label><p class="hint">إذا فعّلتها، الزبون اللي من الدار يكتب رقم هاتفو مع الطلب باش تعيطلو وتكونفيرمي معاه.</p></div>
           <div class="form-row"><label>رابط الفايسبوك (اختياري)</label><input id="cfFb" dir="ltr" placeholder="https://facebook.com/..."></div>
           <div class="form-row"><label>شعار المطعم أو المقهى (اختياري)</label>
           <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
@@ -489,6 +500,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
       <div id="dashMain" class="hidden">
         <div class="dash-tabs">
           <button id="dtMenu" class="on" onclick="dashTab('menu')">📋 Menu</button>
+          <button id="dtOrders" onclick="dashTab('orders')">📥 الطلبات</button>
           <button id="dtSettings" onclick="dashTab('settings')">⚙️ إعدادات المشروع</button>
           <button id="dtQr" onclick="dashTab('qr')">🔳 الـ QR والطباعة</button>
           <button id="dtSub" onclick="dashTab('sub')">💳 الاشتراك</button>
@@ -531,6 +543,17 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
           </div>
         </div>
 
+        <!-- تبويب الطلبات -->
+        <div id="tabOrders" class="hidden">
+          <div class="card" style="margin-bottom:16px" data-frame="طلبات">
+            <h3 style="margin-bottom:8px">📥 الطلبات</h3>
+            <p class="muted">الطلبات توصل هنا ديركت من التطبيق — بلا واتساب. الطباخ يشوف الأطباق والطاولة، والكاشير يشوف المجموع.</p>
+            <button class="btn btn-amber" onclick="openKitchen()">🖥️ افتح شاشة المطبخ</button>
+            <p class="hint" style="margin-top:10px">باش الطباخ والكاشير يشوفو الطلبات من تيليفوناتهم، افتح شاشة المطبخ مرة وحدة من حسابك في تيليفون كل واحد فيهم.</p>
+          </div>
+          <div id="ordersList"></div>
+        </div>
+
         <!-- تبويب الإعدادات -->
         <div id="tabSettings" class="hidden">
           <div class="card" data-frame="معلومات">
@@ -540,8 +563,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
               <div class="form-row"><label>نوع المحل *</label><select id="edType"><option value="restaurant">🍽️ مطعم</option><option value="cafe">☕ مقهى</option><option value="patisserie">🍰 باتيسري</option><option value="fastfood">🍔 فاست فود</option><option value="snack">🥪 سناك</option><option value="juice">🧃 عصير</option></select><p class="hint">خلفية Menu تتبدل حسب نوع المحل تاعك.</p></div>
               <div class="form-row"><label>الرابط (slug) *</label><input id="edSlug" required dir="ltr"><p class="hint">تبديل الرابط يبدّل الـ QR تاعك — عاود طبعو من بعد.</p></div>
               <div class="form-row"><label>رقم الواتساب *</label><input id="edWa" required dir="ltr"></div>
-              <div class="form-row"><label>رقم واتساب المطبخ</label><input id="edKitchenWa" dir="ltr"><p class="hint">طلبات الطاولات توصل على هاد الرقم.</p></div>
-              <div class="form-row"><label>رقم واتساب الكاشير</label><input id="edCashierWa" dir="ltr"><p class="hint">المجموع تاع كل طلب يتبعث لهاد الرقم.</p></div>
+              <div class="form-row"><label><input type="checkbox" id="edDelivery" style="width:auto"> 🚚 كاين توصيل للدار؟</label><p class="hint">إذا فعّلتها، الزبون اللي من الدار يكتب رقم هاتفو مع الطلب باش تعيطلو وتكونفيرمي معاه.</p></div>
               <div class="form-row"><label>رابط الفايسبوك</label><input id="edFb" dir="ltr"></div>
               <div class="form-row"><label>شعار المطعم أو المقهى</label>
               <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
@@ -598,6 +620,20 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
     </div>
   </section>
 
+  <!-- ============ شاشة المطبخ والكاشير ============ -->
+  <section id="view-kitchen" class="hidden">
+    <div class="container">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <h3 style="margin:0">🖥️ شاشة المطبخ والكاشير</h3>
+          <button class="btn btn-ghost btn-sm" onclick="closeKitchen()">← رجوع للوحة التحكم</button>
+        </div>
+        <p class="muted" style="margin:8px 0 0">الطلبات الجديدة تظهر هنا لحظياً مع صوت — خلي هاد الصفحة مفتوحة عند الطباخ والكاشير.</p>
+      </div>
+      <div id="kitchenOrders" style="margin-top:16px"></div>
+    </div>
+  </section>
+
   <!-- ============ Menu العامة ============ -->
   <section id="view-menu" class="hidden" style="padding-top:0">
     <div id="menuContent"></div>
@@ -631,28 +667,36 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
 
 <div id="cartBar" class="cart-bar hidden">
   <div class="tot"><span id="cartCount">0 طبق</span><b id="cartTotal">0 دج</b></div>
-  <button class="btn btn-amber shine" onclick="openOrderSheet()">💬 أطلب عبر واتساب</button>
+  <button class="btn btn-amber shine" onclick="openOrderSheet()">🛒 أرسل الطلب</button>
 </div>
 
 <!-- ورقة الطلب -->
 <div id="orderSheet" class="sheet hidden" onclick="if(event.target===this)closeOrderSheet()">
   <div class="sheet-in">
     <div class="sheet-handle"></div>
-    <h3 style="margin-bottom:4px" id="orderTitle">🛒 طلبك</h3>
-    <p class="muted" id="orderHint" style="margin-bottom:14px"></p>
-    <div id="orderLines"></div>
-    <div class="order-total"><span>المجموع</span><span id="orderTotal"></span></div>
-    <div id="homeFields">
-      <div class="radio-row" style="margin-top:14px">
-        <label><input type="radio" name="orderType" value="delivery" checked onchange="toggleOrderType()"><span>🏠 توصيل للدار</span></label>
-        <label><input type="radio" name="orderType" value="pickup" onchange="toggleOrderType()"><span>🛍️ نجي نديها</span></label>
+    <div id="orderForm">
+      <h3 style="margin-bottom:4px" id="orderTitle">🛒 طلبك</h3>
+      <p class="muted" id="orderHint" style="margin-bottom:14px"></p>
+      <div id="orderLines"></div>
+      <div class="order-total"><span>المجموع</span><span id="orderTotal"></span></div>
+      <div id="homeFields">
+        <div class="radio-row" style="margin-top:14px">
+          <label id="orderTypeDeliveryLabel"><input type="radio" name="orderType" value="delivery" checked onchange="toggleOrderType()"><span>🏠 توصيل للدار</span></label>
+          <label><input type="radio" name="orderType" value="pickup" onchange="toggleOrderType()"><span>🛍️ نجي نديها</span></label>
+        </div>
+        <div class="form-row"><label>اسمك *</label><input id="ordName" placeholder="مثال: أمين"></div>
+        <div class="form-row"><label>رقم التيليفون *</label><input id="ordPhone" dir="ltr" placeholder="0550123456"></div>
+        <div class="form-row" id="ordAddrRow"><label>العنوان *</label><input id="ordAddr" placeholder="الحي، الشارع، رقم الدار..."></div>
       </div>
-      <div class="form-row"><label>اسمك *</label><input id="ordName" placeholder="مثال: أمين"></div>
-      <div class="form-row"><label>رقم التيليفون *</label><input id="ordPhone" dir="ltr" placeholder="0550123456"></div>
-      <div class="form-row" id="ordAddrRow"><label>العنوان *</label><input id="ordAddr" placeholder="الحي، الشارع، رقم الدار..."></div>
+      <button id="orderConfirmBtn" class="btn btn-amber btn-block shine" style="margin-top:6px" onclick="submitOrder(event)">✅ أرسل الطلب</button>
+      <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="closeOrderSheet()">إلغاء</button>
     </div>
-    <a id="orderConfirmBtn" class="btn btn-amber btn-block shine" href="#" target="_blank" style="margin-top:6px">✅ أرسل الطلب واتساب</a>
-    <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="closeOrderSheet()">إلغاء</button>
+    <div id="orderSuccess" class="hidden" style="text-align:center;padding:10px 0">
+      <div style="font-size:44px">✅</div>
+      <h3 id="orderSuccessTitle" style="margin:8px 0 4px">وصل الطلب!</h3>
+      <p class="muted" id="orderSuccessMsg"></p>
+      <button class="btn btn-block" style="margin-top:14px" onclick="closeOrderSheet()">تم</button>
+    </div>
   </div>
 </div>
 
@@ -786,8 +830,8 @@ function applyLandingFrameBgs(){
    باش يبين أن المنتج ماشي غير للمقاهي. */
 const DEMO_CAFE = {
   id:'demo', owner_id:'demo', name:'مطعم الديوان', slug:'diwan', type:'restaurant',
-  tagline:'أكل تقليدي وعصري — التوصيل متوفر',
-  logo_url:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=400&q=60', whatsapp:'0797475073', kitchen_whatsapp:'0797475073', cashier_whatsapp:'0797475073',
+  tagline:'أكل تقليدي وعصري — التوصيل متوفر', delivery_enabled:true,
+  logo_url:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=400&q=60', whatsapp:'0797475073',
   phone:'0550123456', facebook:'https://facebook.com/diwan.restaurant',
   currency:'دج', views:128,
   trial_ends_at: new Date(Date.now()+14*86400000).toISOString(),
@@ -959,6 +1003,41 @@ const Store = {
     const cafes = LS.get('cafes', []);
     const i = cafes.findIndex(c => c.id === cafe.id);
     if(i >= 0){ cafes[i].views = (cafes[i].views || 0) + 1; LS.set('cafes', cafes); }
+  },
+  /* ---- الطلبات بلا واتساب: الزبون يبعث، المطبخ والكاشير يشوفو من التطبيق ---- */
+  async addOrder(order){
+    if(MODE==='sb'){
+      // الـ id يولّدو السيرفر (uuid) — ما نبعثوش id محلي
+      const {data, error} = await sb.from('menu_orders').insert(order).select().single();
+      if(error) throw error;
+      return data;
+    }
+    seedLocal();
+    const orders = LS.get('orders', []);
+    order.id = uid(); order.created_at = new Date().toISOString(); order.status = 'new';
+    orders.push(order); LS.set('orders', orders);
+    return order;
+  },
+  async listOrders(cafeId){
+    if(MODE==='sb'){
+      const {data, error} = await sb.from('menu_orders').select('*').eq('cafe_id', cafeId).order('created_at', {ascending:false}).limit(50);
+      if(error) throw error;
+      return data || [];
+    }
+    seedLocal();
+    return LS.get('orders', []).filter(o => o.cafe_id === cafeId).sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 50);
+  },
+  async updateOrder(id, patch){
+    if(MODE==='sb'){
+      const {data, error} = await sb.from('menu_orders').update(patch).eq('id', id).select().single();
+      if(error) throw error;
+      return data;
+    }
+    const orders = LS.get('orders', []);
+    const i = orders.findIndex(o => o.id === id);
+    if(i < 0) throw new Error('الطلب غير موجود');
+    orders[i] = {...orders[i], ...patch}; LS.set('orders', orders);
+    return orders[i];
   }
 };
 
@@ -1006,9 +1085,9 @@ function setDashBg(url){
 function showView(id){
   if(id === 'landing'){ setPublicBg(LANDING_BG); applyLandingFrameBgs(); }
   else if(id === 'auth') setDashBg(LANDING_BG);
-  else if(id === 'dash') setDashBg(MY_CAFE ? cafeBg(MY_CAFE) : LANDING_BG);
+  else if(id === 'dash' || id === 'kitchen') setDashBg(MY_CAFE ? cafeBg(MY_CAFE) : LANDING_BG);
   // 'menu': الخلفية تتحدد في showMenu حسب نوع المحل
-  ['landing','auth','dash','menu'].forEach(v => $('#view-'+v).classList.add('hidden'));
+  ['landing','auth','dash','menu','kitchen'].forEach(v => $('#view-'+v).classList.add('hidden'));
   $('#menuNotFound').classList.add('hidden');
   $('#menuExpired').classList.add('hidden');
   $('#cartBar').classList.add('hidden');
@@ -1101,6 +1180,7 @@ async function doAuth(e){
   }
 }
 async function logout(){
+  unsubscribeOrders();
   if(MODE==='sb' && sb){ try{ await sb.auth.signOut(); }catch(e){} }
   USER = null; MY_CAFE = null;
   LS.set('user', null);
@@ -1141,6 +1221,8 @@ async function showDash(){
     renderSubTab();
     await renderMenuEditor();
     renderQrTab();
+    renderOrders();
+    subscribeOrders();
     dashTab('menu');
   }
 }
@@ -1170,18 +1252,18 @@ function applyDashFrameBgs(){
   });
 }
 function dashTab(tab){
-  ['menu','settings','qr','sub'].forEach(t => {
+  ['menu','orders','settings','qr','sub'].forEach(t => {
     $('#tab'+t[0].toUpperCase()+t.slice(1)).classList.toggle('hidden', t!==tab);
     $('#dt'+t[0].toUpperCase()+t.slice(1)).classList.toggle('on', t===tab);
   });
+  if(tab === 'orders') renderOrders();
 }
 function fillSettingsForm(){
   $('#edName').value = MY_CAFE.name;
   $('#edType').value = MY_CAFE.type || 'restaurant';
   $('#edSlug').value = MY_CAFE.slug;
   $('#edWa').value = MY_CAFE.whatsapp || '';
-  $('#edKitchenWa').value = MY_CAFE.kitchen_whatsapp || '';
-  $('#edCashierWa').value = MY_CAFE.cashier_whatsapp || '';
+  $('#edDelivery').checked = !!MY_CAFE.delivery_enabled;
   $('#edFb').value = MY_CAFE.facebook || '';
   setPhoto('edLogoPrev', 'edLogoClear', MY_CAFE.logo_url || ''); $('#edLogoFile').value = '';
   $('#edCur').value = MY_CAFE.currency || 'دج';
@@ -1194,8 +1276,9 @@ async function createCafe(e){
   if(!name || !slug || !wa){ toast('عمر الحقول اللي فيهم *'); return; }
   const cafe = {
     owner_id: USER.id, name, slug, type: $('#cfType').value || 'restaurant',
-    tagline:'', whatsapp: wa, kitchen_whatsapp: $('#cfKitchenWa').value.trim(), cashier_whatsapp: $('#cfCashierWa').value.trim(),
+    tagline:'', whatsapp: wa,
     phone: wa, facebook: normUrl($('#cfFb').value),
+    delivery_enabled: $('#cfDelivery').checked,
     logo_url: photoData('cfLogoPrev'), currency: $('#cfCur').value,
     views: 0,
     trial_ends_at: new Date(Date.now() + CONFIG.TRIAL_DAYS*86400000).toISOString(),
@@ -1218,8 +1301,7 @@ async function saveCafe(e){
     type: $('#edType').value || 'restaurant',
     slug: slugify($('#edSlug').value),
     whatsapp: $('#edWa').value.trim(),
-    kitchen_whatsapp: $('#edKitchenWa').value.trim(),
-    cashier_whatsapp: $('#edCashierWa').value.trim(),
+    delivery_enabled: $('#edDelivery').checked,
     facebook: normUrl($('#edFb').value),
     logo_url: photoData('edLogoPrev'),
     currency: $('#edCur').value
@@ -1409,7 +1491,7 @@ function printQR(){
   const src = qrImgSrc($('#qrHolder'));
   $('#printArea').innerHTML = '<h1>'+esc(MY_CAFE.name)+'</h1>'
     + (src ? '<img src="'+src+'">' : '')
-    + '<p>امسح الكود وشوف Menu واطلب عبر واتساب</p>'
+    + '<p>امسح الكود وشوف Menu واطلب ديركت من التطبيق</p>'
     + '<p dir="ltr">'+esc(menuUrl(MY_CAFE.slug))+'</p>';
   window.print();
 }
@@ -1614,116 +1696,91 @@ function updateCartBar(){
   cc.classList.remove('pop'); void cc.offsetWidth; cc.classList.add('pop');
   $('#cartTotal').textContent = fmtPrice(total, VIEW_CAFE.currency);
 }
-function buildOrderMessage(){
+/* ---------------- الطلب بلا واتساب: الزبون يبعث، المطبخ والكاشير يشوفو من التطبيق ---------------- */
+function orderType(){
+  return (document.querySelector('input[name="orderType"]:checked') || {}).value || 'delivery';
+}
+function validateOrder(){
+  const btn = $('#orderConfirmBtn');
+  if(!btn) return false;
+  if(TABLE_NO){ btn.disabled = false; return true; }
+  const name = $('#ordName').value.trim();
+  const phone = $('#ordPhone').value.trim();
+  const addr = $('#ordAddr').value.trim();
+  const ok = !!name && !!phone && (orderType() !== 'delivery' || !!addr);
+  btn.disabled = !ok;
+  return ok;
+}
+async function submitOrder(e){
+  e.preventDefault();
+  const type = orderType();
+  if(!validateOrder()){ toast('عمّر الاسم والتيليفون' + (type === 'delivery' ? ' والعنوان' : '') + ' أولاً'); return; }
   const cafe = VIEW_CAFE;
   const {lines, total} = cartLines();
-  let msg = '';
-  let targetWa = cafe.whatsapp;
-  if(TABLE_NO){
-    // تدفق 1: زبون في المطعم — الطلب يوصل للمطبخ مع رقم الطاولة
-    targetWa = cafe.kitchen_whatsapp || cafe.whatsapp;
-    msg = '🍽️ طلب جديد — الطاولة ' + TABLE_NO + '\n'
-      + 'المشروع: ' + cafe.name + '\n'
-      + '------------------------\n';
-  } else {
-    // تدفق 2: زبون من الدار — توصيل ولا يجي يديها
-    const type = (document.querySelector('input[name="orderType"]:checked') || {}).value || 'delivery';
-    const name = $('#ordName').value.trim();
-    const phone = $('#ordPhone').value.trim();
-    const addr = $('#ordAddr').value.trim();
-    if(type === 'delivery'){
-      msg = '🏠 طلب توصيل — ' + cafe.name + '\n'
-        + 'الاسم: ' + name + '\n'
-        + 'التيليفون: ' + phone + '\n'
-        + 'العنوان: ' + addr + '\n'
-        + '------------------------\n';
+  if(!lines.length){ toast('السلة فارغة'); return; }
+  const btn = $('#orderConfirmBtn');
+  btn.disabled = true; btn.textContent = '⏳ جاري الإرسال...';
+  try{
+    const items = lines.map(l => ({name: l.it.name, price: l.it.price, qty: l.qty}));
+    let order;
+    if(TABLE_NO){
+      order = {cafe_id: cafe.id, kind:'table', table_no: parseInt(TABLE_NO, 10) || null, items, total};
     } else {
-      msg = '🛍️ طلب استلام (نجي نديها) — ' + cafe.name + '\n'
-        + 'الاسم: ' + name + '\n'
-        + 'التيليفون: ' + phone + '\n'
-        + '------------------------\n';
+      order = {cafe_id: cafe.id, kind: type,
+        customer_name: $('#ordName').value.trim(),
+        customer_phone: $('#ordPhone').value.trim(),
+        address: type === 'delivery' ? $('#ordAddr').value.trim() : '',
+        items, total};
     }
+    await Store.addOrder(order);
+    CART = {}; updateCartBar();
+    $('#orderForm').classList.add('hidden');
+    $('#orderSuccess').classList.remove('hidden');
+    $('#orderSuccessMsg').textContent = TABLE_NO
+      ? 'الطلب وصل للمطبخ والكاشير — الطاولة ' + TABLE_NO
+      : (type === 'delivery'
+        ? 'الطلب وصل — راح يعيطلك صاحب المقهى باش يكونفيرمي معاك'
+        : 'الطلب وصل — راح يعيطلك صاحب المقهى كي يوجد');
+  }catch(err){
+    toast('❌ ' + (err.message || 'ما تبعثش الطلب — عاود'));
+  }finally{
+    btn.disabled = false; btn.textContent = '✅ أرسل الطلب';
   }
-  lines.forEach(l => { msg += '• ' + l.it.name + ' × ' + l.qty + ' = ' + fmtPrice(l.sub, cafe.currency) + '\n'; });
-  msg += '------------------------\nالمجموع: ' + fmtPrice(total, cafe.currency);
-  return {msg, targetWa};
 }
-function buildCashierMessage(){
-  const cafe = VIEW_CAFE;
-  const {lines, total} = cartLines();
-  const count = lines.reduce((s, l) => s + l.qty, 0);
-  let msg = '💰 ' + cafe.name + '\n';
-  if(TABLE_NO) msg += 'الطاولة ' + TABLE_NO + '\n';
-  msg += '------------------------\n'
-    + 'عدد الأطباق: ' + count + '\n'
-    + 'المجموع: ' + fmtPrice(total, cafe.currency);
-  return {msg, targetWa: cafe.cashier_whatsapp};
-}
-function armCashierSend(){
-  const wa = normWA(VIEW_CAFE && VIEW_CAFE.cashier_whatsapp);
-  if(!wa) return;
-  const {msg} = buildCashierMessage();
-  const url = 'https://wa.me/' + wa + '?text=' + encodeURIComponent(msg);
-  try{ sessionStorage.setItem('mq_cashier', JSON.stringify({url:url, at:Date.now()})); }catch(e){}
-}
-function maybeSendCashier(){
-  let p = null;
-  try{ p = JSON.parse(sessionStorage.getItem('mq_cashier') || 'null'); }catch(e){}
-  if(!p || !p.url) return;
-  if(Date.now() - p.at > 10*60*1000){ try{ sessionStorage.removeItem('mq_cashier'); }catch(e){} return; }
-  if(Date.now() - p.at < 1500){ setTimeout(maybeSendCashier, 2000); return; }
-  try{ sessionStorage.removeItem('mq_cashier'); }catch(e){}
-  window.location.href = p.url;
-}
-document.addEventListener('visibilitychange', () => { if(!document.hidden) maybeSendCashier(); });
-window.addEventListener('focus', maybeSendCashier);
-window.addEventListener('pageshow', maybeSendCashier);
 function openOrderSheet(){
   const {lines, total} = cartLines();
   if(!lines.length){ toast('السلة فارغة — زيد أطباق أولاً'); return; }
   const cafe = VIEW_CAFE;
+  $('#orderForm').classList.remove('hidden');
+  $('#orderSuccess').classList.add('hidden');
   $('#orderTitle').textContent = TABLE_NO ? ('🪑 طلب الطاولة ' + TABLE_NO) : '🛒 طلبك';
   $('#orderHint').textContent = TABLE_NO
-    ? 'طلبك راح يوصل للمطبخ ديركت مع رقم الطاولة — بلا ما تنادي النادل.'
-    : 'عبّي معلوماتك، والطلب يوصل للمشروع عبر واتساب.';
+    ? 'طلبك راح يوصل للمطبخ والكاشير ديركت مع رقم الطاولة — بلا ما تنادي النادل.'
+    : 'عبّي معلوماتك، والطلب يوصل للمطبخ والكاشير ديركت من التطبيق.';
   $('#homeFields').classList.toggle('hidden', !!TABLE_NO);
+  if(!TABLE_NO){
+    // التوصيل غير إذا صاحب المطعم فعّلو — إذا لا، يبقى غير الاستلام
+    const hasDelivery = !!cafe.delivery_enabled;
+    $('#orderTypeDeliveryLabel').classList.toggle('hidden', !hasDelivery);
+    const radios = document.querySelectorAll('input[name="orderType"]');
+    if(!hasDelivery && radios[1]) radios[1].checked = true;
+    toggleOrderType();
+  }
   let h = '';
   lines.forEach(l => {
     h += '<div class="order-line"><span>' + esc(l.it.name) + ' × ' + l.qty + '</span><b>' + esc(fmtPrice(l.sub, cafe.currency)) + '</b></div>';
   });
   $('#orderLines').innerHTML = h;
   $('#orderTotal').textContent = fmtPrice(total, cafe.currency);
-  refreshOrderLink();
+  validateOrder();
   const sh = $('#orderSheet');
   sh.classList.remove('hidden');
   void sh.offsetWidth;
   sh.classList.add('open');
 }
 function toggleOrderType(){
-  const type = (document.querySelector('input[name="orderType"]:checked') || {}).value || 'delivery';
-  $('#ordAddrRow').classList.toggle('hidden', type !== 'delivery');
-  refreshOrderLink();
-}
-function refreshOrderLink(){
-  if(TABLE_NO){
-    const {msg, targetWa} = buildOrderMessage();
-    $('#orderConfirmBtn').href = 'https://wa.me/' + normWA(targetWa) + '?text=' + encodeURIComponent(msg);
-    $('#orderConfirmBtn').onclick = () => armCashierSend();
-    return;
-  }
-  const name = $('#ordName').value.trim();
-  const phone = $('#ordPhone').value.trim();
-  const type = (document.querySelector('input[name="orderType"]:checked') || {}).value || 'delivery';
-  const addr = $('#ordAddr').value.trim();
-  const btn = $('#orderConfirmBtn');
-  if(!name || !phone || (type === 'delivery' && !addr)){
-    btn.href = '#';
-    btn.onclick = e => { e.preventDefault(); toast('عمّر الاسم والتيليفون' + (type === 'delivery' ? ' والعنوان' : '') + ' أولاً'); };
-    return;
-  }
-  btn.onclick = () => armCashierSend();
-  const {msg, targetWa} = buildOrderMessage();
-  btn.href = 'https://wa.me/' + normWA(targetWa) + '?text=' + encodeURIComponent(msg);
+  $('#ordAddrRow').classList.toggle('hidden', orderType() !== 'delivery');
+  validateOrder();
 }
 function closeOrderSheet(){
   const sh = $('#orderSheet');
@@ -1731,8 +1788,83 @@ function closeOrderSheet(){
   setTimeout(() => sh.classList.add('hidden'), 320);
 }
 ['ordName','ordPhone','ordAddr'].forEach(id => {
-  document.addEventListener('input', e => { if(e.target && e.target.id === id) refreshOrderLink(); });
+  document.addEventListener('input', e => { if(e.target && e.target.id === id) validateOrder(); });
 });
+
+/* ---------------- شاشة الطلبات: المطبخ والكاشير ---------------- */
+let ORDERS_CACHE = [];
+let ORDERS_CH = null, ORDERS_TIMER = null, AUDIO_CTX = null;
+function beep(){
+  try{
+    if(!AUDIO_CTX) AUDIO_CTX = new (window.AudioContext || window.webkitAudioContext)();
+    if(AUDIO_CTX.state === 'suspended') AUDIO_CTX.resume();
+    const t = AUDIO_CTX.currentTime;
+    [880, 660].forEach((f, i) => {
+      const o = AUDIO_CTX.createOscillator(), g = AUDIO_CTX.createGain();
+      o.frequency.value = f; o.connect(g); g.connect(AUDIO_CTX.destination);
+      const d = i * 0.25;
+      g.gain.setValueAtTime(0.001, t + d);
+      g.gain.exponentialRampToValueAtTime(0.35, t + d + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, t + d + 0.22);
+      o.start(t + d); o.stop(t + d + 0.25);
+    });
+  }catch(e){}
+}
+async function renderOrders(){
+  if(!MY_CAFE) return;
+  try{ ORDERS_CACHE = await Store.listOrders(MY_CAFE.id); }
+  catch(e){ console.warn('orders:', e.message); return; }
+  const html = ordersHTML(ORDERS_CACHE);
+  const a = $('#ordersList'); if(a) a.innerHTML = html;
+  const b = $('#kitchenOrders'); if(b) b.innerHTML = html;
+  const n = ORDERS_CACHE.filter(o => o.status === 'new').length;
+  const dt = $('#dtOrders'); if(dt) dt.textContent = '📥 الطلبات' + (n ? ' (' + n + ')' : '');
+}
+function ordersHTML(orders){
+  if(!orders.length) return '<div class="card"><p class="muted" style="text-align:center">ما كاش طلبات بعد — كي يطلب زبون يظهر هنا ديركت.</p></div>';
+  const cur = (MY_CAFE && MY_CAFE.currency) || 'دج';
+  return orders.map(o => {
+    const items = Array.isArray(o.items) ? o.items : [];
+    const when = o.created_at ? new Date(o.created_at).toLocaleTimeString('ar-DZ', {hour:'2-digit', minute:'2-digit'}) : '';
+    const kindLabel = o.kind === 'table' ? ('🪑 الطاولة ' + (o.table_no ?? '—')) : o.kind === 'delivery' ? '🏠 توصيل' : '🛍️ استلام';
+    const st = {new:['جديد','pill-amber'], preparing:['قيد التحضير','pill-blue'], done:['تم ✅','pill-green'], cancelled:['ملغي','pill-red']}[o.status] || [o.status, 'pill-grey'];
+    let h = '<div class="ord ' + esc(o.status) + '"><div class="ord-head"><b>' + kindLabel + ' • ' + when + '</b><span class="pill ' + st[1] + '">' + st[0] + '</span></div>';
+    h += '<div class="ord-items">' + items.map(it => '<div><span>' + esc(it.name) + ' × ' + (it.qty || 1) + '</span><b>' + esc(fmtPrice((it.price || 0) * (it.qty || 1), cur)) + '</b></div>').join('') + '</div>';
+    h += '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><span class="ord-meta">'
+      + (o.customer_name ? esc(o.customer_name) + ' • ' : '')
+      + (o.customer_phone ? '<a href="tel:' + esc(o.customer_phone) + '" style="color:#E8A317">📞 ' + esc(o.customer_phone) + '</a>' : '')
+      + (o.address ? '<br>🏠 ' + esc(o.address) : '')
+      + '</span><span class="ord-total">' + esc(fmtPrice(o.total || 0, cur)) + '</span></div>';
+    if(o.status === 'new') h += '<div class="ord-acts"><button class="btn btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'preparing\')">👨‍🍳 قيد التحضير</button><button class="btn btn-ghost btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'cancelled\')">✖ إلغاء</button></div>';
+    else if(o.status === 'preparing') h += '<div class="ord-acts"><button class="btn btn-amber btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'done\')">✅ تم</button><button class="btn btn-ghost btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'cancelled\')">✖ إلغاء</button></div>';
+    return h + '</div>';
+  }).join('');
+}
+async function setOrderStatus(id, status){
+  try{ await Store.updateOrder(id, {status}); renderOrders(); }
+  catch(e){ toast('❌ ' + e.message); }
+}
+function subscribeOrders(){
+  if(MODE !== 'sb' || !MY_CAFE || !sb || ORDERS_CH) return;
+  ORDERS_CH = sb.channel('menu-orders-' + MY_CAFE.id)
+    .on('postgres_changes', {event:'INSERT', schema:'public', table:'menu_orders', filter:'cafe_id=eq.' + MY_CAFE.id}, () => { renderOrders(); beep(); })
+    .on('postgres_changes', {event:'UPDATE', schema:'public', table:'menu_orders', filter:'cafe_id=eq.' + MY_CAFE.id}, () => renderOrders())
+    .subscribe();
+  if(!ORDERS_TIMER) ORDERS_TIMER = setInterval(() => { if(MY_CAFE) renderOrders(); }, 20000);
+}
+function unsubscribeOrders(){
+  if(ORDERS_CH && sb){ try{ sb.removeChannel(ORDERS_CH); }catch(e){} ORDERS_CH = null; }
+}
+function openKitchen(){
+  if(!MY_CAFE) return;
+  try{
+    if(!AUDIO_CTX) AUDIO_CTX = new (window.AudioContext || window.webkitAudioContext)();
+    if(AUDIO_CTX.state === 'suspended') AUDIO_CTX.resume();
+  }catch(e){}
+  showView('kitchen');
+  renderOrders();
+}
+function closeKitchen(){ showView('dash'); }
 
 /* ---------------- التهيئة ---------------- */
 window.addEventListener('DOMContentLoaded', async () => {

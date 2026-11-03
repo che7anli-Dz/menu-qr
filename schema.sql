@@ -155,3 +155,59 @@ grant select on menu_categories to anon, authenticated;
 grant insert, update, delete on menu_categories to authenticated;
 grant select on menu_items to anon, authenticated;
 grant insert, update, delete on menu_items to authenticated;
+
+-- ---------- 9) الطلبات بلا واتساب (شاشة المطبخ + الكاشير) ----------
+alter table menu_cafes add column if not exists delivery_enabled boolean not null default false;
+
+create table if not exists menu_orders (
+  id uuid default gen_random_uuid() primary key,
+  cafe_id uuid not null references menu_cafes(id) on delete cascade,
+  kind text not null check (kind in ('table','delivery','pickup')),
+  table_no integer,
+  customer_name text default '',
+  customer_phone text default '',
+  address text default '',
+  items jsonb not null default '[]'::jsonb,
+  total numeric not null default 0,
+  status text not null default 'new' check (status in ('new','preparing','done','cancelled')),
+  created_at timestamptz default now()
+);
+create index if not exists idx_menu_orders_cafe on menu_orders(cafe_id, created_at desc);
+
+alter table menu_orders enable row level security;
+-- أي زائر يقدر يبعث طلب (الزبون ماشي مسجل دخول)
+drop policy if exists "orders_insert_public" on menu_orders;
+create policy "orders_insert_public" on menu_orders
+  for insert to anon, authenticated with check (true);
+-- القراءة والتعديل غير لمالك المشروع
+drop policy if exists "orders_select_owner" on menu_orders;
+create policy "orders_select_owner" on menu_orders
+  for select to authenticated using (cafe_id in (select id from menu_cafes where owner_id = auth.uid()));
+drop policy if exists "orders_update_owner" on menu_orders;
+create policy "orders_update_owner" on menu_orders
+  for update to authenticated
+  using (cafe_id in (select id from menu_cafes where owner_id = auth.uid()))
+  with check (cafe_id in (select id from menu_cafes where owner_id = auth.uid()));
+
+-- الطلب الجديد دايماً يبدا new (حماية من تلاعب العميل)
+create or replace function menu_orders_force_new()
+returns trigger language plpgsql as $$
+begin
+  new.status := 'new';
+  return new;
+end $$;
+drop trigger if exists trg_menu_orders_force_new on menu_orders;
+create trigger trg_menu_orders_force_new before insert on menu_orders
+  for each row execute function menu_orders_force_new();
+
+-- Realtime باش شاشة المطبخ تتحدث لحظياً (idempotent)
+do $$
+begin
+  if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and tablename = 'menu_orders') then
+    execute 'alter publication supabase_realtime add table menu_orders';
+  end if;
+end $$;
+
+grant select on menu_orders to anon, authenticated;
+grant insert on menu_orders to anon, authenticated;
+grant update on menu_orders to authenticated;
