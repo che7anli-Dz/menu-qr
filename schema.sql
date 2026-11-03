@@ -268,3 +268,7 @@ create policy "orders_delete_owner" on menu_orders
   using (cafe_id in (select id from menu_cafes where owner_id = auth.uid()));
 
 grant delete on menu_orders to authenticated;
+
+-- ================= القسم 12: عدد طاولات المشروع =================
+-- باش سطر الطاولات يبين كل الطاولات ديما (ماشي غير اللي طلبت منها)، والعدد يتحفظ في المشروع
+alter table menu_cafes add column if not exists tables_count integer not null default 8;

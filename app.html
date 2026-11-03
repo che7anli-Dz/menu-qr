@@ -50,7 +50,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(10,15,12,.92);backdrop-f
 .btn-block{width:100%}
 .btn:disabled{opacity:.55;cursor:not-allowed}
 /* ---------- hero ---------- */
-.hero{background:linear-gradient(rgba(9,18,13,.66),rgba(9,18,13,.76));color:#fff;border-radius:24px;overflow:hidden;margin:16px}
+.hero{background:linear-gradient(rgba(9,18,13,.66),rgba(9,18,13,.76)),url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;color:#fff;border-radius:24px;overflow:hidden;margin:16px}
 .hero-in{max-width:880px;margin:0 auto;padding:40px 16px 44px;text-align:center}
 .hero h1{font-size:clamp(28px,6vw,46px);font-weight:900;line-height:1.35;margin:18px 0 12px;text-shadow:0 2px 10px rgba(0,0,0,.35)}
 .hero h1 span{color:var(--amber-500)}
@@ -378,7 +378,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
         <img class="hero-logo" src="logo.svg" alt="Menu QR 🍽">
         <span class="hero-badge">امسح، شوف، واطلب!</span>
         <h1>ودّع Menu الورقي!</h1>
-        <p>Menu مطعمك أو مقهاك، الآن في هاتف زبونك! أنشئ Menu إلكتروني خاص بمشروعك، شارك QR Code مع زبائنك، وخليهم يشوفوا الأطباق والأسعار ويطلبوا مباشرة عبر واتساب.</p>
+        <p>Menu مطعمك أو مقهاك، الآن في هاتف زبونك! أنشئ Menu إلكتروني خاص بمشروعك، شارك QR Code مع زبائنك، وخليهم يشوفوا الأطباق والأسعار ويطلبوا ديركت من التطبيق.</p>
         <div class="hero-cta">
           <button class="btn btn-amber" onclick="showAuth()">🚀 ابدأ مجاناً — 14 يوم</button>
           <button class="btn btn-ghost" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)" onclick="openDemoMenu()">🍽️ شوف Menu تجريبي</button>
@@ -392,7 +392,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
         <p class="sec-sub">كلش لي يحتاجو صاحب المطعم أو المقهى، بلا تعقيد وبلا مصاريف زايدة</p>
         <div class="grid grid-3">
           <div class="card feat"><div class="ic">📱</div><h3>Menu يفتح في ثانية</h3><p>الزبون يسكان الـ QR ويشوف Menu كامل في تيليفونو، بلا تطبيق وبلا تسجيل</p></div>
-          <div class="card feat"><div class="ic">💬</div><h3>الطلب يوصل واتساب</h3><p>الزبون يختار واش يحب والطلب يوصلك واتساب جاهز بالكميات والمجموع — مع رقم الطاولة إذا كان في المحل</p></div>
+          <div class="card feat"><div class="ic">💬</div><h3>الطلب يوصل للمطبخ والكاشير</h3><p>الزبون يختار واش يحب والطلب يوصل للمطبخ والكاشير ديركت من التطبيق — مع رقم الطاولة إذا كان في المحل</p></div>
           <div class="card feat"><div class="ic">✏️</div><h3>بدّل الأسعار وقت ما تحب</h3><p>زيد طبق، نقص طبق، بدّل السعر — التعديل يبان في Menu مباشرة، بلا ما تعاود تطبع</p></div>
           <div class="card feat"><div class="ic">🖨️</div><h3>QR جاهز للطباعة</h3><p>حمّل الـ QR كصورة ولا اطبعو مباشرة من لوحة التحكم وحطو على الطاولات</p></div>
           <div class="card feat"><div class="ic">🪑</div><h3>QR لكل طاولة</h3><p>كل طاولة عندها كودها: الطلب يوصل للمطبخ مع رقم الطاولة مباشرة، بلا ما الزبون ينادي النادل</p></div>
@@ -406,7 +406,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
         <div class="grid grid-3">
           <div class="card step"><div class="n">1</div><div><h3>سجّل مشروعك</h3><p>دير حساب ودخل اسم المطعم أو المقهى ورقم الواتساب تاعك</p></div></div>
           <div class="card step"><div class="n">2</div><div><h3>زيد الأطباق والأسعار</h3><p>أقسام وأطباق بالصور، وتقدر تبدلهم في أي وقت</p></div></div>
-          <div class="card step"><div class="n">3</div><div><h3>اطبع الـ QR</h3><p>حمّل الـ QR ولا اطبعو وحطو على الطاولات — والطلبات توصلك واتساب</p></div></div>
+          <div class="card step"><div class="n">3</div><div><h3>اطبع الـ QR</h3><p>حمّل الـ QR ولا اطبعو وحطو على الطاولات — والطلبات توصلك ديركت من التطبيق</p></div></div>
         </div>
       </section>
 
@@ -417,14 +417,14 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
           <div class="card price-card">
             <h3>🇩🇿 الجزائر</h3>
             <div class="p">700<small> دج / شهر</small></div>
-            <ul><li>Menu غير محدود الأطباق</li><li>QR + طباعة + QR الطاولات</li><li>طلبات واتساب غير محدودة</li><li>الدفع CCP / BaridiMob / كاش</li><li>تفعيل يدوي عبر واتساب</li></ul>
+            <ul><li>Menu غير محدود الأطباق</li><li>QR + طباعة + QR الطاولات</li><li>طلبات غير محدودة من التطبيق</li><li>الدفع CCP / BaridiMob / كاش</li><li>تفعيل يدوي عبر واتساب</li></ul>
             <button class="btn btn-block" onclick="showAuth()">ابدأ الآن</button>
           </div>
           <div class="card price-card hl">
             <span class="tag">الخليج 🌍</span>
             <h3>السعودية والإمارات</h3>
             <div class="p">$9<small> / شهر</small></div>
-            <ul><li>نفس المزايا كاملة</li><li>QR + طباعة + QR الطاولات</li><li>طلبات واتساب غير محدودة</li><li>الدفع عبر Paddle (قريباً)</li><li>دعم بالعربية</li></ul>
+            <ul><li>نفس المزايا كاملة</li><li>QR + طباعة + QR الطاولات</li><li>طلبات غير محدودة من التطبيق</li><li>الدفع عبر Paddle (قريباً)</li><li>دعم بالعربية</li></ul>
             <button class="btn btn-amber btn-block" onclick="showAuth()">ابدأ الآن</button>
           </div>
         </div>
@@ -552,6 +552,11 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
             <p class="muted">الطلبات توصل هنا ديركت من التطبيق — بلا واتساب. الطباخ يشوف الأطباق والطاولة، والكاشير يشوف المجموع.</p>
             <button class="btn btn-amber" onclick="openKitchen()">🖥️ افتح شاشة المطبخ</button>
             <p class="hint" style="margin-top:10px">باش الطباخ والكاشير يشوفو الطلبات من تيليفوناتهم، افتح شاشة المطبخ مرة وحدة من حسابك في تيليفون كل واحد فيهم.</p>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap">
+              <label style="font-weight:700">🪑 شحال من طاولة؟</label>
+              <input id="tablesCountSet" type="number" min="1" max="50" style="max-width:90px" dir="ltr">
+              <button class="btn btn-sm" onclick="saveTablesCount()">💾 حفظ</button>
+            </div>
             <div id="tablesStrip" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap"></div>
           </div>
           <div id="ordersList"></div>
@@ -1303,6 +1308,10 @@ function dashTab(tab){
     $('#dt'+t[0].toUpperCase()+t.slice(1)).classList.toggle('on', t===tab);
   });
   if(tab === 'orders') renderOrders();
+  if(tab === 'qr' && MY_CAFE){
+    const q = $('#tablesCount'); if(q) q.value = MY_CAFE.tables_count || 8;
+    if(!$('#tableQrGrid').children.length) genTableQRs(true); else refreshTableQrStatuses();
+  }
 }
 function fillSettingsForm(){
   $('#edName').value = MY_CAFE.name;
@@ -1546,7 +1555,7 @@ function copyMenuLink(){
   if(navigator.clipboard){ navigator.clipboard.writeText(url).then(()=>toast('✅ تنسخ الرابط')); }
   else prompt('نسخ الرابط:', url);
 }
-function genTableQRs(){
+function genTableQRs(quiet){
   const n = Math.max(1, Math.min(50, parseInt($('#tablesCount').value) || 8));
   const grid = $('#tableQrGrid');
   grid.innerHTML = '';
@@ -1555,12 +1564,15 @@ function genTableQRs(){
     cell.className = 'table-qr-cell';
     setFrameBg(cell, frameBg('طاولة ' + i, MY_CAFE ? cafeBg(MY_CAFE) : LANDING_BG));
     cell.innerHTML = '<b>🪑 الطاولة ' + i + '</b><div class="qr-holder" id="tqr-' + i + '"></div>'
-      + '<button class="btn btn-ghost btn-sm" onclick="downloadTableQR(' + i + ')">⬇️ PNG</button>';
+      + '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap">'
+      + '<button class="btn btn-ghost btn-sm" onclick="downloadTableQR(' + i + ')">⬇️ PNG</button>'
+      + '<button class="btn btn-ghost btn-sm" id="tqr-st-' + i + '" onclick="toggleTableQr(' + i + ')">…</button></div>';
     grid.appendChild(cell);
     drawQR(cell.querySelector('.qr-holder'), tableUrl(MY_CAFE.slug, i), 120);
   }
   $('#btnPrintTables').disabled = false;
-  toast('✅ تولّدت أكواد ' + n + ' طاولة');
+  if(!quiet) toast('✅ تولّدت أكواد ' + n + ' طاولة');
+  refreshTableQrStatuses();
 }
 function downloadTableQR(n){
   const holder = $('#tqr-' + n);
@@ -1929,6 +1941,39 @@ async function openTable(tableNo){
     renderOrders();
   }catch(e){ toast('❌ ' + e.message); }
 }
+async function saveTablesCount(){
+  if(!MY_CAFE) return;
+  const n = Math.max(1, Math.min(50, parseInt($('#tablesCountSet').value) || 8));
+  try{
+    MY_CAFE = await Store.updateCafe(MY_CAFE.id, {tables_count: n});
+    toast('✅ تسجلو ' + n + ' طاولات');
+    renderOrders();
+  }catch(e){ toast('❌ ' + e.message); }
+}
+/* ---- فتح/سد من جنب كود الطاولة (تبويب QR) ---- */
+async function refreshTableQrStatuses(){
+  if(!MY_CAFE) return;
+  try{
+    const rows = await Store.listTables(MY_CAFE.id);
+    const stMap = {}; rows.forEach(r => stMap[r.table_no] = r.status);
+    document.querySelectorAll('[id^="tqr-st-"]').forEach(b => {
+      const n = parseInt(b.id.replace('tqr-st-', ''), 10);
+      const closed = stMap[n] === 'closed';
+      b.textContent = closed ? '🔒 مسدودة — افتحها' : '🪑 مفتوحة — سدّها';
+      b.classList.toggle('btn-amber', closed);
+      b.classList.toggle('btn-ghost', !closed);
+    });
+  }catch(e){}
+}
+async function toggleTableQr(n){
+  if(!MY_CAFE) return;
+  try{
+    const st = await Store.getTableStatus(MY_CAFE.id, n);
+    if(st === 'closed'){ await openTable(n); }
+    else{ await closeTable(n); }
+    refreshTableQrStatuses();
+  }catch(e){ toast('❌ ' + e.message); }
+}
 /* ---- محي طلب خالص (اختياري — يسقسي قبل ما يمحي) ---- */
 async function deleteOrder(id){
   if(!confirm('تمحي هاد الطلب نهائياً؟')) return;
@@ -1940,10 +1985,12 @@ async function renderTablesStrip(){
   if(!el || !MY_CAFE) return;
   try{
     const rows = await Store.listTables(MY_CAFE.id);
+    const n = Math.max(1, Math.min(50, parseInt(MY_CAFE.tables_count) || 8));
+    const cnt = $('#tablesCountSet'); if(cnt) cnt.value = n;
     const nums = new Set(rows.map(r => r.table_no));
     ORDERS_CACHE.forEach(o => { if(o.kind === 'table' && o.table_no != null) nums.add(o.table_no); });
+    for(let i = 1; i <= n; i++) nums.add(i);
     const sorted = [...nums].sort((a,b) => a - b);
-    if(!sorted.length){ el.innerHTML = '<p class="hint">ما كاش طاولات بعد — كي يطلب زبون من طاولة تظهر هنا.</p>'; return; }
     const stMap = {}; rows.forEach(r => stMap[r.table_no] = r.status);
     el.innerHTML = sorted.map(n => {
       const closed = stMap[n] === 'closed';
