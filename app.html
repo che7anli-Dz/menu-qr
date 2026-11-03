@@ -1044,6 +1044,14 @@ const Store = {
     orders[i] = {...orders[i], ...patch}; LS.set('orders', orders);
     return orders[i];
   },
+  async deleteOrder(id){
+    if(MODE==='sb'){
+      const {error} = await sb.from('menu_orders').delete().eq('id', id);
+      if(error) throw error;
+      return;
+    }
+    LS.set('orders', LS.get('orders', []).filter(o => o.id !== id));
+  },
   /* ---- حالات الطاولات: مفتوحة/مسدودة (بلا سطر = مفتوحة) ---- */
   async getTableStatus(cafeId, tableNo){
     if(MODE==='sb'){
@@ -1894,6 +1902,7 @@ function ordersHTML(orders){
       ? '<button class="btn btn-amber btn-sm" onclick="closeTable(' + o.table_no + ')">✅ تم — سد الطاولة</button>' : '';
     if(o.status === 'new') h += '<div class="ord-acts"><button class="btn btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'preparing\')">👨‍🍳 قيد التحضير</button><button class="btn btn-ghost btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'cancelled\')">✖ إلغاء</button>' + closeBtn + '</div>';
     else if(o.status === 'preparing') h += '<div class="ord-acts"><button class="btn btn-amber btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'done\')">✅ تم</button><button class="btn btn-ghost btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'cancelled\')">✖ إلغاء</button>' + closeBtn + '</div>';
+    else if(o.status === 'done') h += '<div class="ord-acts"><button class="btn btn-ghost btn-sm" onclick="deleteOrder(\'' + esc(o.id) + '\')">🗑 محي الطلب</button></div>';
     return h + '</div>';
   }).join('');
 }
@@ -1919,6 +1928,12 @@ async function openTable(tableNo){
     toast('🪑 الطاولة ' + tableNo + ' تفتحت — الزبون يقدر يطلب');
     renderOrders();
   }catch(e){ toast('❌ ' + e.message); }
+}
+/* ---- محي طلب خالص (اختياري — يسقسي قبل ما يمحي) ---- */
+async function deleteOrder(id){
+  if(!confirm('تمحي هاد الطلب نهائياً؟')) return;
+  try{ await Store.deleteOrder(id); renderOrders(); toast('🗑 تمحى الطلب'); }
+  catch(e){ toast('❌ ' + e.message); }
 }
 async function renderTablesStrip(){
   const el = $('#tablesStrip');

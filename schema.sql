@@ -260,3 +260,11 @@ end $$;
 
 grant select on menu_tables to anon, authenticated;
 grant insert, update, delete on menu_tables to authenticated;
+
+-- ================= القسم 11: محي الطلبات الخالصة (اختياري، للمالك برك) =================
+drop policy if exists "orders_delete_owner" on menu_orders;
+create policy "orders_delete_owner" on menu_orders
+  for delete to authenticated
+  using (cafe_id in (select id from menu_cafes where owner_id = auth.uid()));
+
+grant delete on menu_orders to authenticated;
