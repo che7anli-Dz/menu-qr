@@ -738,9 +738,11 @@ function normWA(num){
   if(d.startsWith('0')) d = '213' + d.slice(1);
   return d;
 }
+// رابط Menu العام — ثابت، باش أكواد الـ QR تخدم من أي بلاصة (حتى من التطبيق المثبت،
+ // وين location.href يكون file:///android_asset/... وما يصلحش لصاحب يسكاني الكود)
+const PUBLIC_APP_URL = 'https://che7anli-dz.github.io/menu-qr/app.html';
 function menuUrl(slug){
-  const base = location.href.split('?')[0].split('#')[0];
-  return base + '?cafe=' + encodeURIComponent(slug);
+  return PUBLIC_APP_URL + '?cafe=' + encodeURIComponent(slug);
 }
 function tableUrl(slug, n){
   return menuUrl(slug) + '&table=' + encodeURIComponent(n);
@@ -1557,6 +1559,10 @@ function copyMenuLink(){
 }
 function genTableQRs(quiet){
   const n = Math.max(1, Math.min(50, parseInt($('#tablesCount').value) || 8));
+  // العدد اللي تولّد بيه الأكواد هو عدد الطاولات الرسمي — سجّلو باش السطر يطابق الأكواد
+  if(MY_CAFE && n !== (MY_CAFE.tables_count || 8)){
+    Store.updateCafe(MY_CAFE.id, {tables_count: n}).then(c => { MY_CAFE = c; renderOrders(); }).catch(e => {});
+  }
   const grid = $('#tableQrGrid');
   grid.innerHTML = '';
   for(let i = 1; i <= n; i++){
