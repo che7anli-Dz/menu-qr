@@ -113,6 +113,21 @@ footer .logo svg{width:100%;height:auto;display:block}
 footer p{font-size:14px;opacity:.8}
 .rv{opacity:0;transform:translateY(16px);transition:opacity .6s,transform .6s}
 .rv.on{opacity:1;transform:none}
+/* ---------- الأنيميشن ---------- */
+@keyframes heroDrift{from{transform:scale(1)}to{transform:scale(1.08)}}
+.hero .bg{animation:heroDrift 26s ease-in-out infinite alternate}
+.cta-final .bg{animation:heroDrift 26s ease-in-out infinite alternate}
+@keyframes heroIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero .logo-big{animation:heroIn .6s ease both}
+.hero h1{animation:heroIn .6s .08s ease both}
+.hero p.sub{animation:heroIn .6s .16s ease both}
+.hero .cta{animation:heroIn .6s .24s ease both}
+.hero .trial{animation:heroIn .6s .32s ease both}
+@keyframes shine{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.shine{position:relative;overflow:hidden}
+.shine::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.38) 50%,transparent 65%);background-size:200% 100%;animation:shine 2.8s linear infinite;pointer-events:none}
+.btn:active{transform:scale(.96)}
+@media (prefers-reduced-motion:reduce){.hero .bg,.cta-final .bg,.hero .logo-big,.hero h1,.hero p.sub,.hero .cta,.hero .trial,.shine::after{animation:none!important}.btn{transition:none!important}}
 @media(max-width:820px){
   .nav nav{display:none}
   .steps,.feats,.dishes{grid-template-columns:1fr}
@@ -149,7 +164,7 @@ footer p{font-size:14px;opacity:.8}
     <h1><span data-t="hero.title1">امسح،</span> <span class="g" data-t="hero.title2">شوف،</span> <span data-t="hero.title3">واطلب!</span></h1>
     <p class="sub" data-t="hero.sub">منيو رقمي + QR + طلب واتساب لمقهاك أو مطعمك. دخل الأطباق والأسعار، اطبع QR للطاولات، والزبون يمسح ويطلب — بلا تطبيق، بلا تعقيد.</p>
     <div class="cta">
-      <a class="btn" id="heroDemo" href="#" data-t="hero.demo">شوف الديمو</a>
+      <a class="btn shine" id="heroDemo" href="#" data-t="hero.demo">شوف الديمو</a>
       <a class="btn green" id="heroDl" href="#" data-t="hero.download">تحميل التطبيق</a>
       <a class="btn ghost" id="heroWa" href="#" data-t="hero.subscribe">اشترك واتساب</a>
     </div>
@@ -292,7 +307,7 @@ footer p{font-size:14px;opacity:.8}
   <div class="in wrap">
     <h2 class="rv" data-t="cta.title">واجد تبدا؟</h2>
     <p class="rv" data-t="cta.sub">أنشئ Menu تاعك اليوم — 14 يوم مجاناً.</p>
-    <a class="btn rv" id="finalWa" href="#" data-t="cta.btn">اشترك واتساب</a>
+    <a class="btn rv shine" id="finalWa" href="#" data-t="cta.btn">اشترك واتساب</a>
     <a class="btn ghost rv" id="finalDl" href="#" data-t="cta.download" style="margin-inline-start:10px">تحميل التطبيق</a>
   </div>
 </section>
