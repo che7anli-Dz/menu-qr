@@ -619,7 +619,6 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
       <div class="form-row" id="ordAddrRow"><label>العنوان *</label><input id="ordAddr" placeholder="الحي، الشارع، رقم الدار..."></div>
     </div>
     <a id="orderConfirmBtn" class="btn btn-amber btn-block" href="#" target="_blank" style="margin-top:6px">✅ أرسل الطلب واتساب</a>
-    <a id="cashierBtn" class="btn btn-block hidden" href="#" target="_blank" style="margin-top:10px">💰 ابعث المجموع للكاشير</a>
     <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="closeOrderSheet()">إلغاء</button>
   </div>
 </div>
@@ -1596,14 +1595,25 @@ function buildCashierMessage(){
     + 'المجموع: ' + fmtPrice(total, cafe.currency);
   return {msg, targetWa: cafe.cashier_whatsapp};
 }
-function refreshCashierBtn(ok){
-  const btn = $('#cashierBtn');
+function armCashierSend(){
   const wa = normWA(VIEW_CAFE && VIEW_CAFE.cashier_whatsapp);
-  if(!ok || !wa){ btn.classList.add('hidden'); btn.href = '#'; return; }
+  if(!wa) return;
   const {msg} = buildCashierMessage();
-  btn.href = 'https://wa.me/' + wa + '?text=' + encodeURIComponent(msg);
-  btn.classList.remove('hidden');
+  const url = 'https://wa.me/' + wa + '?text=' + encodeURIComponent(msg);
+  try{ sessionStorage.setItem('mq_cashier', JSON.stringify({url:url, at:Date.now()})); }catch(e){}
 }
+function maybeSendCashier(){
+  let p = null;
+  try{ p = JSON.parse(sessionStorage.getItem('mq_cashier') || 'null'); }catch(e){}
+  if(!p || !p.url) return;
+  if(Date.now() - p.at > 10*60*1000){ try{ sessionStorage.removeItem('mq_cashier'); }catch(e){} return; }
+  if(Date.now() - p.at < 1500){ setTimeout(maybeSendCashier, 2000); return; }
+  try{ sessionStorage.removeItem('mq_cashier'); }catch(e){}
+  window.location.href = p.url;
+}
+document.addEventListener('visibilitychange', () => { if(!document.hidden) maybeSendCashier(); });
+window.addEventListener('focus', maybeSendCashier);
+window.addEventListener('pageshow', maybeSendCashier);
 function openOrderSheet(){
   const {lines, total} = cartLines();
   if(!lines.length){ toast('السلة فارغة — زيد أطباق أولاً'); return; }
@@ -1631,7 +1641,7 @@ function refreshOrderLink(){
   if(TABLE_NO){
     const {msg, targetWa} = buildOrderMessage();
     $('#orderConfirmBtn').href = 'https://wa.me/' + normWA(targetWa) + '?text=' + encodeURIComponent(msg);
-    refreshCashierBtn(true);
+    $('#orderConfirmBtn').onclick = () => armCashierSend();
     return;
   }
   const name = $('#ordName').value.trim();
@@ -1642,13 +1652,11 @@ function refreshOrderLink(){
   if(!name || !phone || (type === 'delivery' && !addr)){
     btn.href = '#';
     btn.onclick = e => { e.preventDefault(); toast('عمّر الاسم والتيليفون' + (type === 'delivery' ? ' والعنوان' : '') + ' أولاً'); };
-    refreshCashierBtn(false);
     return;
   }
-  btn.onclick = null;
+  btn.onclick = () => armCashierSend();
   const {msg, targetWa} = buildOrderMessage();
   btn.href = 'https://wa.me/' + normWA(targetWa) + '?text=' + encodeURIComponent(msg);
-  refreshCashierBtn(true);
 }
 function closeOrderSheet(){
   $('#orderSheet').classList.add('hidden');
