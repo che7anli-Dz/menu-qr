@@ -147,3 +147,11 @@ drop trigger if exists trg_guard_menu_subscription on menu_cafes;
 create trigger trg_guard_menu_subscription
   before update on menu_cafes
   for each row execute function guard_menu_subscription();
+
+-- ---------- 8) صلاحيات الـ API (بدونها التطبيق ما يقدرش يقرا/يكتب — RLS وحدها ما تكفيش) ----------
+grant select on menu_cafes to anon, authenticated;
+grant insert, update, delete on menu_cafes to authenticated;
+grant select on menu_categories to anon, authenticated;
+grant insert, update, delete on menu_categories to authenticated;
+grant select on menu_items to anon, authenticated;
+grant insert, update, delete on menu_items to authenticated;
