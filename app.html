@@ -438,6 +438,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
           <div class="form-row"><label>الرابط (slug) *</label><input id="cfSlug" required dir="ltr" placeholder="diwan"><p class="hint">الرابط تاع Menu تاعك راح يكون: <span id="slugPreview" dir="ltr">…?cafe=diwan</span> — حروف وأرقام وشرطات برك.</p></div>
           <div class="form-row"><label>رقم الواتساب *</label><input id="cfWa" required dir="ltr" placeholder="0550123456"><p class="hint">الطلبات توصلك على هاد الرقم.</p></div>
           <div class="form-row"><label>رقم واتساب المطبخ (اختياري)</label><input id="cfKitchenWa" dir="ltr" placeholder="0550123456"><p class="hint">طلبات الطاولات توصل على هاد الرقم — إذا ما دخلتوش، توصل على رقم الواتساب الرئيسي.</p></div>
+          <div class="form-row"><label>رقم واتساب الكاشير (اختياري)</label><input id="cfCashierWa" dir="ltr" placeholder="0550123456"><p class="hint">المجموع تاع كل طلب يتبعث لهاد الرقم — لي شاد لاكاس.</p></div>
           <div class="form-row"><label>رابط الفايسبوك (اختياري)</label><input id="cfFb" dir="ltr" placeholder="https://facebook.com/..."></div>
           <div class="form-row"><label>شعار المطعم أو المقهى (اختياري)</label>
           <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
@@ -508,6 +509,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
               <div class="form-row"><label>الرابط (slug) *</label><input id="edSlug" required dir="ltr"><p class="hint">تبديل الرابط يبدّل الـ QR تاعك — عاود طبعو من بعد.</p></div>
               <div class="form-row"><label>رقم الواتساب *</label><input id="edWa" required dir="ltr"></div>
               <div class="form-row"><label>رقم واتساب المطبخ</label><input id="edKitchenWa" dir="ltr"><p class="hint">طلبات الطاولات توصل على هاد الرقم.</p></div>
+              <div class="form-row"><label>رقم واتساب الكاشير</label><input id="edCashierWa" dir="ltr"><p class="hint">المجموع تاع كل طلب يتبعث لهاد الرقم.</p></div>
               <div class="form-row"><label>رابط الفايسبوك</label><input id="edFb" dir="ltr"></div>
               <div class="form-row"><label>شعار المطعم أو المقهى</label>
               <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
@@ -617,6 +619,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
       <div class="form-row" id="ordAddrRow"><label>العنوان *</label><input id="ordAddr" placeholder="الحي، الشارع، رقم الدار..."></div>
     </div>
     <a id="orderConfirmBtn" class="btn btn-amber btn-block" href="#" target="_blank" style="margin-top:6px">✅ أرسل الطلب واتساب</a>
+    <a id="cashierBtn" class="btn btn-block hidden" href="#" target="_blank" style="margin-top:10px">💰 ابعث المجموع للكاشير</a>
     <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="closeOrderSheet()">إلغاء</button>
   </div>
 </div>
@@ -752,7 +755,7 @@ function applyLandingFrameBgs(){
 const DEMO_CAFE = {
   id:'demo', owner_id:'demo', name:'مطعم الديوان', slug:'diwan', type:'restaurant',
   tagline:'أكل تقليدي وعصري — التوصيل متوفر',
-  logo_url:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=400&q=60', whatsapp:'0797475073', kitchen_whatsapp:'0797475073',
+  logo_url:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=400&q=60', whatsapp:'0797475073', kitchen_whatsapp:'0797475073', cashier_whatsapp:'0797475073',
   phone:'0550123456', facebook:'https://facebook.com/diwan.restaurant',
   currency:'دج', views:128,
   trial_ends_at: new Date(Date.now()+14*86400000).toISOString(),
@@ -1139,6 +1142,7 @@ function fillSettingsForm(){
   $('#edSlug').value = MY_CAFE.slug;
   $('#edWa').value = MY_CAFE.whatsapp || '';
   $('#edKitchenWa').value = MY_CAFE.kitchen_whatsapp || '';
+  $('#edCashierWa').value = MY_CAFE.cashier_whatsapp || '';
   $('#edFb').value = MY_CAFE.facebook || '';
   setPhoto('edLogoPrev', 'edLogoClear', MY_CAFE.logo_url || ''); $('#edLogoFile').value = '';
   $('#edCur').value = MY_CAFE.currency || 'دج';
@@ -1151,7 +1155,7 @@ async function createCafe(e){
   if(!name || !slug || !wa){ toast('عمر الحقول اللي فيهم *'); return; }
   const cafe = {
     id: uid(), owner_id: USER.id, name, slug, type: $('#cfType').value || 'restaurant',
-    tagline:'', whatsapp: wa, kitchen_whatsapp: $('#cfKitchenWa').value.trim(),
+    tagline:'', whatsapp: wa, kitchen_whatsapp: $('#cfKitchenWa').value.trim(), cashier_whatsapp: $('#cfCashierWa').value.trim(),
     phone: wa, facebook: normUrl($('#cfFb').value),
     logo_url: photoData('cfLogoPrev'), currency: $('#cfCur').value,
     views: 0,
@@ -1174,6 +1178,7 @@ async function saveCafe(e){
     slug: slugify($('#edSlug').value),
     whatsapp: $('#edWa').value.trim(),
     kitchen_whatsapp: $('#edKitchenWa').value.trim(),
+    cashier_whatsapp: $('#edCashierWa').value.trim(),
     facebook: normUrl($('#edFb').value),
     logo_url: photoData('edLogoPrev'),
     currency: $('#edCur').value
@@ -1580,6 +1585,25 @@ function buildOrderMessage(){
   msg += '------------------------\nالمجموع: ' + fmtPrice(total, cafe.currency);
   return {msg, targetWa};
 }
+function buildCashierMessage(){
+  const cafe = VIEW_CAFE;
+  const {lines, total} = cartLines();
+  const count = lines.reduce((s, l) => s + l.qty, 0);
+  let msg = '💰 ' + cafe.name + '\n';
+  if(TABLE_NO) msg += 'الطاولة ' + TABLE_NO + '\n';
+  msg += '------------------------\n'
+    + 'عدد الأطباق: ' + count + '\n'
+    + 'المجموع: ' + fmtPrice(total, cafe.currency);
+  return {msg, targetWa: cafe.cashier_whatsapp};
+}
+function refreshCashierBtn(ok){
+  const btn = $('#cashierBtn');
+  const wa = normWA(VIEW_CAFE && VIEW_CAFE.cashier_whatsapp);
+  if(!ok || !wa){ btn.classList.add('hidden'); btn.href = '#'; return; }
+  const {msg} = buildCashierMessage();
+  btn.href = 'https://wa.me/' + wa + '?text=' + encodeURIComponent(msg);
+  btn.classList.remove('hidden');
+}
 function openOrderSheet(){
   const {lines, total} = cartLines();
   if(!lines.length){ toast('السلة فارغة — زيد أطباق أولاً'); return; }
@@ -1607,6 +1631,7 @@ function refreshOrderLink(){
   if(TABLE_NO){
     const {msg, targetWa} = buildOrderMessage();
     $('#orderConfirmBtn').href = 'https://wa.me/' + normWA(targetWa) + '?text=' + encodeURIComponent(msg);
+    refreshCashierBtn(true);
     return;
   }
   const name = $('#ordName').value.trim();
@@ -1617,11 +1642,13 @@ function refreshOrderLink(){
   if(!name || !phone || (type === 'delivery' && !addr)){
     btn.href = '#';
     btn.onclick = e => { e.preventDefault(); toast('عمّر الاسم والتيليفون' + (type === 'delivery' ? ' والعنوان' : '') + ' أولاً'); };
+    refreshCashierBtn(false);
     return;
   }
   btn.onclick = null;
   const {msg, targetWa} = buildOrderMessage();
   btn.href = 'https://wa.me/' + normWA(targetWa) + '?text=' + encodeURIComponent(msg);
+  refreshCashierBtn(true);
 }
 function closeOrderSheet(){
   $('#orderSheet').classList.add('hidden');

@@ -15,6 +15,7 @@ create table if not exists menu_cafes (
   tagline text default '',
   whatsapp text not null,                 -- رقم الواتساب الرئيسي (الطلبات توصلو)
   kitchen_whatsapp text default '',       -- رقم واتساب المطبخ (طلبات الطاولات)
+  cashier_whatsapp text default '',        -- رقم واتساب الكاشير (المجموع تاع كل طلب)
   phone text default '',                  -- رقم الاتصال
   facebook text default '',
   logo_url text default '' check (length(logo_url) <= 2000000), -- حد لحجم الصورة (base64) باش ما يثقلش القاعدة
