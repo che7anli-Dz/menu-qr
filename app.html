@@ -117,6 +117,8 @@ section{padding:44px 0}
 .ord-items div{display:flex;justify-content:space-between;padding:2px 0;gap:10px}
 .ord-meta{color:#A8B8AC;font-size:14px}
 .ord-acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.table-chip{display:inline-flex;align-items:center;gap:8px;background:#16261D;border:1px solid #2A3D31;color:#F2EFE6;border-radius:99px;padding:5px 6px 5px 12px;font-size:13px;font-weight:700}
+.table-chip.closed{border-color:#7f1d1d;background:#2a1214}
 .dash-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:18px}
 .dash-tabs button{flex-shrink:0;border:1.5px solid var(--line);background:#16261D;border-radius:99px;padding:8px 18px;font-weight:800;font-size:14px;color:var(--muted)}
 .dash-tabs button.on{background:var(--green-900);color:#fff;border-color:var(--green-900)}
@@ -550,6 +552,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
             <p class="muted">الطلبات توصل هنا ديركت من التطبيق — بلا واتساب. الطباخ يشوف الأطباق والطاولة، والكاشير يشوف المجموع.</p>
             <button class="btn btn-amber" onclick="openKitchen()">🖥️ افتح شاشة المطبخ</button>
             <p class="hint" style="margin-top:10px">باش الطباخ والكاشير يشوفو الطلبات من تيليفوناتهم، افتح شاشة المطبخ مرة وحدة من حسابك في تيليفون كل واحد فيهم.</p>
+            <div id="tablesStrip" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap"></div>
           </div>
           <div id="ordersList"></div>
         </div>
@@ -1040,6 +1043,38 @@ const Store = {
     if(i < 0) throw new Error('الطلب غير موجود');
     orders[i] = {...orders[i], ...patch}; LS.set('orders', orders);
     return orders[i];
+  },
+  /* ---- حالات الطاولات: مفتوحة/مسدودة (بلا سطر = مفتوحة) ---- */
+  async getTableStatus(cafeId, tableNo){
+    if(MODE==='sb'){
+      const {data, error} = await sb.from('menu_tables').select('status').eq('cafe_id', cafeId).eq('table_no', tableNo).maybeSingle();
+      if(error) throw error;
+      return data ? data.status : 'open';
+    }
+    seedLocal();
+    const t = LS.get('tables', []).find(x => x.cafe_id === cafeId && x.table_no === tableNo);
+    return t ? t.status : 'open';
+  },
+  async setTableStatus(cafeId, tableNo, status){
+    if(MODE==='sb'){
+      const {error} = await sb.from('menu_tables').upsert({cafe_id: cafeId, table_no: tableNo, status, updated_at: new Date().toISOString()}, {onConflict: 'cafe_id,table_no'});
+      if(error) throw error;
+      return;
+    }
+    seedLocal();
+    const ts = LS.get('tables', []);
+    const i = ts.findIndex(x => x.cafe_id === cafeId && x.table_no === tableNo);
+    if(i >= 0) ts[i].status = status; else ts.push({cafe_id: cafeId, table_no: tableNo, status});
+    LS.set('tables', ts);
+  },
+  async listTables(cafeId){
+    if(MODE==='sb'){
+      const {data, error} = await sb.from('menu_tables').select('*').eq('cafe_id', cafeId).order('table_no');
+      if(error) throw error;
+      return data || [];
+    }
+    seedLocal();
+    return LS.get('tables', []).filter(x => x.cafe_id === cafeId).sort((a,b) => a.table_no - b.table_no);
   }
 };
 
@@ -1065,6 +1100,7 @@ let VIEW_CAFE = null;     // المشروع اللي راح يشوفو الزب�
 let VIEW_CATS = [], VIEW_ITEMS = [];
 let CART = {};            // itemId -> qty
 let TABLE_NO = null;      // رقم الطاولة من ?table=
+let TABLE_CLOSED = false; // الطاولة تسدت بعد ما خلص الزبون
 let AUTH_MODE = 'login';
 
 /* خلفية كاملة ثابتة للصفحات العامة برك (لاندينج + Menu) — لوحة التحكم تبقى نظيفة */
@@ -1099,7 +1135,7 @@ function showView(id){
 }
 function goHome(){
   history.pushState({}, '', location.pathname);
-  TABLE_NO = null; CART = {}; VIEW_CAFE = null;
+  TABLE_NO = null; TABLE_CLOSED = false; CART = {}; VIEW_CAFE = null;
   showView('landing');
 }
 function openDemoMenu(){
@@ -1581,6 +1617,12 @@ async function showMenu(slug){
     VIEW_ITEMS = (await Store.listItems(cafe.id)).filter(i => i.available);
     Store.bumpViews(cafe); // عدّ المشاهدات (بلا ما نستنى)
     renderMenu();
+    if(TABLE_NO){
+      try{
+        TABLE_CLOSED = (await Store.getTableStatus(cafe.id, parseInt(TABLE_NO, 10) || 0)) === 'closed';
+        if(TABLE_CLOSED) renderMenu();
+      }catch(e){ TABLE_CLOSED = false; /* التريغر في القاعدة هو الضمان */ }
+    }
     setPublicBg(cafeBg(cafe));
     updateCartBar();
   }catch(err){
@@ -1604,7 +1646,9 @@ function renderMenu(){
   h += '<h1>' + esc(cafe.name) + '</h1>';
   if(cafe.tagline) h += '<p>' + esc(cafe.tagline) + '</p>';
   h += '<div><span style="display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:99px;padding:3px 12px;font-size:13px;font-weight:700">' + cafeTypeLabel(cafe) + '</span></div>';
-  if(TABLE_NO) h += '<br><span class="table-badge">🪑 الطاولة ' + esc(TABLE_NO) + ' — طلبك يوصل للمطبخ ديركت</span>';
+  if(TABLE_NO) h += TABLE_CLOSED
+    ? '<br><span class="table-badge" style="background:#7f1d1d;border-color:#ef4444">🔒 الطاولة ' + esc(TABLE_NO) + ' مسدودة — عيط للسارفور باش يفتحها</span>'
+    : '<br><span class="table-badge">🪑 الطاولة ' + esc(TABLE_NO) + ' — طلبك يوصل للمطبخ ديركت</span>';
   // بطاقة رقمية مدمجة: أزرار تواصل + عدد المشاهدات
   const wa = normWA(cafe.whatsapp);
   h += '<div class="contact-row">';
@@ -1690,7 +1734,7 @@ function cartLines(){
 function updateCartBar(){
   const {total, count} = cartLines();
   const bar = $('#cartBar');
-  if(!VIEW_CAFE || count === 0){ bar.classList.add('hidden'); document.body.classList.remove('has-cart'); return; }
+  if(!VIEW_CAFE || count === 0 || TABLE_CLOSED){ bar.classList.add('hidden'); document.body.classList.remove('has-cart'); return; }
   bar.classList.remove('hidden');
   document.body.classList.add('has-cart');
   $('#cartCount').textContent = count + ' طبق';
@@ -1705,7 +1749,7 @@ function orderType(){
 function validateOrder(){
   const btn = $('#orderConfirmBtn');
   if(!btn) return false;
-  if(TABLE_NO){ btn.disabled = false; return true; }
+  if(TABLE_NO){ btn.disabled = !!TABLE_CLOSED; return !TABLE_CLOSED; }
   const name = $('#ordName').value.trim();
   const phone = $('#ordPhone').value.trim();
   const addr = $('#ordAddr').value.trim();
@@ -1720,6 +1764,12 @@ async function submitOrder(e){
   const cafe = VIEW_CAFE;
   const {lines, total} = cartLines();
   if(!lines.length){ toast('السلة فارغة'); return; }
+  if(TABLE_NO){
+    try{
+      TABLE_CLOSED = (await Store.getTableStatus(cafe.id, parseInt(TABLE_NO, 10) || 0)) === 'closed';
+      if(TABLE_CLOSED){ renderMenu(); updateCartBar(); toast('🔒 هاد الطاولة تسدت — عيط للسارفور باش يفتحها'); return; }
+    }catch(e){ /* التريغر في القاعدة هو الضمان — نكمّل المحاولة */ }
+  }
   const btn = $('#orderConfirmBtn');
   btn.disabled = true; btn.textContent = '⏳ جاري الإرسال...';
   try{
@@ -1744,7 +1794,8 @@ async function submitOrder(e){
         ? 'الطلب وصل — راح يعيطلك صاحب المقهى باش يكونفيرمي معاك'
         : 'الطلب وصل — راح يعيطلك صاحب المقهى كي يوجد');
   }catch(err){
-    toast('❌ ' + (err.message || 'ما تبعثش الطلب — عاود'));
+    const m = (err && err.message) || '';
+    toast('❌ ' + (m.includes('table_closed') ? 'هاد الطاولة تسدت — عيط للسارفور باش يفتحها' : (m || 'ما تبعثش الطلب — عاود')));
   }finally{
     btn.disabled = false; btn.textContent = '✅ أرسل الطلب';
   }
@@ -1752,6 +1803,7 @@ async function submitOrder(e){
 function openOrderSheet(){
   const {lines, total} = cartLines();
   if(!lines.length){ toast('السلة فارغة — زيد أطباق أولاً'); return; }
+  if(TABLE_NO && TABLE_CLOSED){ toast('🔒 هاد الطاولة تسدت — عيط للسارفور باش يفتحها'); return; }
   const cafe = VIEW_CAFE;
   $('#orderForm').classList.remove('hidden');
   $('#orderSuccess').classList.add('hidden');
@@ -1819,6 +1871,7 @@ async function renderOrders(){
   const html = ordersHTML(ORDERS_CACHE);
   const a = $('#ordersList'); if(a) a.innerHTML = html;
   const b = $('#kitchenOrders'); if(b) b.innerHTML = html;
+  renderTablesStrip();
   const n = ORDERS_CACHE.filter(o => o.status === 'new').length;
   const dt = $('#dtOrders'); if(dt) dt.textContent = '📥 الطلبات' + (n ? ' (' + n + ')' : '');
 }
@@ -1837,14 +1890,52 @@ function ordersHTML(orders){
       + (o.customer_phone ? '<a href="tel:' + esc(o.customer_phone) + '" style="color:#E8A317">📞 ' + esc(o.customer_phone) + '</a>' : '')
       + (o.address ? '<br>🏠 ' + esc(o.address) : '')
       + '</span><span class="ord-total">' + esc(fmtPrice(o.total || 0, cur)) + '</span></div>';
-    if(o.status === 'new') h += '<div class="ord-acts"><button class="btn btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'preparing\')">👨‍🍳 قيد التحضير</button><button class="btn btn-ghost btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'cancelled\')">✖ إلغاء</button></div>';
-    else if(o.status === 'preparing') h += '<div class="ord-acts"><button class="btn btn-amber btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'done\')">✅ تم</button><button class="btn btn-ghost btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'cancelled\')">✖ إلغاء</button></div>';
+    const closeBtn = (o.kind === 'table' && o.table_no != null && (o.status === 'new' || o.status === 'preparing'))
+      ? '<button class="btn btn-amber btn-sm" onclick="closeTable(' + o.table_no + ')">✅ تم — سد الطاولة</button>' : '';
+    if(o.status === 'new') h += '<div class="ord-acts"><button class="btn btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'preparing\')">👨‍🍳 قيد التحضير</button><button class="btn btn-ghost btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'cancelled\')">✖ إلغاء</button>' + closeBtn + '</div>';
+    else if(o.status === 'preparing') h += '<div class="ord-acts"><button class="btn btn-amber btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'done\')">✅ تم</button><button class="btn btn-ghost btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'cancelled\')">✖ إلغاء</button>' + closeBtn + '</div>';
     return h + '</div>';
   }).join('');
 }
 async function setOrderStatus(id, status){
   try{ await Store.updateOrder(id, {status}); renderOrders(); }
   catch(e){ toast('❌ ' + e.message); }
+}
+/* ---- سد/فتح الطاولة: كي يخلص الزبون، الكاشير يضغط «تم — سد الطاولة» ---- */
+async function closeTable(tableNo){
+  if(!MY_CAFE || tableNo == null) return;
+  try{
+    const open = ORDERS_CACHE.filter(o => o.kind === 'table' && o.table_no === tableNo && (o.status === 'new' || o.status === 'preparing'));
+    for(const o of open){ try{ await Store.updateOrder(o.id, {status:'done'}); }catch(e){} }
+    await Store.setTableStatus(MY_CAFE.id, tableNo, 'closed');
+    toast('🔒 الطاولة ' + tableNo + ' تسدت — الزبون ما يقدرش يزيد يطلب حتى تفتحها');
+    renderOrders();
+  }catch(e){ toast('❌ ' + e.message); }
+}
+async function openTable(tableNo){
+  if(!MY_CAFE || tableNo == null) return;
+  try{
+    await Store.setTableStatus(MY_CAFE.id, tableNo, 'open');
+    toast('🪑 الطاولة ' + tableNo + ' تفتحت — الزبون يقدر يطلب');
+    renderOrders();
+  }catch(e){ toast('❌ ' + e.message); }
+}
+async function renderTablesStrip(){
+  const el = $('#tablesStrip');
+  if(!el || !MY_CAFE) return;
+  try{
+    const rows = await Store.listTables(MY_CAFE.id);
+    const nums = new Set(rows.map(r => r.table_no));
+    ORDERS_CACHE.forEach(o => { if(o.kind === 'table' && o.table_no != null) nums.add(o.table_no); });
+    const sorted = [...nums].sort((a,b) => a - b);
+    if(!sorted.length){ el.innerHTML = '<p class="hint">ما كاش طاولات بعد — كي يطلب زبون من طاولة تظهر هنا.</p>'; return; }
+    const stMap = {}; rows.forEach(r => stMap[r.table_no] = r.status);
+    el.innerHTML = sorted.map(n => {
+      const closed = stMap[n] === 'closed';
+      return '<span class="table-chip' + (closed ? ' closed' : '') + '">🪑 ' + n + ' — ' + (closed ? 'مسدودة' : 'مفتوحة')
+        + ' <button class="btn btn-sm ' + (closed ? '' : 'btn-ghost') + '" onclick="' + (closed ? 'openTable' : 'closeTable') + '(' + n + ')">' + (closed ? 'افتحها' : 'سدّها') + '</button></span>';
+    }).join('');
+  }catch(e){ /* سطر الطاولات اختياري — الطلبات تبقى خدامة */ }
 }
 function subscribeOrders(){
   if(MODE !== 'sb' || !MY_CAFE || !sb || ORDERS_CH) return;

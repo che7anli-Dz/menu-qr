@@ -211,3 +211,52 @@ end $$;
 grant select on menu_orders to anon, authenticated;
 grant insert on menu_orders to anon, authenticated;
 grant update on menu_orders to authenticated;
+
+-- ================= القسم 10: حالات الطاولات (فتح/سد) =================
+-- الطاولة المسدودة: الزبون اللي عندو الرابط ما يقدرش يزيد يطلب حتى يعاود السارفور يفتحها.
+-- بلا سطر = الطاولة مفتوحة (توافق مع الروابط القديمة).
+create table if not exists menu_tables (
+  id uuid default gen_random_uuid() primary key,
+  cafe_id uuid not null references menu_cafes(id) on delete cascade,
+  table_no integer not null,
+  status text not null default 'open' check (status in ('open','closed')),
+  updated_at timestamptz default now(),
+  unique(cafe_id, table_no)
+);
+create index if not exists idx_menu_tables_cafe on menu_tables(cafe_id, table_no);
+
+alter table menu_tables enable row level security;
+-- أي زائر يقدر يقرا حالة الطاولة (باش التطبيق يمنع الطلب قبل ما يبعثو)
+drop policy if exists "menu_tables public read" on menu_tables;
+create policy "menu_tables public read" on menu_tables for select to anon, authenticated using (true);
+-- الكتابة غير لمالك المشروع
+drop policy if exists "menu_tables owner write" on menu_tables;
+create policy "menu_tables owner write" on menu_tables for all to authenticated
+  using (cafe_id in (select id from menu_cafes where owner_id = auth.uid()))
+  with check (cafe_id in (select id from menu_cafes where owner_id = auth.uid()));
+
+-- حماية من السيرفر: طلب طاولة مسدودة يترفض حتى لو تجاوز فحص التطبيق
+create or replace function menu_orders_check_table_open()
+returns trigger language plpgsql as $$
+begin
+  if new.kind = 'table' and new.table_no is not null then
+    if exists (select 1 from menu_tables t where t.cafe_id = new.cafe_id and t.table_no = new.table_no and t.status = 'closed') then
+      raise exception 'table_closed';
+    end if;
+  end if;
+  return new;
+end $$;
+drop trigger if exists trg_menu_orders_check_table_open on menu_orders;
+create trigger trg_menu_orders_check_table_open before insert on menu_orders
+  for each row execute function menu_orders_check_table_open();
+
+-- Realtime (idempotent)
+do $$
+begin
+  if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and tablename = 'menu_tables') then
+    execute 'alter publication supabase_realtime add table menu_tables';
+  end if;
+end $$;
+
+grant select on menu_tables to anon, authenticated;
+grant insert, update, delete on menu_tables to authenticated;
