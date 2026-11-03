@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu QR 🍽 — Menu إلكتروني لمطعمك أو مقهاك</title>
+<meta name="description" content="Menu QR 🍽: دير Menu إلكتروني لمطعمك أو مقهاك، طبع الـ QR وحطو على الطاولات، والزبون يطلب عبر واتساب.">
+<link rel="icon" href="menu-qr-icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<style>
+:root{
+  --green-950:#052e16; --green-900:#14532d; --green-700:#166534; --green-600:#15803d;
+  --amber-500:#f59e0b; --amber-600:#d97706; --cream:#fef3c7; --cream-2:#fffbeb;
+  --bg:#faf7f1; --ink:#1c1917; --muted:#78716c; --line:#e7e0d3; --white:#ffffff; --red:#dc2626;
+  --shadow:0 4px 18px rgba(28,25,23,.08); --radius:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Cairo',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;min-height:100vh;display:flex;flex-direction:column}
+img{max-width:100%;display:block}
+a{color:var(--green-700);text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:15px;padding:11px 13px;border:1.5px solid var(--line);border-radius:12px;width:100%;background:#fff;color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--green-700);box-shadow:0 0 0 3px rgba(22,101,52,.12)}
+label{display:block;font-weight:700;font-size:14px;margin-bottom:5px}
+.container{max-width:1080px;margin:0 auto;padding:0 16px}
+.hidden{display:none!important}
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.header-in{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;max-width:1080px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:20px;color:var(--green-900)}
+.brand img{width:42px;height:42px;flex-shrink:0}
+.brand small{display:block;font-size:11px;font-weight:600;color:var(--muted);line-height:1.2}
+.nav-btns{display:flex;gap:8px;align-items:center}
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:var(--green-700);color:#fff;border:none;border-radius:12px;padding:11px 20px;font-weight:800;font-size:15px;transition:.15s}
+.btn:hover{background:var(--green-900)}
+.btn-amber{background:var(--amber-500);color:#451a03}
+.btn-amber:hover{background:var(--amber-600);color:#fff}
+.btn-ghost{background:#fff;color:var(--green-900);border:1.5px solid var(--line)}
+.btn-ghost:hover{border-color:var(--green-700)}
+.btn-danger{background:#fff;color:var(--red);border:1.5px solid #fecaca}
+.btn-danger:hover{background:#fef2f2}
+.btn-sm{padding:7px 13px;font-size:13px;border-radius:10px}
+.btn-block{width:100%}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+/* ---------- hero ---------- */
+.hero{background:linear-gradient(rgba(9,18,13,.66),rgba(9,18,13,.76));color:#fff;border-radius:24px;overflow:hidden;margin:16px}
+.hero-in{max-width:880px;margin:0 auto;padding:40px 16px 44px;text-align:center}
+.hero h1{font-size:clamp(28px,6vw,46px);font-weight:900;line-height:1.35;margin:18px 0 12px;text-shadow:0 2px 10px rgba(0,0,0,.35)}
+.hero h1 span{color:var(--amber-500)}
+.hero p{color:#d6d3d1;font-size:clamp(15px,3vw,18px);max-width:620px;margin:0 auto 26px}
+.hero-cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.hero-badge{display:inline-block;background:rgba(245,158,11,.15);color:var(--amber-500);border:1px solid rgba(245,158,11,.4);padding:5px 14px;border-radius:99px;font-size:13px;font-weight:700}
+.hero-logo{width:96px;height:96px;margin:0 auto;filter:drop-shadow(0 8px 20px rgba(0,0,0,.35))}
+/* ---------- sections ---------- */
+section{padding:44px 0}
+.sec-title{text-align:center;font-size:26px;font-weight:900;color:var(--green-900);margin-bottom:6px}
+.sec-sub{text-align:center;color:var(--muted);max-width:560px;margin:0 auto 28px}
+.grid{display:grid;gap:16px}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+.feat{text-align:center}
+.feat .ic{font-size:38px;margin-bottom:8px}
+.feat h3{font-size:17px;font-weight:800;margin-bottom:4px;color:var(--green-900)}
+.feat p{font-size:14px;color:var(--muted)}
+/* ---------- pricing ---------- */
+.price-card{text-align:center;position:relative}
+.price-card.hl{border:2px solid var(--amber-500)}
+.price-card .tag{position:absolute;top:-13px;right:50%;transform:translateX(50%);background:var(--amber-500);color:#451a03;font-size:12px;font-weight:800;padding:3px 14px;border-radius:99px;white-space:nowrap}
+.price-card h3{font-size:18px;font-weight:900;color:var(--green-900)}
+.price-card .p{font-size:38px;font-weight:900;color:var(--green-900);margin:8px 0 2px}
+.price-card .p small{font-size:15px;color:var(--muted);font-weight:700}
+.price-card ul{list-style:none;text-align:right;margin:14px 0;font-size:14px;color:var(--muted)}
+.price-card ul li{padding:5px 0;border-bottom:1px dashed var(--line)}
+.price-card ul li:last-child{border:none}
+.price-card ul li::before{content:"✓ ";color:var(--green-600);font-weight:900}
+.founder-banner{background:var(--cream-2);border:2px dashed var(--amber-500);border-radius:var(--radius);padding:16px 20px;text-align:center;margin-top:18px;font-weight:700;color:#92400e}
+/* ---------- steps ---------- */
+.step{display:flex;gap:14px;align-items:flex-start}
+.step .n{flex-shrink:0;width:42px;height:42px;border-radius:50%;background:var(--green-900);color:var(--amber-500);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:19px}
+.step h3{font-size:16px;font-weight:800;color:var(--green-900)}
+.step p{font-size:14px;color:var(--muted)}
+/* ---------- auth / forms ---------- */
+.auth-wrap{max-width:440px;margin:0 auto}
+.tabs{display:flex;background:#fff;border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:18px}
+.tabs button{flex:1;border:none;background:transparent;padding:10px;border-radius:9px;font-weight:800;font-size:15px;color:var(--muted)}
+.tabs button.on{background:var(--green-900);color:#fff}
+.form-row{margin-bottom:14px}
+.hint{font-size:13px;color:var(--muted);margin-top:6px}
+.error{background:#fef2f2;color:var(--red);border:1px solid #fecaca;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:700;margin-bottom:14px}
+.okbox{background:#f0fdf4;color:var(--green-700);border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:700;margin-bottom:14px}
+/* ---------- dashboard ---------- */
+.dash-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.dash-head h2{font-size:22px;font-weight:900;color:var(--green-900)}
+.pill{display:inline-block;padding:3px 12px;border-radius:99px;font-size:12px;font-weight:800}
+.pill-green{background:#dcfce7;color:#166534}
+.pill-amber{background:#fef3c7;color:#92400e}
+.pill-red{background:#fee2e2;color:#991b1b}
+.pill-grey{background:#f5f5f4;color:#57534e}
+.dash-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:18px}
+.dash-tabs button{flex-shrink:0;border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:8px 18px;font-weight:800;font-size:14px;color:var(--muted)}
+.dash-tabs button.on{background:var(--green-900);color:#fff;border-color:var(--green-900)}
+.item-row{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+.item-row .thumb{width:58px;height:58px;border-radius:12px;object-fit:cover;flex-shrink:0;background:var(--cream-2);display:flex;align-items:center;justify-content:center;font-size:28px}
+.item-row .info{flex:1;min-width:0}
+.item-row .info b{font-size:15px;display:block}
+.item-row .info span{font-size:13px;color:var(--muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item-row .price{font-weight:900;color:var(--green-900);white-space:nowrap}
+.item-row .row-acts{display:flex;gap:6px;flex-shrink:0}
+.cat-head{display:flex;justify-content:space-between;align-items:center;background:var(--green-900);color:#fff;border-radius:12px;padding:10px 14px;margin:18px 0 10px}
+.cat-head b{font-size:16px}
+.cat-head .acts{display:flex;gap:6px}
+/* ---------- لوحة تحكم: هوية المشروع + إحصائيات + تحكم احترافي ---------- */
+#view-dash .container{max-width:860px}
+.dash-cafe{display:flex;gap:14px;align-items:center;margin-bottom:14px}
+.dash-cafe .dc-logo{width:64px;height:64px;border-radius:18px;flex-shrink:0;background:var(--cream-2);display:flex;align-items:center;justify-content:center;font-size:32px;border:1px solid var(--line);overflow:hidden}
+.dash-cafe .dc-info{flex:1;min-width:0}
+.dash-cafe .dc-info b{font-size:19px;font-weight:900;color:var(--green-900);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-cafe .dc-acts{display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0}
+.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.stat b{font-size:22px;font-weight:900;color:var(--green-900);display:block;line-height:1.15}
+.stat span{font-size:12px;color:var(--muted);font-weight:700}
+.cat-head .count{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);border-radius:99px;padding:2px 10px;font-size:12px;font-weight:800;white-space:nowrap}
+.item-row .thumb{width:72px;height:72px;font-size:32px}
+.item-row{transition:box-shadow .15s}
+.item-row:hover{box-shadow:0 4px 14px rgba(28,25,23,.08)}
+.empty-state{text-align:center;padding:34px 16px;background:#fff;border:1.5px dashed var(--line);border-radius:14px;color:var(--muted)}
+.empty-state .big{font-size:40px;display:block;margin-bottom:8px}
+.empty-state b{display:block;font-size:16px;color:var(--green-900);margin-bottom:4px}
+.empty-mini{color:var(--muted);font-size:13px;padding:8px 4px 12px}
+.switch{position:relative;display:inline-block;width:46px;height:26px;flex-shrink:0;cursor:pointer}
+.switch input{display:none}
+.switch span{position:absolute;inset:0;background:#e7e5e4;border-radius:99px;transition:.2s}
+.switch span:before{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;right:3px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.switch input:checked + span{background:var(--green-700)}
+.switch input:checked + span:before{transform:translateX(-20px)}
+@media (max-width:640px){.dash-stats{grid-template-columns:repeat(2,1fr)}.dash-cafe{flex-wrap:wrap}.dash-cafe .dc-acts{width:100%}}
+/* ---------- خلفية لوحة التحكم: صورة واقعية بحجاب أقوى باش تبقى متوازنة ---------- */
+body.dash-page main,body.dash-page footer{position:relative;z-index:1}
+body.dash-page #bgVeil{background:linear-gradient(rgba(250,247,241,.60),rgba(250,247,241,.72))}
+body.dash-page .card,body.dash-page .stat,body.dash-page .item-row,body.dash-page .empty-state,body.dash-page .qr-box,body.dash-page .table-qr-cell{background:rgba(255,255,255,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+body.dash-page .dash-tabs button{background:rgba(255,255,255,.92)}
+body.dash-page .dash-tabs button.on{background:var(--green-900)}
+body.dash-page header{background:rgba(255,255,255,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.off{opacity:.45}
+.qr-box{background:#fff;border:1px dashed var(--green-700);border-radius:var(--radius);padding:20px;text-align:center}
+.qr-box .qr-holder{display:flex;justify-content:center;margin:12px 0}
+.qr-holder canvas,.qr-holder img{border-radius:8px}
+.table-qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;margin-top:16px}
+.table-qr-cell{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.table-qr-cell .qr-holder{margin:8px 0}
+.table-qr-cell b{font-size:15px;color:var(--green-900)}
+.muted{color:var(--muted);font-size:14px}
+/* ---------- public menu ---------- */
+.menu-hero{background:linear-gradient(rgba(9,18,13,.66),rgba(9,18,13,.76));color:#fff;text-align:center;padding:26px 16px 32px;border-radius:24px;margin:16px 16px 0}
+.menu-hero img.logo{width:84px;height:84px;border-radius:22px;object-fit:cover;margin:0 auto 10px;border:3px solid rgba(255,255,255,.25);background:#fff}
+.menu-hero h1{font-size:26px;font-weight:900;text-shadow:0 2px 10px rgba(0,0,0,.35)}
+.menu-hero p{color:#d6d3d1;font-size:14px}
+.contact-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.contact-row a{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:99px;font-weight:800;font-size:14px;color:#fff}
+.c-wa{background:#25d366}.c-ph{background:var(--green-700)}.c-fb{background:#1877f2}
+.table-badge{display:inline-block;background:var(--amber-500);color:#451a03;font-weight:900;padding:4px 16px;border-radius:99px;font-size:14px;margin-top:12px}
+.views-pill{font-size:13px;color:#d6d3d1;margin-top:10px}
+.cat-nav{position:sticky;top:57px;z-index:40;background:var(--bg);padding:12px 0 6px;display:flex;gap:8px;overflow-x:auto}
+.cat-nav button{flex-shrink:0;border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:7px 16px;font-weight:800;font-size:14px;color:var(--muted)}
+.cat-nav button.on{background:var(--green-900);color:#fff;border-color:var(--green-900)}
+.menu-item{display:flex;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;align-items:center}
+.menu-item .thumb{width:72px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0;background:var(--cream-2);display:flex;align-items:center;justify-content:center;font-size:32px}
+.menu-item .info{flex:1;min-width:0}
+.menu-item .info b{font-size:16px;display:block}
+.menu-item .info span{font-size:13px;color:var(--muted);display:block}
+.menu-item .price{font-weight:900;color:var(--green-900);font-size:16px;white-space:nowrap}
+.qty{display:flex;align-items:center;gap:8px;margin-top:6px}
+.qty button{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--green-700);background:#fff;color:var(--green-700);font-weight:900;font-size:16px;line-height:1}
+.qty button:hover{background:var(--green-700);color:#fff}
+.qty b{min-width:20px;text-align:center}
+.cart-bar{position:fixed;bottom:0;right:0;left:0;z-index:60;background:var(--green-950);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 -4px 20px rgba(0,0,0,.2)}
+.cart-bar .tot b{font-size:18px}
+.cart-bar .tot span{display:block;font-size:12px;color:#d6d3d1}
+body.has-cart{padding-bottom:78px}
+.notice{max-width:640px;margin:60px auto;text-align:center}
+.notice h2{font-size:22px;font-weight:900;color:var(--green-900);margin-bottom:8px}
+/* ---------- order sheet ---------- */
+.sheet{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center}
+.sheet-in{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:560px;padding:20px;max-height:88vh;overflow:auto}
+.radio-row{display:flex;gap:8px;margin-bottom:12px}
+.radio-row label{flex:1;text-align:center;border:1.5px solid var(--line);border-radius:12px;padding:10px;font-weight:800;cursor:pointer;margin:0}
+.radio-row input{display:none}
+.radio-row label:has(input:checked){border-color:var(--green-700);background:#f0fdf4;color:var(--green-700)}
+.order-line{display:flex;justify-content:space-between;font-size:14px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.order-total{display:flex;justify-content:space-between;font-weight:900;font-size:17px;padding:10px 0;color:var(--green-900)}
+/* ---------- footer ---------- */
+footer{margin-top:auto;background:var(--green-950);color:#a8a29e;padding:28px 0;text-align:center;font-size:13px}
+footer b{color:#fff}
+/* ---------- toast ---------- */
+#toast{position:fixed;bottom:90px;right:50%;transform:translateX(50%) translateY(20px);background:var(--ink);color:#fff;padding:11px 20px;border-radius:99px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:100;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(50%) translateY(0)}
+/* ---------- خلفية كاملة للصفحات العامة (لاندينج + Menu) ---------- */
+/* طبقة الصورة ثابتة لكامل الصفحة، وطبقة فاتحة ناعمة فوقها باش الكتبة تقرا مليح */
+#bgLayer{position:fixed;inset:0;z-index:0;background-size:cover;background-position:center;background-repeat:no-repeat;pointer-events:none}
+#bgVeil{position:fixed;inset:0;z-index:0;background:linear-gradient(rgba(250,247,241,.45),rgba(250,247,241,.55));pointer-events:none}
+body.public-page main,body.public-page footer{position:relative;z-index:1}
+/* بطاقات زجاجية: شفافة + blur + حدود ذهبية رفيعة + شريط ذهبي أعلى البطاقة */
+body.public-page .card,body.public-page .menu-cat-card,body.public-page .landing-sec{
+  background:rgba(255,255,255,.60);
+  backdrop-filter:blur(10px) saturate(1.25);-webkit-backdrop-filter:blur(10px) saturate(1.25);
+  border:1px solid rgba(217,119,6,.45);border-radius:20px;
+  box-shadow:0 12px 32px rgba(28,25,23,.14),inset 0 3px 0 rgba(245,158,11,.9);
+}
+body.public-page .card{padding:18px 16px}
+body.public-page .menu-item{background:rgba(255,255,255,.65);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(217,119,6,.35);box-shadow:0 6px 18px rgba(28,25,23,.10)}
+body.public-page .cat-nav{background:rgba(255,255,255,.60);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(217,119,6,.30)}
+/* كل قسم من أقسام اللاندينج في بطاقتو الخاصة — أصغر وهوامش أكبر باش الخلفية تبان */
+body.public-page .landing-sec{padding:24px 16px 28px;margin-bottom:34px}
+/* بطاقة قسم + شبكة أطباق متوازنة في Menu العامة */
+body.public-page .menu-cat-card{padding:16px;margin-bottom:28px}
+/* إطار الكونتينو أضيق باش الخلفية تبان من الجوانب */
+body.public-page .container{max-width:880px;padding:0 20px}
+body.public-page section{padding:48px 0}
+/* الهيدر والفوتر زجاجيين في الصفحات العامة */
+body.public-page header{background:rgba(255,255,255,.60);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(217,119,6,.35)}
+body.public-page footer{background:rgba(5,46,22,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+body.public-page .founder-banner{background:rgba(255,251,235,.65);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-color:rgba(217,119,6,.5)}
+.menu-cat-card>h3{font-size:19px;font-weight:900;color:var(--green-900);margin-bottom:12px}
+.menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.menu-grid .menu-item{margin-bottom:0}
+/* ---------- وضوح الكتبة فوق الخلفيات (بلا ما تتبدل الخلفية) ---------- */
+/* الحل في الكتبة برك: ظل نص + خط أثقل وأغمق + شرائح صلبة صغيرة ورا النص الحساس.
+   الخلفية (#bgLayer) والـ veil (.45/.55) والزجاج (.60) وصور frameBg (.62→.70) ما يتبدلوش. */
+/* توازن عام: تباعد أسطر أكبر */
+body.public-page{line-height:1.85}
+/* 1) هالة بيضاء ناعمة ورا النص الغامق اللي فوق الصور — ترفع الكتبة من الخلفية */
+body.public-page .feat h3,
+body.public-page .step h3,
+body.public-page .price-card h3,
+body.public-page .price-card .p,
+body.public-page .menu-item .info b,
+body.public-page .menu-item .info span,
+body.public-page .sec-sub,
+body.public-page .feat p,
+body.public-page .step p,
+body.public-page .price-card ul,
+body.public-page .founder-banner,
+body.public-page .muted,
+body.public-page .hint,
+body.public-page .notice h2,
+body.public-page .cat-nav button:not(.on){
+  text-shadow:0 1px 0 rgba(255,255,255,.95),0 0 10px rgba(255,255,255,.85),0 0 22px rgba(255,255,255,.55);
+}
+/* 2) خط أثقل وأوضح + نص أغمق قريب للأسود */
+body.public-page .feat h3,
+body.public-page .step h3,
+body.public-page .price-card h3,
+body.public-page .menu-item .info b{color:#1a1a1a;font-weight:800;letter-spacing:.3px}
+body.public-page .menu-item .info b{font-size:17px;line-height:1.5}
+body.public-page .menu-item .info span{color:#44403c;font-weight:600;line-height:1.6;font-size:13.5px}
+body.public-page .sec-sub,
+body.public-page .feat p,
+body.public-page .step p,
+body.public-page .price-card ul,
+body.public-page .muted,
+body.public-page .hint{color:#44403c;font-weight:600}
+body.public-page .notice h2{color:#1a1a1a;font-weight:800}
+body.public-page .founder-banner{color:#7c2d12;font-weight:800}
+body.public-page .sec-title{font-size:28px;letter-spacing:.3px}
+body.public-page .menu-cat-card>h3{font-size:20px;letter-spacing:.3px}
+/* 3) شرائح صلبة صغيرة ورا النص الحساس — ماشي بطاقة كاملة، غير ورا الكتبة نفسها */
+body.public-page .menu-item .price{background:var(--green-900);color:#fff;font-weight:900;font-size:15px;padding:5px 13px;border-radius:99px;box-shadow:0 2px 10px rgba(0,0,0,.30);text-shadow:none}
+body.public-page .menu-cat-card>h3{display:inline-block;background:rgba(5,46,22,.94);color:#fff;padding:7px 18px;border-radius:99px;box-shadow:0 4px 14px rgba(0,0,0,.28);text-shadow:0 1px 3px rgba(0,0,0,.5)}
+body.public-page .sec-title{display:table;margin:0 auto 6px;background:rgba(5,46,22,.94);color:#fff;padding:7px 22px;border-radius:99px;box-shadow:0 4px 14px rgba(0,0,0,.28);text-shadow:0 1px 3px rgba(0,0,0,.5)}
+/* 4) نص أبيض فوق الهيرو الغامق: ظل غامق أقوى */
+body.public-page .hero h1,
+body.public-page .menu-hero h1{text-shadow:0 2px 14px rgba(0,0,0,.65),0 1px 4px rgba(0,0,0,.8)}
+body.public-page .hero p,
+body.public-page .menu-hero p{color:#f5f5f4;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+/* ---------- print ---------- */
+#printArea{display:none}
+@media print{
+  body *{visibility:hidden!important}
+  #printArea,#printArea *{visibility:visible!important}
+  #printArea{display:block!important;position:absolute;inset:0;text-align:center;padding-top:40px}
+  #printArea h1{font-size:28px;color:#14532d}
+  #printArea h2{font-size:20px;color:#14532d;margin:18px 0 6px}
+  #printArea img{margin:14px auto;max-width:240px}
+  #printArea p{font-size:15px;color:#444}
+  #printArea .pgrid{display:flex;flex-wrap:wrap;justify-content:center;gap:24px}
+  #printArea .pcell{width:200px}
+}
+@media (max-width:720px){
+  .grid-3,.grid-2{grid-template-columns:1fr}
+  .menu-grid{grid-template-columns:1fr}
+  .hero-in{padding:40px 16px 48px}
+  section{padding:32px 0}
+  .dash-head h2{font-size:19px}
+}
+</style>
+</head>
+<body>
+<!-- خلفية ثابتة لكامل الصفحة (الصفحات العامة برك: لاندينج + Menu) — تتعبى من JS حسب نوع المحل -->
+<div id="bgLayer" class="hidden"></div>
+<div id="bgVeil" class="hidden"></div>
+<!-- اللوغو: ملف logo.svg منفصل — بدّلو بأي لوغو جديد بنفس الاسم بلا ما تمس الكود -->
+
+<header>
+  <div class="header-in">
+    <a class="brand" href="#" onclick="goHome();return false">
+      <img src="logo.svg" alt="Menu QR 🍽">
+      <span>Menu QR 🍽<small>Menu إلكتروني لمطعمك أو مقهاك</small></span>
+    </a>
+    <div class="nav-btns">
+      <span id="modeBadge" class="pill pill-grey hidden" title="وضع تجريبي: البيانات محفوظة في جهازك برك">وضع تجريبي</span>
+      <button id="btnDashTop" class="btn btn-ghost btn-sm hidden" onclick="showDash()">لوحة التحكم</button>
+      <button id="btnAuthTop" class="btn btn-sm" onclick="showAuth()">دخول / تسجيل</button>
+      <button id="btnLogoutTop" class="btn btn-ghost btn-sm hidden" onclick="logout()">خروج</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ============ اللاندينج ============ -->
+  <section id="view-landing" style="padding-top:0">
+    <div class="hero">
+      <div class="hero-in">
+        <img class="hero-logo" src="logo.svg" alt="Menu QR 🍽">
+        <span class="hero-badge">امسح، شوف، واطلب!</span>
+        <h1>ودّع Menu الورقي!</h1>
+        <p>Menu مطعمك أو مقهاك، الآن في هاتف زبونك! أنشئ Menu إلكتروني خاص بمشروعك، شارك QR Code مع زبائنك، وخليهم يشوفوا الأطباق والأسعار ويطلبوا مباشرة عبر واتساب.</p>
+        <div class="hero-cta">
+          <button class="btn btn-amber" onclick="showAuth()">🚀 ابدأ مجاناً — 14 يوم</button>
+          <button class="btn btn-ghost" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)" onclick="openDemoMenu()">🍽️ شوف Menu تجريبي</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <section class="landing-sec">
+        <h2 class="sec-title">علاش Menu QR 🍽؟</h2>
+        <p class="sec-sub">كلش لي يحتاجو صاحب المطعم أو المقهى، بلا تعقيد وبلا مصاريف زايدة</p>
+        <div class="grid grid-3">
+          <div class="card feat"><div class="ic">📱</div><h3>Menu يفتح في ثانية</h3><p>الزبون يسكان الـ QR ويشوف Menu كامل في تيليفونو، بلا تطبيق وبلا تسجيل</p></div>
+          <div class="card feat"><div class="ic">💬</div><h3>الطلب يوصل واتساب</h3><p>الزبون يختار واش يحب والطلب يوصلك واتساب جاهز بالكميات والمجموع — مع رقم الطاولة إذا كان في المحل</p></div>
+          <div class="card feat"><div class="ic">✏️</div><h3>بدّل الأسعار وقت ما تحب</h3><p>زيد طبق، نقص طبق، بدّل السعر — التعديل يبان في Menu مباشرة، بلا ما تعاود تطبع</p></div>
+          <div class="card feat"><div class="ic">🖨️</div><h3>QR جاهز للطباعة</h3><p>حمّل الـ QR كصورة ولا اطبعو مباشرة من لوحة التحكم وحطو على الطاولات</p></div>
+          <div class="card feat"><div class="ic">🪑</div><h3>QR لكل طاولة</h3><p>كل طاولة عندها كودها: الطلب يوصل للمطبخ مع رقم الطاولة مباشرة، بلا ما الزبون ينادي النادل</p></div>
+          <div class="card feat"><div class="ic">💰</div><h3>سعر في المتناول</h3><p>700 دج/شهر في الجزائر، $9/شهر في الخليج — وأول 14 يوم مجاناً باش تجرب براحتك</p></div>
+        </div>
+      </section>
+
+      <section class="landing-sec">
+        <h2 class="sec-title">كيفاش تخدم؟</h2>
+        <p class="sec-sub">3 خطوات برك وتولي عندك Menu إلكتروني</p>
+        <div class="grid grid-3">
+          <div class="card step"><div class="n">1</div><div><h3>سجّل مشروعك</h3><p>دير حساب ودخل اسم المطعم أو المقهى ورقم الواتساب تاعك</p></div></div>
+          <div class="card step"><div class="n">2</div><div><h3>زيد الأطباق والأسعار</h3><p>أقسام وأطباق بالصور، وتقدر تبدلهم في أي وقت</p></div></div>
+          <div class="card step"><div class="n">3</div><div><h3>اطبع الـ QR</h3><p>حمّل الـ QR ولا اطبعو وحطو على الطاولات — والطلبات توصلك واتساب</p></div></div>
+        </div>
+      </section>
+
+      <section id="pricing" class="landing-sec">
+        <h2 class="sec-title">الأسعار</h2>
+        <p class="sec-sub">أول 14 يوم مجاناً، بلا بطاقة بنكية، بلا التزام</p>
+        <div class="grid grid-2">
+          <div class="card price-card">
+            <h3>🇩🇿 الجزائر</h3>
+            <div class="p">700<small> دج / شهر</small></div>
+            <ul><li>Menu غير محدود الأطباق</li><li>QR + طباعة + QR الطاولات</li><li>طلبات واتساب غير محدودة</li><li>الدفع CCP / BaridiMob / كاش</li><li>تفعيل يدوي عبر واتساب</li></ul>
+            <button class="btn btn-block" onclick="showAuth()">ابدأ الآن</button>
+          </div>
+          <div class="card price-card hl">
+            <span class="tag">الخليج 🌍</span>
+            <h3>السعودية والإمارات</h3>
+            <div class="p">$9<small> / شهر</small></div>
+            <ul><li>نفس المزايا كاملة</li><li>QR + طباعة + QR الطاولات</li><li>طلبات واتساب غير محدودة</li><li>الدفع عبر Paddle (قريباً)</li><li>دعم بالعربية</li></ul>
+            <button class="btn btn-amber btn-block" onclick="showAuth()">ابدأ الآن</button>
+          </div>
+        </div>
+        <div class="founder-banner">🎉 <b>الأوائل 20:</b> سعرهم مثبت للأبد — 700 دج / $9 ما يتبدلش عليهم، حتى كي يطلع السعر من بعد.</div>
+        <p class="hint" style="text-align:center;margin-top:18px">بعد التجربة المجانية، التفعيل يدوي عبر واتساب — تبعث ميساج ونفعّلولك الاشتراك في نفس اليوم إن شاء الله.</p>
+      </section>
+    </div>
+  </section>
+
+  <!-- ============ تسجيل الدخول ============ -->
+  <section id="view-auth" class="hidden">
+    <div class="container auth-wrap">
+      <h2 class="sec-title">حساب صاحب المطعم أو المقهى</h2>
+      <p class="sec-sub">دخول ولا تسجيل جديد — باش تدير Menu تاع مشروعك</p>
+      <div class="card">
+        <div class="tabs">
+          <button id="tabLogin" class="on" onclick="authTab('login')">دخول</button>
+          <button id="tabSignup" onclick="authTab('signup')">تسجيل جديد</button>
+        </div>
+        <div id="authErr" class="error hidden"></div>
+        <div id="authOk" class="okbox hidden"></div>
+        <form onsubmit="doAuth(event)">
+          <div class="form-row"><label>الإيميل</label><input id="authEmail" type="email" required dir="ltr" placeholder="restaurant@email.com"></div>
+          <div class="form-row"><label>كلمة السر</label><input id="authPass" type="password" required minlength="6" dir="ltr" placeholder="6 حروف على الأقل"></div>
+          <button class="btn btn-block" id="authBtn">دخول</button>
+        </form>
+        <p class="hint" style="text-align:center;margin-top:12px">بالتسجيل راك توافق بلي تستعمل التطبيق لمطعمك أو مقهاك. بياناتك محفوظة وماشي راح تتباع.</p>
+      </div>
+      <p style="text-align:center;margin-top:14px"><a href="#" onclick="goHome();return false">← رجوع للرئيسية</a></p>
+    </div>
+  </section>
+
+  <!-- ============ لوحة التحكم ============ -->
+  <section id="view-dash" class="hidden">
+    <div class="container">
+      <div class="dash-cafe card hidden" id="dashCafeCard" data-frame="مطعم">
+        <div class="dc-logo" id="dashCafeLogo">🍽️</div>
+        <div class="dc-info">
+          <b id="dashCafeName">—</b>
+          <span id="dashCafeMeta" class="muted">—</span>
+        </div>
+        <div class="dc-acts">
+          <span id="subPill" class="pill pill-grey">—</span>
+          <button class="btn btn-ghost btn-sm" onclick="openMyMenu()">👁️ شوف Menu تاعي</button>
+        </div>
+      </div>
+      <div class="dash-stats hidden" id="dashStats"></div>
+      <div id="dashErr" class="error hidden"></div>
+
+      <!-- إنشاء مشروع -->
+      <div id="dashNoCafe" class="card hidden" data-frame="مطعم">
+        <h3 style="margin-bottom:6px">أنشئ مشروعك الأول</h3>
+        <p class="muted" style="margin-bottom:16px">دخل معلومات المطعم أو المقهى، ومن بعد تقدر تزيد الأقسام والأطباق.</p>
+        <form onsubmit="createCafe(event)">
+          <div class="form-row"><label>اسم المطعم أو المقهى *</label><input id="cfName" required placeholder="مثال: مطعم الديوان"></div>
+          <div class="form-row"><label>نوع المحل *</label><select id="cfType"><option value="restaurant">🍽️ مطعم</option><option value="cafe">☕ مقهى</option><option value="patisserie">🍰 باتيسري</option><option value="fastfood">🍔 فاست فود</option><option value="snack">🥪 سناك</option><option value="juice">🧃 عصير</option></select><p class="hint">خلفية Menu تتبدل حسب نوع المحل تاعك.</p></div>
+          <div class="form-row"><label>الرابط (slug) *</label><input id="cfSlug" required dir="ltr" placeholder="diwan"><p class="hint">الرابط تاع Menu تاعك راح يكون: <span id="slugPreview" dir="ltr">…?cafe=diwan</span> — حروف وأرقام وشرطات برك.</p></div>
+          <div class="form-row"><label>رقم الواتساب *</label><input id="cfWa" required dir="ltr" placeholder="0550123456"><p class="hint">الطلبات توصلك على هاد الرقم.</p></div>
+          <div class="form-row"><label>رقم واتساب المطبخ (اختياري)</label><input id="cfKitchenWa" dir="ltr" placeholder="0550123456"><p class="hint">طلبات الطاولات توصل على هاد الرقم — إذا ما دخلتوش، توصل على رقم الواتساب الرئيسي.</p></div>
+          <div class="form-row"><label>رابط الفايسبوك (اختياري)</label><input id="cfFb" dir="ltr" placeholder="https://facebook.com/..."></div>
+          <div class="form-row"><label>شعار المطعم أو المقهى (اختياري)</label>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <img id="cfLogoPrev" class="hidden" style="width:72px;height:72px;object-fit:cover;border-radius:12px;border:1px solid #e5e7eb" alt="">
+            <label for="cfLogoFile" class="btn btn-ghost" style="cursor:pointer">📷 اختار الشعار من تيليفونك</label>
+            <button type="button" class="btn btn-ghost hidden" id="cfLogoClear" onclick="clearPhoto('cfLogoFile','cfLogoPrev','cfLogoClear')">🗑 نحّي الشعار</button>
+          </div>
+          <input type="file" id="cfLogoFile" accept="image/*" class="hidden" onchange="onPhotoFile(this,'cfLogoPrev','cfLogoClear')">
+        </div>
+          <div class="form-row"><label>العملة</label><select id="cfCur"><option value="دج">دج (دينار جزائري)</option><option value="$">$ (دولار)</option><option value="ر.س">ر.س (ريال سعودي)</option><option value="د.إ">د.إ (درهم إماراتي)</option></select></div>
+          <button class="btn btn-block">✅ أنشئ المشروع</button>
+        </form>
+      </div>
+
+      <!-- عندو مشروع -->
+      <div id="dashMain" class="hidden">
+        <div class="dash-tabs">
+          <button id="dtMenu" class="on" onclick="dashTab('menu')">📋 Menu</button>
+          <button id="dtSettings" onclick="dashTab('settings')">⚙️ إعدادات المشروع</button>
+          <button id="dtQr" onclick="dashTab('qr')">🔳 الـ QR والطباعة</button>
+          <button id="dtSub" onclick="dashTab('sub')">💳 الاشتراك</button>
+        </div>
+
+        <!-- تبويب Menu -->
+        <div id="tabMenu">
+          <div class="card" style="margin-bottom:16px" data-frame="أطباق">
+            <form onsubmit="addCategory(event)" style="display:flex;gap:8px;flex-wrap:wrap">
+              <input id="catName" required placeholder="اسم قسم جديد: أطباق رئيسية، مشروبات، حلويات..." style="flex:1;min-width:180px">
+              <button class="btn">+ زيد قسم</button>
+            </form>
+          </div>
+          <div id="menuEditor"></div>
+          <div class="card" style="margin-top:16px" data-frame="طبق">
+            <h3 style="margin-bottom:12px" id="itemFormTitle">➕ زيد طبق جديد</h3>
+            <form onsubmit="saveItem(event)">
+              <input type="hidden" id="itId" value="">
+              <div class="form-row"><label>القسم *</label><select id="itCat" required></select></div>
+              <div class="form-row"><label>اسم الطبق *</label><input id="itName" required placeholder="مثال: كسكس بالخضرة"></div>
+              <div class="form-row"><label>الوصف</label><input id="itDesc" placeholder="وصف قصير يشهي الزبون"></div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <div class="form-row" style="flex:1;min-width:140px"><label>السعر *</label><input id="itPrice" type="number" min="0" step="any" required placeholder="450"></div>
+                <div class="form-row" style="flex:1;min-width:140px"><label>إيموجي</label><select id="itEmoji"><option>🍲</option><option>🍕</option><option>🍔</option><option>🥪</option><option>🥗</option><option>☕</option><option>🥤</option><option>🍰</option><option>🍩</option><option>🧃</option><option>🍵</option><option>🍹</option><option>🍪</option><option>🥛</option><option>🍦</option></select></div>
+              </div>
+              <div class="form-row"><label>صورة الطبق (اختياري)</label>
+              <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <img id="itImgPrev" class="hidden" style="width:72px;height:72px;object-fit:cover;border-radius:12px;border:1px solid #e5e7eb" alt="">
+                <label for="itImgFile" class="btn btn-ghost" style="cursor:pointer">📷 اختار صورة من تيليفونك</label>
+                <button type="button" class="btn btn-ghost hidden" id="itImgClear" onclick="clearPhoto('itImgFile','itImgPrev','itImgClear')">🗑 نحّي الصورة</button>
+              </div>
+              <input type="file" id="itImgFile" accept="image/*" class="hidden" onchange="onPhotoFile(this,'itImgPrev','itImgClear')">
+              <p class="hint">الصورة تتصغّر أوتوماتيكياً باش ما تثقلش الـ Menu.</p>
+            </div>
+              <div style="display:flex;gap:10px">
+                <button class="btn btn-block" id="itSubmitBtn">✅ زيد الطبق</button>
+                <button type="button" class="btn btn-ghost hidden" id="itCancelEdit" onclick="cancelEditItem()">إلغاء</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- تبويب الإعدادات -->
+        <div id="tabSettings" class="hidden">
+          <div class="card" data-frame="معلومات">
+            <h3 style="margin-bottom:12px">⚙️ معلومات المشروع</h3>
+            <form onsubmit="saveCafe(event)">
+              <div class="form-row"><label>اسم المطعم أو المقهى *</label><input id="edName" required></div>
+              <div class="form-row"><label>نوع المحل *</label><select id="edType"><option value="restaurant">🍽️ مطعم</option><option value="cafe">☕ مقهى</option><option value="patisserie">🍰 باتيسري</option><option value="fastfood">🍔 فاست فود</option><option value="snack">🥪 سناك</option><option value="juice">🧃 عصير</option></select><p class="hint">خلفية Menu تتبدل حسب نوع المحل تاعك.</p></div>
+              <div class="form-row"><label>الرابط (slug) *</label><input id="edSlug" required dir="ltr"><p class="hint">تبديل الرابط يبدّل الـ QR تاعك — عاود طبعو من بعد.</p></div>
+              <div class="form-row"><label>رقم الواتساب *</label><input id="edWa" required dir="ltr"></div>
+              <div class="form-row"><label>رقم واتساب المطبخ</label><input id="edKitchenWa" dir="ltr"><p class="hint">طلبات الطاولات توصل على هاد الرقم.</p></div>
+              <div class="form-row"><label>رابط الفايسبوك</label><input id="edFb" dir="ltr"></div>
+              <div class="form-row"><label>شعار المطعم أو المقهى</label>
+              <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <img id="edLogoPrev" class="hidden" style="width:72px;height:72px;object-fit:cover;border-radius:12px;border:1px solid #e5e7eb" alt="">
+                <label for="edLogoFile" class="btn btn-ghost" style="cursor:pointer">📷 اختار الشعار من تيليفونك</label>
+                <button type="button" class="btn btn-ghost hidden" id="edLogoClear" onclick="clearPhoto('edLogoFile','edLogoPrev','edLogoClear')">🗑 نحّي الشعار</button>
+              </div>
+              <input type="file" id="edLogoFile" accept="image/*" class="hidden" onchange="onPhotoFile(this,'edLogoPrev','edLogoClear')">
+            </div>
+              <div class="form-row"><label>العملة</label><select id="edCur"><option value="دج">دج (دينار جزائري)</option><option value="$">$ (دولار)</option><option value="ر.س">ر.س (ريال سعودي)</option><option value="د.إ">د.إ (درهم إماراتي)</option></select></div>
+              <button class="btn btn-block">💾 حفظ التعديلات</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- تبويب QR -->
+        <div id="tabQr" class="hidden">
+          <div class="qr-box" data-frame="طاولة">
+            <h3>🔳 الـ QR تاع Menu</h3>
+            <p class="muted">اطبعو وحطو على الطاولات — الزبون يسكان ويشوف Menu مباشرة</p>
+            <div class="qr-holder" id="qrHolder"></div>
+            <p class="muted" dir="ltr" id="qrUrl" style="word-break:break-all"></p>
+            <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px">
+              <button class="btn" onclick="downloadQR()">⬇️ حمّل PNG</button>
+              <button class="btn btn-amber" onclick="printQR()">🖨️ اطبع</button>
+              <button class="btn btn-ghost" onclick="copyMenuLink()">🔗 نسخ الرابط</button>
+            </div>
+          </div>
+          <div class="qr-box" style="margin-top:16px" data-frame="طاولة">
+            <h3>🪑 QR الطاولات</h3>
+            <p class="muted">كل طاولة عندها كودها — الطلب يوصل للمطبخ مع رقم الطاولة. ولّد الأكواد واطبعهم.</p>
+            <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap">
+              <input id="tablesCount" type="number" min="1" max="50" value="8" style="max-width:110px" dir="ltr">
+              <button class="btn" onclick="genTableQRs()">ولّد أكواد الطاولات</button>
+              <button class="btn btn-amber" id="btnPrintTables" onclick="printTables()" disabled>🖨️ اطبع الكل</button>
+            </div>
+            <div class="table-qr-grid" id="tableQrGrid"></div>
+          </div>
+        </div>
+
+        <!-- تبويب الاشتراك -->
+        <div id="tabSub" class="hidden">
+          <div class="card" data-frame="اشتراك">
+            <h3 style="margin-bottom:8px">💳 الاشتراك</h3>
+            <p id="subInfo" class="muted" style="margin-bottom:16px"></p>
+            <div id="subActivate">
+              <p style="margin-bottom:12px">باش تفعّل الاشتراك، ابعث ميساج واتساب ونفعّلوهولك في نفس اليوم إن شاء الله:</p>
+              <a id="subWaBtn" class="btn btn-amber btn-block" href="#" target="_blank">💬 فعّل اشتراكك عبر واتساب</a>
+              <p class="hint" style="margin-top:12px">الأسعار: 700 دج/شهر للجزائر — $9/شهر للخليج. الأوائل 20 سعرهم مثبت للأبد. التفعيل يدوي، والدفع بالتحويل ولا CCP للجزائر.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Menu العامة ============ -->
+  <section id="view-menu" class="hidden" style="padding-top:0">
+    <div id="menuContent"></div>
+  </section>
+
+  <div id="menuNotFound" class="notice hidden">
+    <h2>😕 المشروع غير موجود</h2>
+    <p class="muted">الرابط غلط ولا المشروع تحذف. جرّب Menu التجريبي ولا دير Menu لمشروعك.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap">
+      <button class="btn" onclick="openDemoMenu()">🍽️ شوف Menu التجريبي</button>
+      <button class="btn btn-ghost" onclick="goHome()">رجوع للرئيسية</button>
+    </div>
+  </div>
+
+  <div id="menuExpired" class="notice hidden">
+    <h2>⏸️ اشتراك هاد المشروع منتهي</h2>
+    <p class="muted">Menu متوقف مؤقتاً حتى يتجدد الاشتراك. إذا كنت صاحب المشروع، فعّل اشتراكك عبر واتساب.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap">
+      <a class="btn btn-amber" id="expiredWaBtn" href="#" target="_blank">💬 فعّل الاشتراك</a>
+      <button class="btn btn-ghost" onclick="goHome()">رجوع للرئيسية</button>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <b>Menu QR 🍽</b> — Menu إلكتروني لمطعمك أو مقهاك<br>
+    صُنع بحب في الجزائر 🇩🇿 — للاستفسار: <a href="https://wa.me/213797475073" target="_blank" style="color:#f59e0b">واتساب</a>
+  </div>
+</footer>
+
+<div id="cartBar" class="cart-bar hidden">
+  <div class="tot"><span id="cartCount">0 طبق</span><b id="cartTotal">0 دج</b></div>
+  <button class="btn btn-amber" onclick="openOrderSheet()">💬 أطلب عبر واتساب</button>
+</div>
+
+<!-- ورقة الطلب -->
+<div id="orderSheet" class="sheet hidden" onclick="if(event.target===this)closeOrderSheet()">
+  <div class="sheet-in">
+    <h3 style="margin-bottom:4px" id="orderTitle">🛒 طلبك</h3>
+    <p class="muted" id="orderHint" style="margin-bottom:14px"></p>
+    <div id="orderLines"></div>
+    <div class="order-total"><span>المجموع</span><span id="orderTotal"></span></div>
+    <div id="homeFields">
+      <div class="radio-row" style="margin-top:14px">
+        <label><input type="radio" name="orderType" value="delivery" checked onchange="toggleOrderType()"><span>🏠 توصيل للدار</span></label>
+        <label><input type="radio" name="orderType" value="pickup" onchange="toggleOrderType()"><span>🛍️ نجي نديها</span></label>
+      </div>
+      <div class="form-row"><label>اسمك *</label><input id="ordName" placeholder="مثال: أمين"></div>
+      <div class="form-row"><label>رقم التيليفون *</label><input id="ordPhone" dir="ltr" placeholder="0550123456"></div>
+      <div class="form-row" id="ordAddrRow"><label>العنوان *</label><input id="ordAddr" placeholder="الحي، الشارع، رقم الدار..."></div>
+    </div>
+    <a id="orderConfirmBtn" class="btn btn-amber btn-block" href="#" target="_blank" style="margin-top:6px">✅ أرسل الطلب واتساب</a>
+    <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="closeOrderSheet()">إلغاء</button>
+  </div>
+</div>
+
+<div id="printArea"></div>
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   Menu QR 🍽 — v1
+   CONFIG: بدّل القيم هنا برك إذا تبدل المشروع ولا رقم الواتساب
+   ============================================================ */
+const CONFIG = {
+  SB_URL: 'https://chosrqzpuczmirrxmnkf.supabase.co',   // نفس مشروع تسوق واربح / كَلَك / الذيب
+  SB_KEY: 'sb_publishable__e-8by0NKHyY-mnRowNtqg_zRr8Fq_q', // مفتاح عمومي (publishable) — آمن في كود العميل
+  WA_ISMAIL: '213797475073',  // واتساب Ismail — تفعيل الاشتراكات يدوياً
+  TRIAL_DAYS: 14,
+  LOGO: 'logo.svg'            // اللوغو: بدّل ملف logo.svg برك
+};
+
+/* ---------------- أدوات ---------------- */
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let toastTimer;
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2800); }
+function fmtPrice(p, cur){ const n = Number(p); return (Number.isInteger(n)? n : n.toFixed(2)) + ' ' + (cur||'دج'); }
+function normWA(num){
+  let d = String(num||'').replace(/\D/g,'');
+  if(!d) return '';
+  if(d.startsWith('00')) d = d.slice(2);
+  if(d.startsWith('0')) d = '213' + d.slice(1);
+  return d;
+}
+function menuUrl(slug){
+  const base = location.href.split('?')[0].split('#')[0];
+  return base + '?cafe=' + encodeURIComponent(slug);
+}
+function tableUrl(slug, n){
+  return menuUrl(slug) + '&table=' + encodeURIComponent(n);
+}
+function slugify(s){
+  return String(s||'').trim().toLowerCase()
+    .replace(/[\s_]+/g,'-')
+    .replace(/[^a-z0-9\u0600-\u06FF-]/g,'')
+    .replace(/-+/g,'-').replace(/^-|-$/g,'') || 'cafe';
+}
+function daysLeft(dateStr){
+  if(!dateStr) return 0;
+  const ms = new Date(dateStr).getTime() - Date.now();
+  return Math.ceil(ms / 86400000);
+}
+function normUrl(u){
+  u = (u||'').trim();
+  if(u && !/^https?:\/\//i.test(u)) u = 'https://' + u;
+  return u;
+}
+function subStatus(cafe){
+  if(!cafe) return {label:'—', cls:'pill-grey'};
+  if(cafe.is_active) return {label:'اشتراك فعال ✅' + (cafe.founder ? ' • مؤسس (سعر مثبت)' : ''), cls:'pill-green'};
+  const left = daysLeft(cafe.trial_ends_at);
+  if(left > 0) return {label:'تجربة مجانية — باقي ' + left + ' يوم', cls:'pill-amber'};
+  return {label:'الاشتراك منتهي', cls:'pill-red'};
+}
+function isExpired(cafe){
+  if(!cafe || cafe.id === 'demo') return false;
+  return !cafe.is_active && daysLeft(cafe.trial_ends_at) <= 0;
+}
+
+/* ---------------- أنواع المحلات + صور الخلفيات ----------------
+   صور حقيقية من Unsplash (ماشي AI)، كل رابط متحقق منو بـ curl (200).
+   كل نوع عندو خلفية فاتحة للشهية تخصو؛ اللاندينج العامة عندها flat-lay محايد. */
+const CAFE_TYPES = {
+  restaurant:{label:'🍽️ مطعم', bg:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1600&q=80'},
+  cafe:{label:'☕ مقهى', bg:'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1600&q=80'},
+  patisserie:{label:'🍰 باتيسري', bg:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=1600&q=80'},
+  fastfood:{label:'🍔 فاست فود', bg:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1600&q=80'},
+  snack:{label:'🥪 سناك', bg:'https://images.unsplash.com/photo-1521305916504-4a1121188589?auto=format&fit=crop&w=1600&q=80'},
+  juice:{label:'🧃 عصير', bg:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=1600&q=80'}
+};
+const LANDING_BG = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=80';
+function cafeTypeOf(cafe){ return (cafe && CAFE_TYPES[cafe.type]) ? cafe.type : 'restaurant'; }
+function cafeBg(cafe){ return CAFE_TYPES[cafeTypeOf(cafe)].bg; }
+function cafeTypeLabel(cafe){ return CAFE_TYPES[cafeTypeOf(cafe)].label; }
+
+/* ---------------- خلفيات داخلية للإطارات حسب الكلمة ----------------
+   كل بطاقة/إطار ياخذ صورة خلفية داخلية حسب موضوعو (الكلمة).
+   الصور حقيقية من Unsplash (ماشي AI)، كل رابط متحقق منو بـ curl (200).
+   اللي ما يتطابقش ياخذ صورة نوع المحل (أو flat-lay في اللاندينج) كـ fallback.
+   فوق صورة الإطار طبقة بيضاء خفيفة (.62→.70) باش الكتبة تقرا مليح والنص يبقى غامق.
+   خريطة الكلمات ← الصور:
+   طاولة/طلب/واتساب/QR ← طاولة مطعم | طبق/أطباق/Menu/بيتزا/برغر ← أطباق
+   مشروب/قهوة/عصير ← مشروبات | حلو/حلويات/باتيسري/كيك ← حلويات
+   سعر/أسعار/اشتراك ← flat-lay محايد | كيفاش ← طاولة */
+const FRAME_BG = [
+  {keys:['طاولة','طاولات','طاوله','طلب','واتساب','طباعة','اطبع','كيفاش'], img:'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80'},
+  {keys:['طبق','أطباق','رئيسي','رئيسية','فطور','بيتزا','برغر','سندويتش','مقبلات','سلطة','Menu'], img:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1200&q=80'},
+  {keys:['مشروب','مشروبات','قهوة','عصير','عصائر','شاي'], img:'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=1200&q=80'},
+  {keys:['حلو','حلويات','باتيسري','كيك','كرواسون','مثلجات','حلا'], img:'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=1200&q=80'},
+  {keys:['سعر','أسعار','اشتراك','الجزائر','السعودية','الإمارات','الخليج','دج'], img:LANDING_BG}
+];
+function frameBg(text, fallback){
+  const t = String(text || '');
+  for(const row of FRAME_BG){ for(const k of row.keys){ if(t.indexOf(k) !== -1) return row.img; } }
+  return fallback || LANDING_BG;
+}
+function frameBgStyle(text, fallback){
+  return 'background-image:linear-gradient(rgba(255,255,255,.62),rgba(255,255,255,.70)),url(\'' + frameBg(text, fallback) + '\');background-size:cover;background-position:center;background-repeat:no-repeat;background-color:transparent';
+}
+function setFrameBg(el, url){
+  if(!el || !url) return;
+  el.style.backgroundImage = 'linear-gradient(rgba(255,255,255,.62),rgba(255,255,255,.70)),url("' + url + '")';
+  el.style.backgroundSize = 'cover';
+  el.style.backgroundPosition = 'center';
+  el.style.backgroundRepeat = 'no-repeat';
+  el.style.backgroundColor = 'transparent';
+}
+/* أقسام اللاندينج + البطاقات اللي داخلها: كل واحد حسب عنوانو */
+function applyLandingFrameBgs(){
+  $$('#view-landing .landing-sec').forEach(function(sec){
+    const h2 = sec.querySelector('h2');
+    setFrameBg(sec, frameBg(h2 ? h2.textContent : '', LANDING_BG));
+    sec.querySelectorAll('.card').forEach(function(card){
+      const h3 = card.querySelector('h3');
+      setFrameBg(card, frameBg(h3 ? h3.textContent : '', LANDING_BG));
+    });
+  });
+}
+
+/* ---------------- المطعم التجريبي: مطعم الديوان ----------------
+   ديمو بMenu مطعم حقيقي (أطباق رئيسية + مشروبات + حلويات، أسعار بالدج)
+   باش يبين أن المنتج ماشي غير للمقاهي. */
+const DEMO_CAFE = {
+  id:'demo', owner_id:'demo', name:'مطعم الديوان', slug:'diwan', type:'restaurant',
+  tagline:'أكل تقليدي وعصري — التوصيل متوفر',
+  logo_url:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=400&q=60', whatsapp:'0550123456', kitchen_whatsapp:'0550123457',
+  phone:'0550123456', facebook:'https://facebook.com/diwan.restaurant',
+  currency:'دج', views:128,
+  trial_ends_at: new Date(Date.now()+14*86400000).toISOString(),
+  is_active:false, founder:false, created_at:new Date().toISOString()
+};
+const DEMO_CATS = [
+  {id:'c1', cafe_id:'demo', name:'🍲 أطباق رئيسية', sort:1},
+  {id:'c2', cafe_id:'demo', name:'🥤 مشروبات', sort:2},
+  {id:'c3', cafe_id:'demo', name:'🍰 حلويات', sort:3}
+];
+const DEMO_ITEMS = [
+  {id:'i1', cafe_id:'demo', category_id:'c1', name:'كسكس بالخضرة واللحم', description:'كسكس تقليدي بالخضرة، لحم طري ومرقة', price:450, image_url:'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=400&q=60', emoji:'🍲', available:true, sort:1},
+  {id:'i2', cafe_id:'demo', category_id:'c1', name:'شخشوخة', description:'شخشوخة بالدجاج والمرقة الحارة', price:400, image_url:'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=400&q=60', emoji:'🍲', available:true, sort:2},
+  {id:'i3', cafe_id:'demo', category_id:'c1', name:'طاجين لحم بالبرقوق', description:'لحم بالبرقوق واللوز، على الطريقة التقليدية', price:500, image_url:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=60', emoji:'🍲', available:true, sort:3},
+  {id:'i4', cafe_id:'demo', category_id:'c1', name:'طاجين دجاج بالزيتون', description:'دجاج بالزيتون والليمون المصير', price:450, image_url:'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?auto=format&fit=crop&w=400&q=60', emoji:'🍲', available:true, sort:4},
+  {id:'i5', cafe_id:'demo', category_id:'c1', name:'بيتزا مارغريتا', description:'صلصة طماطم + موزاريلا + ريحان', price:500, image_url:'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&q=60', emoji:'🍕', available:true, sort:5},
+  {id:'i6', cafe_id:'demo', category_id:'c1', name:'بيتزا 4 أجبان', description:'موزاريلا، غورغونزولا، بارميزان، شيدر', price:650, image_url:'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=400&q=60', emoji:'🍕', available:true, sort:6},
+  {id:'i7', cafe_id:'demo', category_id:'c1', name:'برغر لحم', description:'لحم مشوي، جبن، خس، صوص خاص + بطاطا', price:450, image_url:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=60', emoji:'🍔', available:true, sort:7},
+  {id:'i8', cafe_id:'demo', category_id:'c1', name:'ساندويتش شاورما', description:'شاورما دجاج، صوص ثوم، خضرة', price:350, image_url:'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=400&q=60', emoji:'🥪', available:true, sort:8},
+  {id:'i9', cafe_id:'demo', category_id:'c1', name:'سلطة مشكلة', description:'خس، طماطم، خيار، زيتون، جبن', price:250, image_url:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=60', emoji:'🥗', available:true, sort:9},
+  {id:'i10', cafe_id:'demo', category_id:'c2', name:'قهوة عربية', description:'قهوة عربية أصيلة بالهيل، تتقدم مع التمر', price:80, image_url:'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=60', emoji:'☕', available:true, sort:1},
+  {id:'i11', cafe_id:'demo', category_id:'c2', name:'إسبريسو', description:'قهوة مركزة، جرعة وحدة ولا دوز', price:120, image_url:'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=400&q=60', emoji:'☕', available:true, sort:2},
+  {id:'i12', cafe_id:'demo', category_id:'c2', name:'كابتشينو', description:'إسبريسو + حليب مبخر + رغوة', price:200, image_url:'https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&w=400&q=60', emoji:'☕', available:true, sort:3},
+  {id:'i13', cafe_id:'demo', category_id:'c2', name:'عصير برتقال طازج', description:'برتقال معصور في الحين، بلا سكر زايد', price:250, image_url:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=400&q=60', emoji:'🥤', available:true, sort:1},
+  {id:'i14', cafe_id:'demo', category_id:'c2', name:'موهيتو', description:'ليمون + نعناع + صودا، منعش', price:300, image_url:'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?auto=format&fit=crop&w=400&q=60', emoji:'🍹', available:true, sort:2},
+  {id:'i15', cafe_id:'demo', category_id:'c2', name:'مشروب غازي', description:'كولا، فانتا، سبرايت — علبة باردة', price:100, image_url:'https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=400&q=60', emoji:'🥤', available:true, sort:3},
+  {id:'i16', cafe_id:'demo', category_id:'c3', name:'كرواسون', description:'كرواسون بالزبدة، يتقدم سخون', price:100, image_url:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=400&q=60', emoji:'🥐', available:true, sort:1},
+  {id:'i17', cafe_id:'demo', category_id:'c3', name:'تيراميسو', description:'طبقات مسكربوني وقهوة وكاكاو', price:350, image_url:'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=400&q=60', emoji:'🍰', available:true, sort:2},
+  {id:'i18', cafe_id:'demo', category_id:'c3', name:'كيك شوكولاتة', description:'كيك شوكولاتة ذايبة، قطعة كبيرة', price:300, image_url:'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=60', emoji:'🍰', available:true, sort:3},
+  {id:'i19', cafe_id:'demo', category_id:'c3', name:'قلب اللوز', description:'قلب اللوز بالعسل، حلوى تقليدية', price:150, image_url:'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=400&q=60', emoji:'🍩', available:true, sort:4}
+];
+
+/* ---------------- طبقة التخزين: Supabase ولا localStorage ---------------- */
+let sb = null;          // عميل Supabase
+let MODE = 'local';     // 'sb' ولا 'local'
+let USER = null;        // {id, email} | null
+
+const LS = {
+  get(k, d){ try{ const v = localStorage.getItem('mq_'+k); return v? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('mq_'+k, JSON.stringify(v)); }catch(e){} }
+};
+
+function seedLocal(){
+  if(!LS.get('cafes', null)){
+    LS.set('cafes', [DEMO_CAFE]);
+    LS.set('cats', DEMO_CATS);
+    LS.set('items', DEMO_ITEMS);
+  }
+}
+function uid(){ return 'x' + Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4); }
+
+const Store = {
+  async getCafeBySlug(slug){
+    if(MODE==='sb'){
+      const {data, error} = await sb.from('menu_cafes').select('*').eq('slug', slug).maybeSingle();
+      if(data) return data;
+      if(error) console.warn('sb cafe lookup:', error.message);
+    }
+    // رجوع للتجريبي المحلي (المطعم التجريبي يخدم دايماً بلا تسجيل)
+    seedLocal();
+    return LS.get('cafes', []).find(c => c.slug === slug) || null;
+  },
+  async getMyCafe(ownerId){
+    if(MODE==='sb'){
+      const {data, error} = await sb.from('menu_cafes').select('*').eq('owner_id', ownerId).order('created_at').limit(1);
+      if(error) throw error;
+      return (data && data[0]) || null;
+    }
+    seedLocal();
+    return LS.get('cafes', []).find(c => c.owner_id === ownerId && c.id !== 'demo') || null;
+  },
+  async createCafe(cafe){
+    if(MODE==='sb'){
+      const {data, error} = await sb.from('menu_cafes').insert(cafe).select().single();
+      if(error) throw error;
+      return data;
+    }
+    seedLocal();
+    const cafes = LS.get('cafes', []);
+    if(cafes.some(c => c.slug === cafe.slug)) throw new Error('هاد الرابط مستعمل من قبل، بدّل slug');
+    cafes.push(cafe); LS.set('cafes', cafes);
+    return cafe;
+  },
+  async updateCafe(id, patch){
+    if(MODE==='sb'){
+      const {data, error} = await sb.from('menu_cafes').update(patch).eq('id', id).select().single();
+      if(error) throw error;
+      return data;
+    }
+    const cafes = LS.get('cafes', []);
+    const i = cafes.findIndex(c => c.id === id);
+    if(i < 0) throw new Error('المشروع غير موجود');
+    if(patch.slug && cafes.some(c => c.slug === patch.slug && c.id !== id)) throw new Error('هاد الرابط مستعمل من قبل');
+    cafes[i] = {...cafes[i], ...patch}; LS.set('cafes', cafes);
+    return cafes[i];
+  },
+  async listCats(cafeId){
+    if(MODE==='sb'){
+      const {data, error} = await sb.from('menu_categories').select('*').eq('cafe_id', cafeId).order('sort');
+      if(error) throw error;
+      return data || [];
+    }
+    seedLocal();
+    return LS.get('cats', []).filter(c => c.cafe_id === cafeId).sort((a,b)=>a.sort-b.sort);
+  },
+  async addCat(cat){
+    if(MODE==='sb'){
+      const {data, error} = await sb.from('menu_categories').insert(cat).select().single();
+      if(error) throw error;
+      return data;
+    }
+    const cats = LS.get('cats', []); cats.push(cat); LS.set('cats', cats);
+    return cat;
+  },
+  async delCat(id){
+    if(MODE==='sb'){
+      const {error} = await sb.from('menu_categories').delete().eq('id', id);
+      if(error) throw error;
+      return;
+    }
+    LS.set('cats', LS.get('cats', []).filter(c => c.id !== id));
+    LS.set('items', LS.get('items', []).filter(i => i.category_id !== id));
+  },
+  async listItems(cafeId){
+    if(MODE==='sb'){
+      const {data, error} = await sb.from('menu_items').select('*').eq('cafe_id', cafeId).order('sort');
+      if(error) throw error;
+      return data || [];
+    }
+    seedLocal();
+    return LS.get('items', []).filter(i => i.cafe_id === cafeId).sort((a,b)=>a.sort-b.sort);
+  },
+  async addItem(item){
+    if(MODE==='sb'){
+      const {data, error} = await sb.from('menu_items').insert(item).select().single();
+      if(error) throw error;
+      return data;
+    }
+    const items = LS.get('items', []); items.push(item); LS.set('items', items);
+    return item;
+  },
+  async updateItem(id, patch){
+    if(MODE==='sb'){
+      const {data, error} = await sb.from('menu_items').update(patch).eq('id', id).select().single();
+      if(error) throw error;
+      return data;
+    }
+    const items = LS.get('items', []);
+    const i = items.findIndex(x => x.id === id);
+    if(i < 0) throw new Error('الطبق غير موجود');
+    items[i] = {...items[i], ...patch}; LS.set('items', items);
+    return items[i];
+  },
+  async delItem(id){
+    if(MODE==='sb'){
+      const {error} = await sb.from('menu_items').delete().eq('id', id);
+      if(error) throw error;
+      return;
+    }
+    LS.set('items', LS.get('items', []).filter(i => i.id !== id));
+  },
+  async bumpViews(cafe){
+    // عدّاد المشاهدات: دالة آمنة في Supabase، وlocalStorage في الوضع التجريبي
+    if(MODE==='sb' && cafe.id !== 'demo'){
+      try{ await sb.rpc('bump_menu_views', {p_cafe_id: cafe.id}); }catch(e){ console.warn('bump views:', e.message); }
+      return;
+    }
+    seedLocal();
+    const cafes = LS.get('cafes', []);
+    const i = cafes.findIndex(c => c.id === cafe.id);
+    if(i >= 0){ cafes[i].views = (cafes[i].views || 0) + 1; LS.set('cafes', cafes); }
+  }
+};
+
+/* كشف الوضع: Supabase خدام ولا نرجعو للتجريبي المحلي */
+async function detectMode(){
+  seedLocal();
+  if(typeof supabase === 'undefined'){ MODE='local'; return; }
+  try{
+    sb = supabase.createClient(CONFIG.SB_URL, CONFIG.SB_KEY);
+    const {error} = await sb.from('menu_cafes').select('id').limit(1);
+    if(error) throw error;
+    MODE='sb';
+  }catch(e){
+    console.warn('Supabase غير متاح (طبّق schema.sql) — وضع تجريبي محلي:', e.message);
+    sb = null; MODE='local';
+  }
+  if(MODE==='local') $('#modeBadge').classList.remove('hidden');
+}
+
+/* ---------------- حالة التطبيق ---------------- */
+let MY_CAFE = null;       // مشروع صاحب الحساب
+let VIEW_CAFE = null;     // المشروع اللي راح يشوفو الزبون
+let VIEW_CATS = [], VIEW_ITEMS = [];
+let CART = {};            // itemId -> qty
+let TABLE_NO = null;      // رقم الطاولة من ?table=
+let AUTH_MODE = 'login';
+
+/* خلفية كاملة ثابتة للصفحات العامة برك (لاندينج + Menu) — لوحة التحكم تبقى نظيفة */
+function setPublicBg(url){
+  const layer = $('#bgLayer'), veil = $('#bgVeil');
+  document.body.classList.remove('dash-page');
+  if(!url){ layer.classList.add('hidden'); veil.classList.add('hidden'); document.body.classList.remove('public-page'); return; }
+  layer.style.backgroundImage = "url('" + url + "')";
+  layer.classList.remove('hidden'); veil.classList.remove('hidden');
+  document.body.classList.add('public-page');
+}
+function setDashBg(url){
+  const layer = $('#bgLayer'), veil = $('#bgVeil');
+  document.body.classList.remove('public-page');
+  layer.style.backgroundImage = "url('" + (url || LANDING_BG) + "')";
+  layer.classList.remove('hidden'); veil.classList.remove('hidden');
+  document.body.classList.add('dash-page');
+}
+/* ---------------- التنقل بين الصفحات ---------------- */
+function showView(id){
+  if(id === 'landing'){ setPublicBg(LANDING_BG); applyLandingFrameBgs(); }
+  else if(id === 'auth') setDashBg(LANDING_BG);
+  else if(id === 'dash') setDashBg(MY_CAFE ? cafeBg(MY_CAFE) : LANDING_BG);
+  // 'menu': الخلفية تتحدد في showMenu حسب نوع المحل
+  ['landing','auth','dash','menu'].forEach(v => $('#view-'+v).classList.add('hidden'));
+  $('#menuNotFound').classList.add('hidden');
+  $('#menuExpired').classList.add('hidden');
+  $('#cartBar').classList.add('hidden');
+  document.body.classList.remove('has-cart');
+  if(id) $('#view-'+id).classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+function goHome(){
+  history.pushState({}, '', location.pathname);
+  TABLE_NO = null; CART = {}; VIEW_CAFE = null;
+  showView('landing');
+}
+function openDemoMenu(){
+  history.pushState({}, '', menuUrl('diwan'));
+  showMenu('diwan');
+}
+function openMyMenu(){
+  if(!MY_CAFE) return;
+  history.pushState({}, '', menuUrl(MY_CAFE.slug));
+  showMenu(MY_CAFE.slug);
+}
+function updateAuthUI(){
+  const logged = !!USER;
+  $('#btnAuthTop').classList.toggle('hidden', logged);
+  $('#btnLogoutTop').classList.toggle('hidden', !logged);
+  $('#btnDashTop').classList.toggle('hidden', !logged);
+}
+
+/* ---------------- الدخول / التسجيل ---------------- */
+function showAuth(){
+  AUTH_MODE = 'login';
+  authTab('login');
+  $('#authErr').classList.add('hidden');
+  $('#authOk').classList.add('hidden');
+  showView('auth');
+}
+function authTab(mode){
+  AUTH_MODE = mode;
+  $('#tabLogin').classList.toggle('on', mode==='login');
+  $('#tabSignup').classList.toggle('on', mode==='signup');
+  $('#authBtn').textContent = mode==='login' ? 'دخول' : 'أنشئ الحساب';
+}
+async function doAuth(e){
+  e.preventDefault();
+  const email = $('#authEmail').value.trim();
+  const pass = $('#authPass').value;
+  const errBox = $('#authErr'), okBox = $('#authOk');
+  errBox.classList.add('hidden'); okBox.classList.add('hidden');
+  if(!email || pass.length < 6){ errBox.textContent = 'الإيميل وكلمة السر (6 حروف على الأقل) لازمين'; errBox.classList.remove('hidden'); return; }
+  try{
+    if(MODE==='sb'){
+      if(AUTH_MODE==='signup'){
+        const {data, error} = await sb.auth.signUp({email, password: pass});
+        if(error) throw error;
+        if(data.session){ USER = data.session.user; }
+        else { okBox.textContent = '✅ تسجل الحساب — تحقق من إيميلك باش تفعّلو، ومن بعد ادخل'; okBox.classList.remove('hidden'); return; }
+      } else {
+        const {data, error} = await sb.auth.signInWithPassword({email, password: pass});
+        if(error) throw error;
+        USER = data.user;
+      }
+    } else {
+      // وضع تجريبي محلي: حسابات محفوظة في جهازك برك (ماشي أمان حقيقي)
+      const users = LS.get('users', []);
+      if(AUTH_MODE==='signup'){
+        if(users.some(u => u.email === email)) throw new Error('هاد الإيميل مسجل من قبل — ادخل بيه');
+        const u = {id: uid(), email, pass};
+        users.push(u); LS.set('users', users);
+        USER = {id: u.id, email: u.email};
+      } else {
+        const u = users.find(u => u.email === email && u.pass === pass);
+        if(!u) throw new Error('الإيميل ولا كلمة السر غلط');
+        USER = {id: u.id, email: u.email};
+      }
+      LS.set('user', USER);
+    }
+    updateAuthUI();
+    toast('مرحبا بيك 👋');
+    showDash();
+  }catch(err){
+    errBox.textContent = '❌ ' + (err.message || 'مشكلة في الدخول');
+    errBox.classList.remove('hidden');
+  }
+}
+async function logout(){
+  if(MODE==='sb' && sb){ try{ await sb.auth.signOut(); }catch(e){} }
+  USER = null; MY_CAFE = null;
+  LS.set('user', null);
+  updateAuthUI();
+  goHome();
+}
+
+/* ---------------- لوحة التحكم ---------------- */
+async function showDash(){
+  if(!USER){ showAuth(); return; }
+  showView('dash');
+  $('#dashErr').classList.add('hidden');
+  try{
+    MY_CAFE = await Store.getMyCafe(USER.id);
+  }catch(err){
+    const b = $('#dashErr'); b.textContent = '❌ ' + err.message; b.classList.remove('hidden');
+    return;
+  }
+  setDashBg(MY_CAFE ? cafeBg(MY_CAFE) : LANDING_BG);
+  applyDashFrameBgs();
+  const st = subStatus(MY_CAFE);
+  $('#subPill').textContent = st.label;
+  $('#subPill').className = 'pill ' + st.cls;
+  if(!MY_CAFE){
+    $('#dashNoCafe').classList.remove('hidden');
+    $('#dashMain').classList.add('hidden');
+    $('#dashCafeCard').classList.add('hidden');
+    $('#dashStats').classList.add('hidden');
+    const slugInput = $('#cfSlug');
+    slugInput.oninput = () => { $('#slugPreview').textContent = '…' + menuUrl(slugify(slugInput.value)); };
+  } else {
+    $('#dashNoCafe').classList.add('hidden');
+    $('#dashMain').classList.remove('hidden');
+    $('#dashCafeCard').classList.remove('hidden');
+    $('#dashStats').classList.remove('hidden');
+    renderDashHeader();
+    fillSettingsForm();
+    renderSubTab();
+    await renderMenuEditor();
+    renderQrTab();
+    dashTab('menu');
+  }
+}
+function renderDashHeader(){
+  const c = MY_CAFE; if(!c) return;
+  $('#dashCafeName').textContent = c.name;
+  $('#dashCafeMeta').textContent = cafeTypeLabel(c) + ' • ' + c.slug + ' • ' + (c.currency || 'دج');
+  const logo = $('#dashCafeLogo');
+  logo.innerHTML = c.logo_url ? '<img src="' + esc(c.logo_url) + '" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.textContent=\'🍽️\'">' : '🍽️';
+}
+function renderDashStats(cats, items){
+  const c = MY_CAFE; if(!c) return;
+  const left = daysLeft(c.trial_ends_at);
+  const trialVal = c.is_active ? 'فعّال ✅' : (left > 0 ? left + ' يوم' : 'منتهي');
+  const trialLabel = c.is_active ? 'الاشتراك' : 'التجربة';
+  const stat = (v, l) => '<div class="stat"><b>' + esc(String(v)) + '</b><span>' + l + '</span></div>';
+  $('#dashStats').innerHTML =
+    stat(items.length, 'طبق') +
+    stat(cats.length, 'قسم') +
+    stat(c.views || 0, 'مشاهدة') +
+    stat(trialVal, trialLabel);
+}
+function applyDashFrameBgs(){
+  const fb = MY_CAFE ? cafeBg(MY_CAFE) : LANDING_BG;
+  $$('#view-dash [data-frame]').forEach(el => {
+    setFrameBg(el, frameBg(el.getAttribute('data-frame'), fb));
+  });
+}
+function dashTab(tab){
+  ['menu','settings','qr','sub'].forEach(t => {
+    $('#tab'+t[0].toUpperCase()+t.slice(1)).classList.toggle('hidden', t!==tab);
+    $('#dt'+t[0].toUpperCase()+t.slice(1)).classList.toggle('on', t===tab);
+  });
+}
+function fillSettingsForm(){
+  $('#edName').value = MY_CAFE.name;
+  $('#edType').value = MY_CAFE.type || 'restaurant';
+  $('#edSlug').value = MY_CAFE.slug;
+  $('#edWa').value = MY_CAFE.whatsapp || '';
+  $('#edKitchenWa').value = MY_CAFE.kitchen_whatsapp || '';
+  $('#edFb').value = MY_CAFE.facebook || '';
+  setPhoto('edLogoPrev', 'edLogoClear', MY_CAFE.logo_url || ''); $('#edLogoFile').value = '';
+  $('#edCur').value = MY_CAFE.currency || 'دج';
+}
+async function createCafe(e){
+  e.preventDefault();
+  const name = $('#cfName').value.trim();
+  const slug = slugify($('#cfSlug').value);
+  const wa = $('#cfWa').value.trim();
+  if(!name || !slug || !wa){ toast('عمر الحقول اللي فيهم *'); return; }
+  const cafe = {
+    id: uid(), owner_id: USER.id, name, slug, type: $('#cfType').value || 'restaurant',
+    tagline:'', whatsapp: wa, kitchen_whatsapp: $('#cfKitchenWa').value.trim(),
+    phone: wa, facebook: normUrl($('#cfFb').value),
+    logo_url: photoData('cfLogoPrev'), currency: $('#cfCur').value,
+    views: 0,
+    trial_ends_at: new Date(Date.now() + CONFIG.TRIAL_DAYS*86400000).toISOString(),
+    is_active:false, founder:false, created_at: new Date().toISOString()
+  };
+  try{
+    MY_CAFE = await Store.createCafe(cafe);
+    toast('✅ تنشأ مشروعك — زيد الأقسام والأطباق');
+    showDash();
+  }catch(err){
+    toast('❌ ' + err.message);
+  }
+}
+async function saveCafe(e){
+  e.preventDefault();
+  const patch = {
+    name: $('#edName').value.trim(),
+    type: $('#edType').value || 'restaurant',
+    slug: slugify($('#edSlug').value),
+    whatsapp: $('#edWa').value.trim(),
+    kitchen_whatsapp: $('#edKitchenWa').value.trim(),
+    facebook: normUrl($('#edFb').value),
+    logo_url: photoData('edLogoPrev'),
+    currency: $('#edCur').value
+  };
+  try{
+    MY_CAFE = await Store.updateCafe(MY_CAFE.id, patch);
+    const st = subStatus(MY_CAFE);
+    $('#subPill').textContent = st.label; $('#subPill').className = 'pill ' + st.cls;
+    renderQrTab();
+    renderDashHeader();
+    setDashBg(cafeBg(MY_CAFE));
+    applyDashFrameBgs();
+    toast('✅ تحفظت التعديلات');
+  }catch(err){
+    toast('❌ ' + err.message);
+  }
+}
+
+/* ---- اختيار صورة من التيليفون (Galerie) بدل رابط ---- */
+function compressImage(src, maxW, q, cb){
+  const img = new Image();
+  img.onload = () => {
+    const scale = Math.min(1, maxW / img.width);
+    const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+    const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+    cv.getContext('2d').drawImage(img, 0, 0, w, h);
+    cb(cv.toDataURL('image/jpeg', q));
+  };
+  img.onerror = () => cb(src);
+  img.src = src;
+}
+function onPhotoFile(input, prevId, clearId){
+  const f = input.files && input.files[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = () => compressImage(r.result, 1200, 0.82, (d) => setPhoto(prevId, clearId, d));
+  r.readAsDataURL(f);
+}
+function setPhoto(prevId, clearId, data){
+  const p = $('#' + prevId);
+  if(!p) return;
+  if(data){ p.src = data; p.dataset.data = data; p.classList.remove('hidden'); $('#' + clearId).classList.remove('hidden'); }
+  else { p.src = ''; p.dataset.data = ''; p.classList.add('hidden'); $('#' + clearId).classList.add('hidden'); }
+}
+function photoData(prevId){
+  const p = $('#' + prevId);
+  return (p && p.dataset.data) || '';
+}
+function clearPhoto(inputId, prevId, clearId){
+  const inp = $('#' + inputId); if(inp) inp.value = '';
+  setPhoto(prevId, clearId, '');
+}
+
+/* ---- محرر Menu ---- */
+async function renderMenuEditor(){
+  const cats = await Store.listCats(MY_CAFE.id);
+  const items = await Store.listItems(MY_CAFE.id);
+  renderDashStats(cats, items);
+  const sel = $('#itCat');
+  sel.innerHTML = cats.map(c => '<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join('') || '<option value="">— زيد قسم أولاً —</option>';
+  let h = '';
+  if(!cats.length) h = '<div class="empty-state"><span class="big">🍽️</span><b>الـ Menu تاعك مازال فارغ</b>زيد أول قسم من فوق، ومن بعد زيد الأطباق بالصور.</div>';
+  cats.forEach(c => {
+    const ci = items.filter(i => i.category_id === c.id);
+    h += '<div class="cat-head"><b>'+esc(c.name)+'</b><span class="count">'+(ci.length === 1 ? 'طبق واحد' : ci.length + ' أطباق')+'</span><div class="acts"><button class="btn btn-sm btn-danger" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.5)" onclick="delCat(\''+esc(c.id)+'\')">🗑 حذف القسم</button></div></div>';
+    if(!ci.length) h += '<div class="empty-mini">ما كاش أطباق في هاد القسم بعد — زيد أول طبق من لتحت 👇</div>';
+    ci.forEach(it => {
+      h += '<div class="item-row'+(it.available?'':' off')+'">'
+        + '<div class="thumb">'+(it.image_url ? '<img src="'+esc(it.image_url)+'" style="width:100%;height:100%;object-fit:cover;border-radius:12px" onerror="this.style.display=\'none\'">' : '') + esc(it.emoji||'🍽️') + '</div>'
+        + '<div class="info"><b>'+esc(it.name)+'</b><span>'+esc(it.description||'')+'</span></div>'
+        + '<span class="price">'+esc(fmtPrice(it.price, MY_CAFE.currency))+'</span>'
+        + '<div class="row-acts">'
+        + '<label class="switch" title="'+(it.available?'متوفر — اضغط باش توقفو':'متوقف — اضغط باش تفعّلو')+'"><input type="checkbox" '+(it.available?'checked':'')+' onchange="toggleItem(\''+esc(it.id)+'\',this.checked)"><span></span></label>'
+        + '<button class="btn btn-ghost btn-sm" onclick="editItem(\''+esc(it.id)+'\')">✏️</button>'
+        + '<button class="btn btn-danger btn-sm" onclick="delItem(\''+esc(it.id)+'\')">🗑</button>'
+        + '</div></div>';
+    });
+  });
+  $('#menuEditor').innerHTML = h;
+}
+async function addCategory(e){
+  e.preventDefault();
+  const name = $('#catName').value.trim();
+  if(!name) return;
+  const cats = await Store.listCats(MY_CAFE.id);
+  await Store.addCat({id: uid(), cafe_id: MY_CAFE.id, name, sort: cats.length + 1});
+  $('#catName').value = '';
+  renderMenuEditor();
+  toast('✅ زاد القسم');
+}
+async function delCat(id){
+  if(!confirm('تحذف هاد القسم وكل الأطباق اللي فيه؟')) return;
+  await Store.delCat(id);
+  renderMenuEditor();
+}
+async function saveItem(e){
+  e.preventDefault();
+  const catId = $('#itCat').value;
+  const name = $('#itName').value.trim();
+  const price = parseFloat($('#itPrice').value);
+  if(!catId || !name || isNaN(price) || price < 0){ toast('عمر القسم والاسم والسعر (رقم موجب)'); return; }
+  const data = {
+    category_id: catId, name,
+    description: $('#itDesc').value.trim(),
+    price: price,
+    emoji: $('#itEmoji').value,
+    image_url: photoData('itImgPrev')
+  };
+  const editId = $('#itId').value;
+  try{
+    if(editId){
+      await Store.updateItem(editId, data);
+      toast('✅ تحفظ التعديل');
+    } else {
+      const items = await Store.listItems(MY_CAFE.id);
+      await Store.addItem({id: uid(), cafe_id: MY_CAFE.id, ...data, available:true, sort: items.length + 1});
+      toast('✅ زاد الطبق');
+    }
+    cancelEditItem();
+    renderMenuEditor();
+  }catch(err){
+    toast('❌ ' + err.message);
+  }
+}
+async function editItem(id){
+  const items = await Store.listItems(MY_CAFE.id);
+  const it = items.find(x => x.id === id);
+  if(!it) return;
+  $('#itId').value = it.id;
+  $('#itCat').value = it.category_id;
+  $('#itName').value = it.name;
+  $('#itDesc').value = it.description || '';
+  $('#itPrice').value = it.price;
+  $('#itEmoji').value = it.emoji || '🍲';
+  setPhoto('itImgPrev', 'itImgClear', it.image_url || ''); $('#itImgFile').value = '';
+  $('#itemFormTitle').textContent = '✏️ تعديل الطبق';
+  $('#itSubmitBtn').textContent = '💾 حفظ التعديلات';
+  $('#itCancelEdit').classList.remove('hidden');
+  window.scrollTo({top: $('#itemFormTitle').offsetTop - 80, behavior:'smooth'});
+}
+function cancelEditItem(){
+  $('#itId').value = '';
+  $('#itName').value = ''; $('#itDesc').value = ''; $('#itPrice').value = ''; clearPhoto('itImgFile', 'itImgPrev', 'itImgClear');
+  $('#itemFormTitle').textContent = '➕ زيد طبق جديد';
+  $('#itSubmitBtn').textContent = '✅ زيد الطبق';
+  $('#itCancelEdit').classList.add('hidden');
+}
+async function delItem(id){
+  if(!confirm('تحذف هاد الطبق؟')) return;
+  await Store.delItem(id);
+  renderMenuEditor();
+}
+async function toggleItem(id, avail){
+  await Store.updateItem(id, {available: avail});
+  renderMenuEditor();
+}
+
+/* ---- تبويب QR ---- */
+function drawQR(el, text, size){
+  if(!el || typeof QRCode === 'undefined') return;
+  el.innerHTML = '';
+  new QRCode(el, {text, width: size||180, height: size||180, correctLevel: QRCode.CorrectLevel.M});
+}
+function qrImgSrc(holder){
+  const img = holder.querySelector('img');
+  if(img && img.src) return img.src;
+  const cv = holder.querySelector('canvas');
+  return cv ? cv.toDataURL('image/png') : null;
+}
+function renderQrTab(){
+  const url = menuUrl(MY_CAFE.slug);
+  $('#qrUrl').textContent = url;
+  drawQR($('#qrHolder'), url, 180);
+}
+function downloadQR(){
+  const src = qrImgSrc($('#qrHolder'));
+  if(!src){ toast('ما لقيتش الـ QR'); return; }
+  const a = document.createElement('a');
+  a.href = src; a.download = 'menu-qr-' + MY_CAFE.slug + '.png'; a.click();
+  toast('✅ تحمّل الـ QR');
+}
+function printQR(){
+  const src = qrImgSrc($('#qrHolder'));
+  $('#printArea').innerHTML = '<h1>'+esc(MY_CAFE.name)+'</h1>'
+    + (src ? '<img src="'+src+'">' : '')
+    + '<p>امسح الكود وشوف Menu واطلب عبر واتساب</p>'
+    + '<p dir="ltr">'+esc(menuUrl(MY_CAFE.slug))+'</p>';
+  window.print();
+}
+function copyMenuLink(){
+  const url = menuUrl(MY_CAFE.slug);
+  if(navigator.clipboard){ navigator.clipboard.writeText(url).then(()=>toast('✅ تنسخ الرابط')); }
+  else prompt('نسخ الرابط:', url);
+}
+function genTableQRs(){
+  const n = Math.max(1, Math.min(50, parseInt($('#tablesCount').value) || 8));
+  const grid = $('#tableQrGrid');
+  grid.innerHTML = '';
+  for(let i = 1; i <= n; i++){
+    const cell = document.createElement('div');
+    cell.className = 'table-qr-cell';
+    setFrameBg(cell, frameBg('طاولة ' + i, MY_CAFE ? cafeBg(MY_CAFE) : LANDING_BG));
+    cell.innerHTML = '<b>🪑 الطاولة ' + i + '</b><div class="qr-holder" id="tqr-' + i + '"></div>'
+      + '<button class="btn btn-ghost btn-sm" onclick="downloadTableQR(' + i + ')">⬇️ PNG</button>';
+    grid.appendChild(cell);
+    drawQR(cell.querySelector('.qr-holder'), tableUrl(MY_CAFE.slug, i), 120);
+  }
+  $('#btnPrintTables').disabled = false;
+  toast('✅ تولّدت أكواد ' + n + ' طاولة');
+}
+function downloadTableQR(n){
+  const holder = $('#tqr-' + n);
+  if(!holder) return;
+  const src = qrImgSrc(holder);
+  if(!src){ toast('ما لقيتش الـ QR'); return; }
+  const a = document.createElement('a');
+  a.href = src; a.download = 'table-' + n + '-' + MY_CAFE.slug + '.png'; a.click();
+}
+function printTables(){
+  const n = Math.max(1, Math.min(50, parseInt($('#tablesCount').value) || 8));
+  let h = '<h1>'+esc(MY_CAFE.name)+'</h1><p>امسح الكود وشوف Menu واطلب — الطلب يوصل للمطبخ مع رقم الطاولة</p><div class="pgrid">';
+  for(let i = 1; i <= n; i++){
+    const holder = $('#tqr-' + i);
+    const src = holder ? qrImgSrc(holder) : null;
+    h += '<div class="pcell"><h2>🪑 الطاولة ' + i + '</h2>' + (src ? '<img src="'+src+'">' : '') + '</div>';
+  }
+  h += '</div>';
+  $('#printArea').innerHTML = h;
+  window.print();
+}
+
+/* ---- تبويب الاشتراك ---- */
+function renderSubTab(){
+  const st = subStatus(MY_CAFE);
+  let info = '';
+  if(MY_CAFE.is_active) info = 'اشتراكك فعال ✅ — شكراً ليك. ' + (MY_CAFE.founder ? 'أنت من الأوائل 20، سعرك مثبت للأبد.' : '');
+  else {
+    const left = daysLeft(MY_CAFE.trial_ends_at);
+    info = left > 0
+      ? 'راك في التجربة المجانية — باقي ليك ' + left + ' يوم. بعدها لازم تفعّل الاشتراك باش Menu يبقى خدام.'
+      : 'التجربة المجانية خلصت — فعّل اشتراكك باش Menu يرجع يخدم.';
+  }
+  $('#subInfo').textContent = info;
+  const msg = 'سلام، أنا صاحب مشروع "' + MY_CAFE.name + '" (' + MY_CAFE.slug + ')، حاب نفعّل اشتراك Menu QR 🍽.';
+  $('#subWaBtn').href = 'https://wa.me/' + CONFIG.WA_ISMAIL + '?text=' + encodeURIComponent(msg);
+}
+
+/* ---------------- Menu العامة ---------------- */
+async function showMenu(slug){
+  showView('menu');
+  $('#menuContent').innerHTML = '<div class="notice"><h2>جاري تحميل Menu...</h2></div>';
+  try{
+    const cafe = await Store.getCafeBySlug(slug);
+    if(!cafe){
+      $('#view-menu').classList.add('hidden');
+      $('#menuNotFound').classList.remove('hidden');
+      setPublicBg(LANDING_BG);
+      return;
+    }
+    if(isExpired(cafe)){
+      $('#view-menu').classList.add('hidden');
+      const msg = 'سلام، أنا صاحب مشروع "' + cafe.name + '"، حاب نفعّل اشتراك Menu QR 🍽.';
+      $('#expiredWaBtn').href = 'https://wa.me/' + CONFIG.WA_ISMAIL + '?text=' + encodeURIComponent(msg);
+      $('#menuExpired').classList.remove('hidden');
+      setPublicBg(cafeBg(cafe));
+      return;
+    }
+    VIEW_CAFE = cafe;
+    CART = {};
+    VIEW_CATS = await Store.listCats(cafe.id);
+    VIEW_ITEMS = (await Store.listItems(cafe.id)).filter(i => i.available);
+    Store.bumpViews(cafe); // عدّ المشاهدات (بلا ما نستنى)
+    renderMenu();
+    setPublicBg(cafeBg(cafe));
+    updateCartBar();
+  }catch(err){
+    $('#menuContent').innerHTML = '<div class="notice"><h2>❌ مشكلة في تحميل Menu</h2><p class="muted">عاود من بعد ولا جرّب Menu التجريبي.</p></div>';
+    console.error(err);
+  }
+}
+function thumbHTML(it){
+  const fb = '<span style="font-size:32px">' + esc(it.emoji || '🍽️') + '</span>';
+  if(it.image_url){
+    return '<div class="thumb"><img src="' + esc(it.image_url) + '" style="width:100%;height:100%;object-fit:cover;border-radius:12px" onerror="this.remove()">' + fb + '</div>';
+  }
+  return '<div class="thumb">' + fb + '</div>';
+}
+function renderMenu(){
+  const cafe = VIEW_CAFE;
+  let h = '<div class="menu-hero">';
+  if(cafe.logo_url) h += '<img class="logo" src="' + esc(cafe.logo_url) + '" alt="" onerror="this.style.display=\'none\'">';
+  h += '<h1>' + esc(cafe.name) + '</h1>';
+  if(cafe.tagline) h += '<p>' + esc(cafe.tagline) + '</p>';
+  h += '<div><span style="display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:99px;padding:3px 12px;font-size:13px;font-weight:700">' + cafeTypeLabel(cafe) + '</span></div>';
+  if(TABLE_NO) h += '<br><span class="table-badge">🪑 الطاولة ' + esc(TABLE_NO) + ' — طلبك يوصل للمطبخ ديركت</span>';
+  // بطاقة رقمية مدمجة: أزرار تواصل + عدد المشاهدات
+  const wa = normWA(cafe.whatsapp);
+  h += '<div class="contact-row">';
+  if(wa) h += '<a class="c-wa" href="https://wa.me/' + wa + '" target="_blank">💬 واتساب</a>';
+  if(wa) h += '<a class="c-ph" href="tel:+' + wa + '">📞 اتصال</a>';
+  if(cafe.facebook) h += '<a class="c-fb" href="' + esc(cafe.facebook) + '" target="_blank">👍 فايسبوك</a>';
+  h += '</div>';
+  h += '<div class="views-pill">👁 ' + (cafe.views || 0) + ' مشاهدة</div>';
+  h += '</div>';
+
+  h += '<div class="container"><div class="cat-nav">';
+  h += '<button class="on" onclick="filterCat(\'all\',this)">الكل</button>';
+  VIEW_CATS.forEach(c => {
+    h += '<button onclick="filterCat(\'' + esc(c.id) + '\',this)">' + esc(c.name) + '</button>';
+  });
+  h += '</div><div id="menuList" style="padding:18px 0 20px">';
+  VIEW_CATS.forEach(c => {
+    const ci = VIEW_ITEMS.filter(i => i.category_id === c.id);
+    if(!ci.length) return;
+    h += '<div class="menu-cat-card" data-cat="' + esc(c.id) + '" style="' + frameBgStyle(c.name, cafeBg(cafe)) + '"><h3>' + esc(c.name) + '</h3><div class="menu-grid">';
+    ci.forEach(it => {
+      const q = CART[it.id] || 0;
+      h += '<div class="menu-item">' + thumbHTML(it)
+        + '<div class="info"><b>' + esc(it.name) + '</b><span>' + esc(it.description || '') + '</span>'
+        + '<div class="qty"><button onclick="addQty(\'' + esc(it.id) + '\',-1)">−</button><b>' + q + '</b><button onclick="addQty(\'' + esc(it.id) + '\',1)">+</button></div></div>'
+        + '<span class="price">' + esc(fmtPrice(it.price, cafe.currency)) + '</span></div>';
+    });
+    h += '</div></div>';
+  });
+  if(!VIEW_ITEMS.length) h += '<div class="menu-cat-card" style="' + frameBgStyle('', cafeBg(cafe)) + '"><p class="muted" style="text-align:center;padding:30px">Menu مازال فارغ — صاحب المشروع راح يزيد الأطباق قريباً.</p></div>';
+  h += '</div></div>';
+  $('#menuContent').innerHTML = h;
+}
+function filterCat(catId, btn){
+  $$('.cat-nav button').forEach(b => b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  $$('#menuList [data-cat]').forEach(el => {
+    el.style.display = (catId === 'all' || el.getAttribute('data-cat') === catId) ? '' : 'none';
+  });
+}
+
+/* ---------------- السلة والطلب ---------------- */
+function addQty(id, d){
+  const it = VIEW_ITEMS.find(x => x.id === id);
+  if(!it) return;
+  CART[id] = Math.max(0, (CART[id] || 0) + d);
+  if(CART[id] === 0) delete CART[id];
+  renderMenu();
+  // رجّع الفلتر اللي كان مختار
+  const onBtn = document.querySelector('.cat-nav button.on');
+  if(onBtn && onBtn.textContent !== 'الكل'){
+    const catId = VIEW_CATS.find(c => c.name === onBtn.textContent)?.id;
+    if(catId) filterCat(catId, onBtn);
+  }
+  updateCartBar();
+}
+function cartLines(){
+  const lines = [];
+  let total = 0, count = 0;
+  Object.keys(CART).forEach(id => {
+    const it = VIEW_ITEMS.find(x => x.id === id);
+    if(!it) return;
+    const sub = it.price * CART[id];
+    total += sub; count += CART[id];
+    lines.push({it, qty: CART[id], sub});
+  });
+  return {lines, total, count};
+}
+function updateCartBar(){
+  const {total, count} = cartLines();
+  const bar = $('#cartBar');
+  if(!VIEW_CAFE || count === 0){ bar.classList.add('hidden'); document.body.classList.remove('has-cart'); return; }
+  bar.classList.remove('hidden');
+  document.body.classList.add('has-cart');
+  $('#cartCount').textContent = count + ' طبق';
+  $('#cartTotal').textContent = fmtPrice(total, VIEW_CAFE.currency);
+}
+function buildOrderMessage(){
+  const cafe = VIEW_CAFE;
+  const {lines, total} = cartLines();
+  let msg = '';
+  let targetWa = cafe.whatsapp;
+  if(TABLE_NO){
+    // تدفق 1: زبون في المطعم — الطلب يوصل للمطبخ مع رقم الطاولة
+    targetWa = cafe.kitchen_whatsapp || cafe.whatsapp;
+    msg = '🍽️ طلب جديد — الطاولة ' + TABLE_NO + '\n'
+      + 'المشروع: ' + cafe.name + '\n'
+      + '------------------------\n';
+  } else {
+    // تدفق 2: زبون من الدار — توصيل ولا يجي يديها
+    const type = (document.querySelector('input[name="orderType"]:checked') || {}).value || 'delivery';
+    const name = $('#ordName').value.trim();
+    const phone = $('#ordPhone').value.trim();
+    const addr = $('#ordAddr').value.trim();
+    if(type === 'delivery'){
+      msg = '🏠 طلب توصيل — ' + cafe.name + '\n'
+        + 'الاسم: ' + name + '\n'
+        + 'التيليفون: ' + phone + '\n'
+        + 'العنوان: ' + addr + '\n'
+        + '------------------------\n';
+    } else {
+      msg = '🛍️ طلب استلام (نجي نديها) — ' + cafe.name + '\n'
+        + 'الاسم: ' + name + '\n'
+        + 'التيليفون: ' + phone + '\n'
+        + '------------------------\n';
+    }
+  }
+  lines.forEach(l => { msg += '• ' + l.it.name + ' × ' + l.qty + ' = ' + fmtPrice(l.sub, cafe.currency) + '\n'; });
+  msg += '------------------------\nالمجموع: ' + fmtPrice(total, cafe.currency);
+  return {msg, targetWa};
+}
+function openOrderSheet(){
+  const {lines, total} = cartLines();
+  if(!lines.length){ toast('السلة فارغة — زيد أطباق أولاً'); return; }
+  const cafe = VIEW_CAFE;
+  $('#orderTitle').textContent = TABLE_NO ? ('🪑 طلب الطاولة ' + TABLE_NO) : '🛒 طلبك';
+  $('#orderHint').textContent = TABLE_NO
+    ? 'طلبك راح يوصل للمطبخ ديركت مع رقم الطاولة — بلا ما تنادي النادل.'
+    : 'عبّي معلوماتك، والطلب يوصل للمشروع عبر واتساب.';
+  $('#homeFields').classList.toggle('hidden', !!TABLE_NO);
+  let h = '';
+  lines.forEach(l => {
+    h += '<div class="order-line"><span>' + esc(l.it.name) + ' × ' + l.qty + '</span><b>' + esc(fmtPrice(l.sub, cafe.currency)) + '</b></div>';
+  });
+  $('#orderLines').innerHTML = h;
+  $('#orderTotal').textContent = fmtPrice(total, cafe.currency);
+  refreshOrderLink();
+  $('#orderSheet').classList.remove('hidden');
+}
+function toggleOrderType(){
+  const type = (document.querySelector('input[name="orderType"]:checked') || {}).value || 'delivery';
+  $('#ordAddrRow').classList.toggle('hidden', type !== 'delivery');
+  refreshOrderLink();
+}
+function refreshOrderLink(){
+  if(TABLE_NO){
+    const {msg, targetWa} = buildOrderMessage();
+    $('#orderConfirmBtn').href = 'https://wa.me/' + normWA(targetWa) + '?text=' + encodeURIComponent(msg);
+    return;
+  }
+  const name = $('#ordName').value.trim();
+  const phone = $('#ordPhone').value.trim();
+  const type = (document.querySelector('input[name="orderType"]:checked') || {}).value || 'delivery';
+  const addr = $('#ordAddr').value.trim();
+  const btn = $('#orderConfirmBtn');
+  if(!name || !phone || (type === 'delivery' && !addr)){
+    btn.href = '#';
+    btn.onclick = e => { e.preventDefault(); toast('عمّر الاسم والتيليفون' + (type === 'delivery' ? ' والعنوان' : '') + ' أولاً'); };
+    return;
+  }
+  btn.onclick = null;
+  const {msg, targetWa} = buildOrderMessage();
+  btn.href = 'https://wa.me/' + normWA(targetWa) + '?text=' + encodeURIComponent(msg);
+}
+function closeOrderSheet(){
+  $('#orderSheet').classList.add('hidden');
+}
+['ordName','ordPhone','ordAddr'].forEach(id => {
+  document.addEventListener('input', e => { if(e.target && e.target.id === id) refreshOrderLink(); });
+});
+
+/* ---------------- التهيئة ---------------- */
+window.addEventListener('DOMContentLoaded', async () => {
+  await detectMode();
+  if(MODE === 'sb'){
+    try{
+      const {data} = await sb.auth.getSession();
+      USER = data.session ? data.session.user : null;
+    }catch(e){ USER = null; }
+  } else {
+    USER = LS.get('user', null);
+  }
+  updateAuthUI();
+  const params = new URLSearchParams(location.search);
+  const cafe = params.get('cafe');
+  const table = params.get('table');
+  TABLE_NO = table ? String(table).trim() : null;
+  if(cafe) showMenu(cafe);
+  else showView('landing');
+});
+</script>
+</body>
+</html>
