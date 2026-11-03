@@ -203,6 +203,30 @@ body.has-cart{padding-bottom:78px}
 #orderSheet .btn-ghost{background:transparent;color:#F2EFE6;border-color:#2A3D31}
 #orderSheet .btn-ghost:hover{border-color:#E8A317}
 .sheet-handle{width:44px;height:5px;border-radius:99px;background:#2A3D31;margin:0 auto 12px}
+/* ---------- الأنيميشن ---------- */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.menu-item.anim-in{animation:fadeUp .45s ease both;animation-delay:calc(var(--i,0)*45ms)}
+.sheet{opacity:0;transition:opacity .3s ease}
+.sheet.open{opacity:1}
+.sheet-in{transform:translateY(100%);transition:transform .35s cubic-bezier(.32,.72,.35,1)}
+.sheet.open .sheet-in{transform:translateY(0)}
+@keyframes cartPop{0%{transform:scale(1)}40%{transform:scale(1.045)}100%{transform:scale(1)}}
+.cart-bar.pop{animation:cartPop .3s ease}
+@keyframes heroIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+.menu-hero.anim-in{animation:heroIn .55s ease both}
+.menu-cat-card.anim-in{animation:fadeUp .5s ease both;animation-delay:calc(var(--ci,0)*70ms)}
+.qty button{transition:transform .12s ease}
+.qty button:active{transform:scale(.82)}
+.btn:active{transform:scale(.97)}
+#cartCount.pop{display:inline-block;animation:cartPop .3s ease}
+@keyframes bgDrift{from{transform:scale(1)}to{transform:scale(1.08)}}
+#bgLayer{animation:bgDrift 26s ease-in-out infinite alternate}
+@keyframes shine{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.shine{position:relative;overflow:hidden}
+.shine::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.38) 50%,transparent 65%);background-size:200% 100%;animation:shine 2.8s linear infinite;pointer-events:none}
+@keyframes flyUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-36px) scale(1.2)}}
+.fly-plus{position:absolute;top:-4px;right:18px;color:#E8A317;font-weight:900;font-size:18px;animation:flyUp .8s ease-out forwards;pointer-events:none;z-index:61}
+@media (prefers-reduced-motion:reduce){.menu-item.anim-in,.menu-hero.anim-in,.menu-cat-card.anim-in,.sheet,.sheet-in,.cart-bar.pop,#cartCount.pop{animation:none!important;transition:none!important}.qty button,.btn{transition:none!important}#bgLayer,.shine::after,.fly-plus{animation:none!important}}
 /* ---------- footer ---------- */
 footer{margin-top:auto;background:var(--green-950);color:#a8a29e;padding:28px 0;text-align:center;font-size:13px}
 footer b{color:#fff}
@@ -606,7 +630,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
 
 <div id="cartBar" class="cart-bar hidden">
   <div class="tot"><span id="cartCount">0 طبق</span><b id="cartTotal">0 دج</b></div>
-  <button class="btn btn-amber" onclick="openOrderSheet()">💬 أطلب عبر واتساب</button>
+  <button class="btn btn-amber shine" onclick="openOrderSheet()">💬 أطلب عبر واتساب</button>
 </div>
 
 <!-- ورقة الطلب -->
@@ -626,7 +650,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
       <div class="form-row"><label>رقم التيليفون *</label><input id="ordPhone" dir="ltr" placeholder="0550123456"></div>
       <div class="form-row" id="ordAddrRow"><label>العنوان *</label><input id="ordAddr" placeholder="الحي، الشارع، رقم الدار..."></div>
     </div>
-    <a id="orderConfirmBtn" class="btn btn-amber btn-block" href="#" target="_blank" style="margin-top:6px">✅ أرسل الطلب واتساب</a>
+    <a id="orderConfirmBtn" class="btn btn-amber btn-block shine" href="#" target="_blank" style="margin-top:6px">✅ أرسل الطلب واتساب</a>
     <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="closeOrderSheet()">إلغاء</button>
   </div>
 </div>
@@ -1475,7 +1499,9 @@ function thumbHTML(it){
 }
 function renderMenu(){
   const cafe = VIEW_CAFE;
-  let h = '<div class="menu-hero">';
+  const firstRender = !window._menuAnimDone;
+  window._menuAnimDone = true;
+  let h = '<div class="menu-hero' + (firstRender ? ' anim-in' : '') + '">';
   if(cafe.logo_url) h += '<img class="logo" src="' + esc(cafe.logo_url) + '" alt="" onerror="this.style.display=\'none\'">';
   h += '<h1>' + esc(cafe.name) + '</h1>';
   if(cafe.tagline) h += '<p>' + esc(cafe.tagline) + '</p>';
@@ -1497,13 +1523,13 @@ function renderMenu(){
     h += '<button onclick="filterCat(\'' + esc(c.id) + '\',this)">' + esc(c.name) + '</button>';
   });
   h += '</div><div id="menuList" style="padding:18px 0 20px">';
-  VIEW_CATS.forEach(c => {
+  VIEW_CATS.forEach((c, ciIdx) => {
     const ci = VIEW_ITEMS.filter(i => i.category_id === c.id);
     if(!ci.length) return;
-    h += '<div class="menu-cat-card" data-cat="' + esc(c.id) + '" style="' + frameBgStyle(c.name, cafeBg(cafe)) + '"><h3>' + esc(c.name) + '</h3><div class="menu-grid">';
-    ci.forEach(it => {
+    h += '<div class="menu-cat-card' + (firstRender ? ' anim-in' : '') + '" data-cat="' + esc(c.id) + '" style="--ci:' + ciIdx + ';' + frameBgStyle(c.name, cafeBg(cafe)) + '"><h3>' + esc(c.name) + '</h3><div class="menu-grid">';
+    ci.forEach((it, idx) => {
       const q = CART[it.id] || 0;
-      h += '<div class="menu-item">' + thumbHTML(it)
+      h += '<div class="menu-item' + (firstRender ? ' anim-in' : '') + '" style="--i:' + idx + '">' + thumbHTML(it)
         + '<div class="info"><b>' + esc(it.name) + '</b><span>' + esc(it.description || '') + '</span>'
         + '<div class="qty"><button onclick="addQty(\'' + esc(it.id) + '\',-1)">−</button><b>' + q + '</b><button onclick="addQty(\'' + esc(it.id) + '\',1)">+</button></div></div>'
         + '<span class="price">' + esc(fmtPrice(it.price, cafe.currency)) + '</span></div>';
@@ -1520,6 +1546,11 @@ function filterCat(catId, btn){
   $$('#menuList [data-cat]').forEach(el => {
     el.style.display = (catId === 'all' || el.getAttribute('data-cat') === catId) ? '' : 'none';
   });
+  // إعادة حركة الأطباق كي تبدل التصنيف
+  const visible = $$('#menuList [data-cat]:not([style*="none"]) .menu-item');
+  visible.forEach((el, i) => { el.classList.remove('anim-in'); el.style.setProperty('--i', i); });
+  void document.body.offsetWidth;
+  visible.forEach(el => el.classList.add('anim-in'));
 }
 
 /* ---------------- السلة والطلب ---------------- */
@@ -1536,6 +1567,15 @@ function addQty(id, d){
     if(catId) filterCat(catId, onBtn);
   }
   updateCartBar();
+  const bar = $('#cartBar');
+  if(bar && !bar.classList.contains('hidden')){ bar.classList.remove('pop'); void bar.offsetWidth; bar.classList.add('pop'); }
+  if(d > 0 && bar && !bar.classList.contains('hidden')){
+    const fp = document.createElement('span');
+    fp.className = 'fly-plus';
+    fp.textContent = '+1';
+    bar.appendChild(fp);
+    setTimeout(() => fp.remove(), 850);
+  }
 }
 function cartLines(){
   const lines = [];
@@ -1556,6 +1596,8 @@ function updateCartBar(){
   bar.classList.remove('hidden');
   document.body.classList.add('has-cart');
   $('#cartCount').textContent = count + ' طبق';
+  const cc = $('#cartCount');
+  cc.classList.remove('pop'); void cc.offsetWidth; cc.classList.add('pop');
   $('#cartTotal').textContent = fmtPrice(total, VIEW_CAFE.currency);
 }
 function buildOrderMessage(){
@@ -1638,7 +1680,10 @@ function openOrderSheet(){
   $('#orderLines').innerHTML = h;
   $('#orderTotal').textContent = fmtPrice(total, cafe.currency);
   refreshOrderLink();
-  $('#orderSheet').classList.remove('hidden');
+  const sh = $('#orderSheet');
+  sh.classList.remove('hidden');
+  void sh.offsetWidth;
+  sh.classList.add('open');
 }
 function toggleOrderType(){
   const type = (document.querySelector('input[name="orderType"]:checked') || {}).value || 'delivery';
@@ -1667,7 +1712,9 @@ function refreshOrderLink(){
   btn.href = 'https://wa.me/' + normWA(targetWa) + '?text=' + encodeURIComponent(msg);
 }
 function closeOrderSheet(){
-  $('#orderSheet').classList.add('hidden');
+  const sh = $('#orderSheet');
+  sh.classList.remove('open');
+  setTimeout(() => sh.classList.add('hidden'), 320);
 }
 ['ordName','ordPhone','ordAddr'].forEach(id => {
   document.addEventListener('input', e => { if(e.target && e.target.id === id) refreshOrderLink(); });
