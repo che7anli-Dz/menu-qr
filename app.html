@@ -96,6 +96,7 @@ section{padding:44px 0}
 .hint{font-size:13px;color:var(--muted);margin-top:6px}
 .error{background:rgba(220,38,38,.15);color:#FCA5A5;border:1px solid #7F1D1D;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:700;margin-bottom:14px}
 .okbox{background:rgba(47,163,107,.16);color:#86EFAC;border:1px solid #166534;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:700;margin-bottom:14px}
+.okbox.warn{background:rgba(232,163,23,.12);color:#E8A317;border-color:#E8A317}
 /* ---------- dashboard ---------- */
 .dash-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
 .dash-head h2{font-size:22px;font-weight:900;color:#F2EFE6}
@@ -1042,6 +1043,7 @@ function showAuth(){
   authTab('login');
   $('#authErr').classList.add('hidden');
   $('#authOk').classList.add('hidden');
+  $('#authOk').classList.remove('warn');
   showView('auth');
 }
 function authTab(mode){
@@ -1055,7 +1057,7 @@ async function doAuth(e){
   const email = $('#authEmail').value.trim();
   const pass = $('#authPass').value;
   const errBox = $('#authErr'), okBox = $('#authOk');
-  errBox.classList.add('hidden'); okBox.classList.add('hidden');
+  errBox.classList.add('hidden'); okBox.classList.add('hidden'); okBox.classList.remove('warn');
   if(!email || pass.length < 6){ errBox.textContent = 'الإيميل وكلمة السر (6 حروف على الأقل) لازمين'; errBox.classList.remove('hidden'); return; }
   try{
     if(MODE==='sb'){
@@ -1063,6 +1065,12 @@ async function doAuth(e){
         const {data, error} = await sb.auth.signUp({email, password: pass});
         if(error) throw error;
         if(data.session){ USER = data.session.user; }
+        else if(data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0){
+          // الإيميل مسجل أصلاً — Supabase ما يبعثش إيميل تأكيد جديد
+          okBox.textContent = '⚠️ هاد الإيميل مسجل أصلاً — ادخل مباشرة من تبويب «دخول»، وما راح يوصلك إيميل تأكيد جديد';
+          okBox.classList.add('warn');
+          okBox.classList.remove('hidden'); return;
+        }
         else { okBox.textContent = '✅ تسجل الحساب — تحقق من إيميلك باش تفعّلو، ومن بعد ادخل'; okBox.classList.remove('hidden'); return; }
       } else {
         const {data, error} = await sb.auth.signInWithPassword({email, password: pass});
