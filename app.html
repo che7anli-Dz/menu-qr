@@ -19,6 +19,7 @@
   --shadow:0 10px 30px rgba(0,0,0,.45); --radius:16px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:hidden;overflow-x:clip}
 html{scroll-behavior:smooth}
 body{font-family:'Cairo',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;min-height:100vh;display:flex;flex-direction:column}
 img{max-width:100%;display:block}
@@ -123,7 +124,7 @@ section{padding:44px 0}
 .dash-tabs button{flex-shrink:0;border:1.5px solid var(--line);background:#16261D;border-radius:99px;padding:8px 18px;font-weight:800;font-size:14px;color:var(--muted)}
 .dash-tabs button.on{background:var(--green-900);color:#fff;border-color:var(--green-900)}
 .item-row{display:flex;gap:12px;align-items:center;background:#16261D;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
-.item-row .thumb{width:58px;height:58px;border-radius:12px;object-fit:cover;flex-shrink:0;background:var(--cream-2);display:flex;align-items:center;justify-content:center;font-size:28px}
+.item-row .thumb{width:58px;height:58px;border-radius:12px;object-fit:cover;flex-shrink:0;background:var(--cream-2);display:flex;align-items:center;justify-content:center;font-size:28px;position:relative;overflow:hidden}
 .item-row .info{flex:1;min-width:0}
 .item-row .info b{font-size:15px;display:block}
 .item-row .info span{font-size:13px;color:var(--muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -188,7 +189,7 @@ body.dash-page header{background:rgba(10,15,12,.88);backdrop-filter:blur(10px);-
 .cat-nav button{flex-shrink:0;border:1.5px solid var(--line);background:#16261D;border-radius:99px;padding:7px 16px;font-weight:800;font-size:14px;color:var(--muted)}
 .cat-nav button.on{background:var(--green-900);color:#fff;border-color:var(--green-900)}
 .menu-item{display:flex;gap:12px;background:#16261D;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;align-items:center}
-.menu-item .thumb{width:72px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0;background:var(--cream-2);display:flex;align-items:center;justify-content:center;font-size:32px}
+.menu-item .thumb{width:72px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0;background:var(--cream-2);display:flex;align-items:center;justify-content:center;font-size:32px;position:relative;overflow:hidden}
 .menu-item .info{flex:1;min-width:0}
 .menu-item .info b{font-size:16px;display:block}
 .menu-item .info span{font-size:13px;color:var(--muted);display:block}
@@ -210,8 +211,11 @@ body.has-cart{padding-bottom:78px}
 .radio-row label{flex:1;text-align:center;border:1.5px solid #2A3D31;border-radius:12px;padding:10px;font-weight:800;cursor:pointer;margin:0;color:#F2EFE6;background:transparent}
 .radio-row input{display:none}
 .radio-row label:has(input:checked){border-color:#E8A317;background:rgba(232,163,23,.14);color:#E8A317}
-.order-line{display:flex;justify-content:space-between;font-size:14px;padding:6px 0;border-bottom:1px dashed #2A3D31}
-.order-total{display:flex;justify-content:space-between;font-weight:900;font-size:17px;padding:10px 0;color:#E8A317}
+.order-line{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:6px 0;border-bottom:1px dashed #2A3D31}
+.order-line span{min-width:0;overflow-wrap:anywhere}
+.order-line b{flex-shrink:0;white-space:nowrap}
+.order-total{display:flex;justify-content:space-between;gap:10px;font-weight:900;font-size:17px;padding:10px 0;color:#E8A317}
+.order-total span:last-child{flex-shrink:0;white-space:nowrap}
 #orderSheet .muted{color:#A8B8AC}
 #orderSheet input{background:#0F1F16;border:1px solid #2A3D31;color:#F2EFE6}
 #orderSheet input::placeholder{color:#6B7A70}
@@ -1427,7 +1431,7 @@ async function renderMenuEditor(){
     if(!ci.length) h += '<div class="empty-mini">ما كاش أطباق في هاد القسم بعد — زيد أول طبق من لتحت 👇</div>';
     ci.forEach(it => {
       h += '<div class="item-row'+(it.available?'':' off')+'">'
-        + '<div class="thumb">'+(it.image_url ? '<img src="'+esc(it.image_url)+'" style="width:100%;height:100%;object-fit:cover;border-radius:12px" onerror="this.style.display=\'none\'">' : '') + esc(it.emoji||'🍽️') + '</div>'
+        + '<div class="thumb">'+(it.image_url ? '<img src="'+esc(it.image_url)+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:12px" onerror="this.style.display=\'none\'">' : '') + esc(it.emoji||'🍽️') + '</div>'
         + '<div class="info"><b>'+esc(it.name)+'</b><span>'+esc(it.description||'')+'</span></div>'
         + '<span class="price">'+esc(fmtPrice(it.price, MY_CAFE.currency))+'</span>'
         + '<div class="row-acts">'
@@ -1659,7 +1663,7 @@ async function showMenu(slug){
 function thumbHTML(it){
   const fb = '<span style="font-size:32px">' + esc(it.emoji || '🍽️') + '</span>';
   if(it.image_url){
-    return '<div class="thumb"><img src="' + esc(it.image_url) + '" style="width:100%;height:100%;object-fit:cover;border-radius:12px" onerror="this.remove()">' + fb + '</div>';
+    return '<div class="thumb"><img src="' + esc(it.image_url) + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:12px" onerror="this.remove()">' + fb + '</div>';
   }
   return '<div class="thumb">' + fb + '</div>';
 }
