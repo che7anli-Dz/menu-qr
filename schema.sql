@@ -272,3 +272,22 @@ grant delete on menu_orders to authenticated;
 -- ================= القسم 12: عدد طاولات المشروع =================
 -- باش سطر الطاولات يبين كل الطاولات ديما (ماشي غير اللي طلبت منها)، والعدد يتحفظ في المشروع
 alter table menu_cafes add column if not exists tables_count integer not null default 8;
+
+-- ================= القسم 13: لوحة المالك السرية (تفعيل الاشتراكات) =================
+-- التفعيل غير من حساب Ismail: الدالة SECURITY DEFINER تمشي بـ role postgres،
+-- فالـ trigger (اللي يبلوكي role authenticated) ما يمنعهاش، و auth.uid() يتحقق من المتصل.
+create or replace function admin_set_cafe_active(p_cafe_id uuid, p_active boolean)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if auth.uid() is null or auth.uid() <> '19836394-bfd2-4468-b32e-c08596564826'::uuid then
+    raise exception 'not allowed';
+  end if;
+  update menu_cafes set is_active = p_active where id = p_cafe_id;
+  return found;
+end;
+$$;
+grant execute on function admin_set_cafe_active(uuid, boolean) to authenticated;

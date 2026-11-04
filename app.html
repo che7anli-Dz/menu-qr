@@ -364,7 +364,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
 <header>
   <div class="header-in">
     <a class="brand" href="#" onclick="goHome();return false">
-      <img src="logo.svg" alt="Menu QR 🍽">
+      <img id="appLogo" src="logo.svg" alt="Menu QR 🍽" onclick="onLogoTap(event)">
       <span>Menu QR 🍽<small>Menu إلكتروني لمطعمك أو مقهاك</small></span>
     </a>
     <div class="nav-btns">
@@ -648,6 +648,20 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
     </div>
   </section>
 
+  <!-- ============ لوحة المالك السرية (3 نقرات على اللوغو) ============ -->
+  <section id="view-owner" class="hidden">
+    <div class="container">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <h3 style="margin:0">👑 لوحة المالك</h3>
+          <button class="btn btn-ghost btn-sm" onclick="goHome()">← رجوع للرئيسية</button>
+        </div>
+        <p class="muted" style="margin:8px 0 0">غير ليك — فعّل ولا وقّف اشتراك أي مشروع من هنا، بلا ما تدخل Supabase.</p>
+      </div>
+      <div id="ownerList" style="margin-top:16px"></div>
+    </div>
+  </section>
+
   <!-- ============ Menu العامة ============ -->
   <section id="view-menu" class="hidden" style="padding-top:0">
     <div id="menuContent"></div>
@@ -726,6 +740,7 @@ const CONFIG = {
   SB_URL: 'https://chosrqzpuczmirrxmnkf.supabase.co',   // نفس مشروع تسوق واربح / كَلَك / الذيب
   SB_KEY: 'sb_publishable__e-8by0NKHyY-mnRowNtqg_zRr8Fq_q', // مفتاح عمومي (publishable) — آمن في كود العميل
   WA_ISMAIL: '213797475073',  // واتساب Ismail — تفعيل الاشتراكات يدوياً
+  OWNER_UID: '19836394-bfd2-4468-b32e-c08596564826', // حساب Ismail في Supabase — غير هو يقدر يفعّل من لوحة المالك
   TRIAL_DAYS: 14,
   LOGO: 'logo.svg'            // اللوغو: بدّل ملف logo.svg برك
 };
@@ -909,6 +924,15 @@ const Store = {
     // رجوع للتجريبي المحلي (المطعم التجريبي يخدم دايماً بلا تسجيل)
     seedLocal();
     return LS.get('cafes', []).find(c => c.slug === slug) || null;
+  },
+  async listCafes(){
+    if(MODE==='sb'){
+      const {data, error} = await sb.from('menu_cafes').select('id,name,slug,is_active,trial_ends_at,created_at').order('created_at',{ascending:false});
+      if(error) throw error;
+      return data || [];
+    }
+    seedLocal();
+    return LS.get('cafes', []);
   },
   async getMyCafe(ownerId){
     if(MODE==='sb'){
@@ -1144,15 +1168,59 @@ function setDashBg(url){
 function showView(id){
   if(id === 'landing'){ setPublicBg(LANDING_BG); applyLandingFrameBgs(); }
   else if(id === 'auth') setDashBg(LANDING_BG);
-  else if(id === 'dash' || id === 'kitchen') setDashBg(MY_CAFE ? cafeBg(MY_CAFE) : LANDING_BG);
+  else if(id === 'dash' || id === 'kitchen' || id === 'owner') setDashBg(MY_CAFE ? cafeBg(MY_CAFE) : LANDING_BG);
   // 'menu': الخلفية تتحدد في showMenu حسب نوع المحل
-  ['landing','auth','dash','menu','kitchen'].forEach(v => $('#view-'+v).classList.add('hidden'));
+  ['landing','auth','dash','menu','kitchen','owner'].forEach(v => $('#view-'+v).classList.add('hidden'));
   $('#menuNotFound').classList.add('hidden');
   $('#menuExpired').classList.add('hidden');
   $('#cartBar').classList.add('hidden');
   document.body.classList.remove('has-cart');
   if(id) $('#view-'+id).classList.remove('hidden');
   window.scrollTo(0,0);
+}
+
+/* ---------------- لوحة المالك السرية (3 نقرات على اللوغو) ---------------- */
+let _logoTaps = 0, _logoTapTimer = null;
+function onLogoTap(e){
+  _logoTaps++;
+  clearTimeout(_logoTapTimer);
+  _logoTapTimer = setTimeout(() => { _logoTaps = 0; }, 1500);
+  if(_logoTaps >= 3){
+    _logoTaps = 0;
+    e.preventDefault(); e.stopPropagation();
+    openOwnerPanel();
+  }
+}
+async function openOwnerPanel(){
+  showView('owner');
+  const box = $('#ownerList');
+  box.innerHTML = '<div class="empty-state">جاري تحميل المشاريع...</div>';
+  if(MODE !== 'sb'){ box.innerHTML = '<div class="empty-state">هاد اللوحة تخدم غير مع القاعدة الحية — سجل الدخول أولاً.</div>'; return; }
+  const {data: {user}} = await sb.auth.getUser();
+  if(!user){ box.innerHTML = '<div class="empty-state">سجل الدخول بحسابك أولاً باش تفتح اللوحة.<br><br><button class="btn" onclick="showAuth()">دخول / تسجيل</button></div>'; return; }
+  if(user.id !== CONFIG.OWNER_UID){ box.innerHTML = '<div class="empty-state">🔒 هاد اللوحة غير لصاحب المنصة.</div>'; return; }
+  renderOwnerList();
+}
+async function renderOwnerList(){
+  const box = $('#ownerList');
+  try{
+    const cafes = await Store.listCafes();
+    if(!cafes.length){ box.innerHTML = '<div class="empty-state">ما كاش مشاريع بعد.</div>'; return; }
+    box.innerHTML = cafes.map(c => {
+      const left = daysLeft(c.trial_ends_at);
+      const st = c.is_active ? '<span class="pill" style="background:#14532d;color:#bbf7d0">✅ مفعّل</span>' : (left > 0 ? '<span class="pill pill-amber">تجربة — باقي ' + left + ' يوم</span>' : '<span class="pill" style="background:#7f1d1d;color:#fecaca">⏸️ منتهي</span>');
+      return '<div class="item-row"><div class="info"><b>' + esc(c.name) + '</b><span>/' + esc(c.slug) + '</span></div>' + st + '<div class="row-acts"><button class="btn btn-sm" style="background:' + (c.is_active ? '#7f1d1d;color:#fff' : '#14532d;color:#fff') + '" onclick="toggleCafeActive(\'' + esc(c.id) + '\',' + (!c.is_active) + ',this)">' + (c.is_active ? '⏸️ وقّف' : '✅ فعّل') + '</button></div></div>';
+    }).join('');
+  }catch(err){ box.innerHTML = '<div class="empty-state">❌ ' + esc(err.message || err) + '</div>'; }
+}
+async function toggleCafeActive(id, active, btn){
+  if(btn) btn.disabled = true;
+  try{
+    const {data, error} = await sb.rpc('admin_set_cafe_active', {p_cafe_id: id, p_active: active});
+    if(error) throw error;
+    toast(active ? '✅ تفعّل المشروع' : '⏸️ توقّف المشروع');
+    renderOwnerList();
+  }catch(err){ toast('❌ ' + (err.message || err)); if(btn) btn.disabled = false; }
 }
 function goHome(){
   history.pushState({}, '', location.pathname);
