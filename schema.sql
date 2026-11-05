@@ -291,3 +291,15 @@ begin
 end;
 $$;
 grant execute on function admin_set_cafe_active(uuid, boolean) to authenticated;
+
+-- ================= القسم 14: منيو بالصورة =================
+-- نوع المنيو: 'detailed' (أطباق + أسعار + سلة) ولا 'photo' (صور المنيو المكتوب + طلب نص حر)
+-- الصور: مصفوفة روابط (Supabase Storage) — في الوضع التجريبي المحلي base64 في localStorage
+alter table menu_cafes add column if not exists menu_type text not null default 'detailed' check (menu_type in ('detailed','photo'));
+alter table menu_cafes add column if not exists photos jsonb not null default '[]'::jsonb;
+
+-- Storage (يتدار من Supabase Dashboard → Storage، ماشي من SQL):
+-- bucket اسمو `menu-photos` — عام (public) للقراءة؛ الكتابة غير للمستخدمين المسجلين.
+-- التطبيق يرفع الصور لـ `menu-photos/<cafe_id>/<uid>.jpg` ويحفظ الروابط العامة في menu_cafes.photos.
+-- سياسات مقترحة للـ bucket: SELECT للكل (public)؛ INSERT/UPDATE/DELETE لـ authenticated.
+-- الكتابة على عمود photos محمية أصلاً بـ RLS تاع menu_cafes (غير مالك المشروع).

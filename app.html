@@ -67,6 +67,7 @@ section{padding:44px 0}
 .grid-3{grid-template-columns:repeat(3,1fr)}
 .grid-2{grid-template-columns:repeat(2,1fr)}
 .card{background:#16261D;border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+#itemAddCard{scroll-margin-top:76px}
 .feat{text-align:center}
 .feat .ic{font-size:38px;margin-bottom:8px}
 .feat h3{font-size:17px;font-weight:800;margin-bottom:4px;color:#F2EFE6}
@@ -341,6 +342,24 @@ body.public-page .menu-hero h1{text-shadow:0 2px 14px rgba(0,0,0,.65),0 1px 4px 
 body.public-page .hero p,
 body.public-page .menu-hero p{color:#f5f5f4;text-shadow:0 1px 6px rgba(0,0,0,.6)}
 body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+/* ---------- منيو بالصورة: معرض + تكبير ---------- */
+.photo-gallery{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 2px 12px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.photo-gallery .pg-item{flex:0 0 88%;scroll-snap-align:center}
+.photo-gallery img{width:100%;max-height:440px;object-fit:contain;border-radius:16px;border:1px solid var(--line);background:#0F1F16;cursor:zoom-in;display:block}
+.photo-dots{display:flex;gap:6px;justify-content:center;margin:2px 0 8px}
+.photo-dots i{width:8px;height:8px;border-radius:99px;background:#2A3D31;display:block}
+.photo-dots i.on{background:#E8A317}
+.photo-note{display:inline-flex;align-items:center;gap:6px;background:rgba(232,163,23,.16);border:1px solid rgba(232,163,23,.5);color:#FCD34D;font-weight:800;font-size:14px;border-radius:99px;padding:6px 16px;margin:10px 0 4px}
+.photo-order textarea{min-height:96px;resize:vertical}
+#photoLightbox{position:fixed;inset:0;z-index:120;background:rgba(0,0,0,.94);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:16px}
+#photoLightbox img{max-width:94vw;max-height:80vh;object-fit:contain;border-radius:12px;touch-action:none;will-change:transform}
+#photoLightbox .lb-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center}
+#photoLightbox .lb-bar button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:99px;padding:8px 18px;font-weight:800;font-size:14px}
+#photoLightbox .lb-bar span{color:#fff;font-weight:800;min-width:52px;text-align:center}
+.photo-thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:12px}
+.photo-thumb{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.photo-thumb img{width:100%;height:110px;object-fit:cover;display:block}
+.photo-thumb button{position:absolute;top:6px;left:6px;background:rgba(0,0,0,.65);color:#fff;border:none;border-radius:99px;width:26px;height:26px;font-size:13px;line-height:1}
 /* ---------- print ---------- */
 #printArea{display:none}
 @media print{
@@ -397,6 +416,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
           <button class="btn btn-amber" onclick="showAuth()">🚀 ابدأ مجاناً — 14 يوم</button>
           <button class="btn btn-ghost" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)" onclick="openDemoMenu()">🍽️ شوف Menu تجريبي</button>
         </div>
+        <p style="margin-top:14px"><a href="#" onclick="openDemoPhotoMenu();return false" style="color:#FCD34D;font-weight:800">📸 جرّب منيو بالصورة — مقهى الديوان</a></p>
       </div>
     </div>
 
@@ -495,6 +515,13 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
         <form onsubmit="createCafe(event)">
           <div class="form-row"><label>اسم المطعم أو المقهى *</label><input id="cfName" required placeholder="مثال: مطعم الديوان"></div>
           <div class="form-row"><label>نوع المحل *</label><select id="cfType"><option value="restaurant">🍽️ مطعم</option><option value="cafe">☕ مقهى</option><option value="patisserie">🍰 باتيسري</option><option value="fastfood">🍔 فاست فود</option><option value="snack">🥪 سناك</option><option value="juice">🧃 عصير</option></select><p class="hint">خلفية Menu تتبدل حسب نوع المحل تاعك.</p></div>
+          <div class="form-row"><label>نوع المنيو *</label>
+            <div class="radio-row">
+              <label><input type="radio" name="cfMenuType" value="detailed" checked><span>📋 منيو مفصلة</span></label>
+              <label><input type="radio" name="cfMenuType" value="photo"><span>📸 منيو بالصورة</span></label>
+            </div>
+            <p class="hint">منيو مفصلة: تكتب الأطباق والأسعار واحد بواحد. منيو بالصورة: تصوّر المنيو المكتوب تاعك برك — بلا كتابة.</p>
+          </div>
           <div class="form-row"><label>الرابط (slug) *</label><input id="cfSlug" required dir="ltr" placeholder="diwan"><p class="hint">الرابط تاع Menu تاعك راح يكون: <span id="slugPreview" dir="ltr">…?cafe=diwan</span> — حروف وأرقام وشرطات برك.</p></div>
           <div class="form-row"><label>رقم الواتساب *</label><input id="cfWa" required dir="ltr" placeholder="0550123456"><p class="hint">رقم تواصل المطعم — يظهر في Menu باش الزبون يعيطلك ولا يبعثلك واتساب.</p></div>
           <div class="form-row"><label><input type="checkbox" id="cfDelivery" style="width:auto"> 🚚 كاين توصيل للدار؟</label><p class="hint">إذا فعّلتها، الزبون اللي من الدار يكتب رقم هاتفو مع الطلب باش تعيطلو وتكونفيرمي معاه.</p></div>
@@ -524,14 +551,26 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
 
         <!-- تبويب Menu -->
         <div id="tabMenu">
-          <div class="card" style="margin-bottom:16px" data-frame="أطباق">
+          <div id="photoMenuCard" class="card hidden" style="margin-bottom:16px" data-frame="صور المنيو">
+            <h3 style="margin-bottom:6px">📸 صور المنيو</h3>
+            <p class="muted" style="margin-bottom:12px">صوّر المنيو المكتوب تاعك (صفحة ولا زوج) — الزبون يشوف الصور ويكتب طلبو كنص حر. الأسعار تبان في الصورة.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <label for="menuPhotosCam" class="btn btn-amber" style="cursor:pointer">📷 صوّر بالكاميرا</label>
+              <label for="menuPhotosFile" class="btn btn-ghost" style="cursor:pointer">🖼️ اختار من الغاليري</label>
+            </div>
+            <input type="file" id="menuPhotosCam" accept="image/*" capture="environment" class="hidden" onchange="onMenuPhotosFile(this)">
+            <input type="file" id="menuPhotosFile" accept="image/*" multiple class="hidden" onchange="onMenuPhotosFile(this)">
+            <div id="photoThumbs" class="photo-thumbs"></div>
+            <p class="hint" style="margin-top:10px">الحد الأقصى 6 صور. في الوضع التجريبي الصور تتحفظ في جهازك برك؛ مع القاعدة الحية تترفع لـ Supabase Storage.</p>
+          </div>
+          <div id="catAddCard" class="card" style="margin-bottom:16px" data-frame="أطباق">
             <form onsubmit="addCategory(event)" style="display:flex;gap:8px;flex-wrap:wrap">
               <input id="catName" required placeholder="اسم قسم جديد: أطباق رئيسية، مشروبات، حلويات..." style="flex:1;min-width:180px">
               <button class="btn">+ زيد قسم</button>
             </form>
           </div>
           <div id="menuEditor"></div>
-          <div class="card" style="margin-top:16px" data-frame="طبق">
+          <div id="itemAddCard" class="card" style="margin-top:16px" data-frame="طبق">
             <h3 style="margin-bottom:12px" id="itemFormTitle">➕ زيد طبق جديد</h3>
             <form onsubmit="saveItem(event)">
               <input type="hidden" id="itId" value="">
@@ -540,7 +579,6 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
               <div class="form-row"><label>الوصف</label><input id="itDesc" placeholder="وصف قصير يشهي الزبون"></div>
               <div style="display:flex;gap:10px;flex-wrap:wrap">
                 <div class="form-row" style="flex:1;min-width:140px"><label>السعر *</label><input id="itPrice" type="number" min="0" step="any" required placeholder="450"></div>
-                <div class="form-row" style="flex:1;min-width:140px"><label>إيموجي</label><select id="itEmoji"><option>🍲</option><option>🍕</option><option>🍔</option><option>🥪</option><option>🥗</option><option>☕</option><option>🥤</option><option>🍰</option><option>🍩</option><option>🧃</option><option>🍵</option><option>🍹</option><option>🍪</option><option>🥛</option><option>🍦</option></select></div>
               </div>
               <div class="form-row"><label>صورة الطبق (اختياري)</label>
               <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
@@ -583,6 +621,13 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
             <form onsubmit="saveCafe(event)">
               <div class="form-row"><label>اسم المطعم أو المقهى *</label><input id="edName" required></div>
               <div class="form-row"><label>نوع المحل *</label><select id="edType"><option value="restaurant">🍽️ مطعم</option><option value="cafe">☕ مقهى</option><option value="patisserie">🍰 باتيسري</option><option value="fastfood">🍔 فاست فود</option><option value="snack">🥪 سناك</option><option value="juice">🧃 عصير</option></select><p class="hint">خلفية Menu تتبدل حسب نوع المحل تاعك.</p></div>
+              <div class="form-row"><label>نوع المنيو *</label>
+                <div class="radio-row">
+                  <label><input type="radio" name="edMenuType" value="detailed" checked><span>📋 منيو مفصلة</span></label>
+                  <label><input type="radio" name="edMenuType" value="photo"><span>📸 منيو بالصورة</span></label>
+                </div>
+                <p class="hint">منيو بالصورة: الزبون يشوف صور المنيو ويكتب طلبو كنص حر — بلا سلة.</p>
+              </div>
               <div class="form-row"><label>الرابط (slug) *</label><input id="edSlug" required dir="ltr"><p class="hint">تبديل الرابط يبدّل الـ QR تاعك — عاود طبعو من بعد.</p></div>
               <div class="form-row"><label>رقم الواتساب *</label><input id="edWa" required dir="ltr"></div>
               <div class="form-row"><label><input type="checkbox" id="edDelivery" style="width:auto"> 🚚 كاين توصيل للدار؟</label><p class="hint">إذا فعّلتها، الزبون اللي من الدار يكتب رقم هاتفو مع الطلب باش تعيطلو وتكونفيرمي معاه.</p></div>
@@ -714,6 +759,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
       <h3 style="margin-bottom:4px" id="orderTitle">🛒 طلبك</h3>
       <p class="muted" id="orderHint" style="margin-bottom:14px"></p>
       <div id="orderLines"></div>
+      <div id="photoOrderBox" class="hidden" style="background:#0F1F16;border:1px solid #2A3D31;border-radius:12px;padding:12px;margin-bottom:6px"><b style="font-size:14px">📝 طلبك:</b><p id="photoOrderTextView" style="white-space:pre-wrap;overflow-wrap:anywhere;margin-top:4px"></p></div>
       <div class="order-total"><span>المجموع</span><span id="orderTotal"></span></div>
       <div id="homeFields">
         <div class="radio-row" style="margin-top:14px">
@@ -733,6 +779,17 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
       <p class="muted" id="orderSuccessMsg"></p>
       <button class="btn btn-block" style="margin-top:14px" onclick="closeOrderSheet()">تم</button>
     </div>
+  </div>
+</div>
+
+<!-- تكبير صورة المنيو (fullscreen) -->
+<div id="photoLightbox" class="hidden" onclick="if(event.target===this)closePhotoZoom()">
+  <img id="lbImg" src="" alt="صورة المنيو">
+  <div class="lb-bar">
+    <button onclick="photoZoomNav(-1)">‹ السابق</button>
+    <span id="lbCount"></span>
+    <button onclick="photoZoomNav(1)">التالي ›</button>
+    <button onclick="closePhotoZoom()">✖ إغلاق</button>
   </div>
 </div>
 
@@ -800,7 +857,7 @@ function subStatus(cafe){
   return {label:'الاشتراك منتهي', cls:'pill-red'};
 }
 function isExpired(cafe){
-  if(!cafe || cafe.id === 'demo') return false;
+  if(!cafe || cafe.id === 'demo' || cafe.id === 'demo2') return false;
   return !cafe.is_active && daysLeft(cafe.trial_ends_at) <= 0;
 }
 
@@ -819,6 +876,11 @@ const LANDING_BG = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836
 function cafeTypeOf(cafe){ return (cafe && CAFE_TYPES[cafe.type]) ? cafe.type : 'restaurant'; }
 function cafeBg(cafe){ return CAFE_TYPES[cafeTypeOf(cafe)].bg; }
 function cafeTypeLabel(cafe){ return CAFE_TYPES[cafeTypeOf(cafe)].label; }
+
+/* ---------------- نوع المنيو: مفصلة ولا بالصورة ---------------- */
+function menuTypeOf(cafe){ return (cafe && cafe.menu_type === 'photo') ? 'photo' : 'detailed'; }
+function isPhotoMenu(){ return !!(VIEW_CAFE && menuTypeOf(VIEW_CAFE) === 'photo'); }
+function cafePhotos(cafe){ const p = cafe && cafe.photos; return Array.isArray(p) ? p.filter(x => x) : []; }
 
 /* ---------------- خلفيات داخلية للإطارات حسب الكلمة ----------------
    كل بطاقة/إطار ياخذ صورة خلفية داخلية حسب موضوعو (الكلمة).
@@ -868,11 +930,22 @@ function applyLandingFrameBgs(){
    ديمو بMenu مطعم حقيقي (أطباق رئيسية + مشروبات + حلويات، أسعار بالدج)
    باش يبين أن المنتج ماشي غير للمقاهي. */
 const DEMO_CAFE = {
-  id:'demo', owner_id:'demo', name:'مطعم الديوان', slug:'diwan', type:'restaurant',
+  id:'demo', owner_id:'demo', name:'مطعم الديوان', slug:'diwan', type:'restaurant', menu_type:'detailed', photos:[],
   tagline:'أكل تقليدي وعصري — التوصيل متوفر', delivery_enabled:true,
   logo_url:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=400&q=60', whatsapp:'0797475073',
   phone:'0550123456', facebook:'https://facebook.com/diwan.restaurant',
   currency:'دج', views:128,
+  trial_ends_at: new Date(Date.now()+14*86400000).toISOString(),
+  is_active:false, founder:false, created_at:new Date().toISOString()
+};
+/* ديمو ثاني صغير: مقهى الديوان — منيو بالصورة (صورة لوحة منيو حقيقية من Unsplash) */
+const DEMO_CAFE2 = {
+  id:'demo2', owner_id:'demo', name:'مقهى الديوان', slug:'diwan-cafe', type:'cafe', menu_type:'photo',
+  tagline:'قهوة وحلويات — شوف المنيو واكتب طلبك', delivery_enabled:true,
+  photos:['https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80'],
+  logo_url:'', whatsapp:'0797475073',
+  phone:'0550123456', facebook:'',
+  currency:'دج', views:64,
   trial_ends_at: new Date(Date.now()+14*86400000).toISOString(),
   is_active:false, founder:false, created_at:new Date().toISOString()
 };
@@ -915,9 +988,13 @@ const LS = {
 
 function seedLocal(){
   if(!LS.get('cafes', null)){
-    LS.set('cafes', [DEMO_CAFE]);
+    LS.set('cafes', [DEMO_CAFE, DEMO_CAFE2]);
     LS.set('cats', DEMO_CATS);
     LS.set('items', DEMO_ITEMS);
+  } else {
+    // الديمو الثاني (مقهى الديوان) يتزاد للي عندهم تخزين محلي قديم
+    const cafes = LS.get('cafes', []);
+    if(!cafes.some(c => c.slug === 'diwan-cafe')){ cafes.push(DEMO_CAFE2); LS.set('cafes', cafes); }
   }
 }
 function uid(){ return 'x' + Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4); }
@@ -1043,7 +1120,7 @@ const Store = {
   },
   async bumpViews(cafe){
     // عدّاد المشاهدات: دالة آمنة في Supabase، وlocalStorage في الوضع التجريبي
-    if(MODE==='sb' && cafe.id !== 'demo'){
+    if(MODE==='sb' && cafe.id !== 'demo' && cafe.id !== 'demo2'){
       try{ await sb.rpc('bump_menu_views', {p_cafe_id: cafe.id}); }catch(e){ console.warn('bump views:', e.message); }
       return;
     }
@@ -1239,6 +1316,10 @@ function openDemoMenu(){
   history.pushState({}, '', menuUrl('diwan'));
   showMenu('diwan');
 }
+function openDemoPhotoMenu(){
+  history.pushState({}, '', menuUrl('diwan-cafe'));
+  showMenu('diwan-cafe');
+}
 function openMyMenu(){
   if(!MY_CAFE) return;
   history.pushState({}, '', menuUrl(MY_CAFE.slug));
@@ -1400,6 +1481,7 @@ function dashTab(tab){
 function fillSettingsForm(){
   $('#edName').value = MY_CAFE.name;
   $('#edType').value = MY_CAFE.type || 'restaurant';
+  document.querySelectorAll('input[name="edMenuType"]').forEach(r => { r.checked = (r.value === menuTypeOf(MY_CAFE)); });
   $('#edSlug').value = MY_CAFE.slug;
   $('#edWa').value = MY_CAFE.whatsapp || '';
   $('#edDelivery').checked = !!MY_CAFE.delivery_enabled;
@@ -1415,6 +1497,7 @@ async function createCafe(e){
   if(!name || !slug || !wa){ toast('عمر الحقول اللي فيهم *'); return; }
   const cafe = {
     owner_id: USER.id, name, slug, type: $('#cfType').value || 'restaurant',
+    menu_type: (document.querySelector('input[name="cfMenuType"]:checked')||{}).value || 'detailed', photos: [],
     tagline:'', whatsapp: wa,
     phone: wa, facebook: normUrl($('#cfFb').value),
     delivery_enabled: $('#cfDelivery').checked,
@@ -1427,7 +1510,7 @@ async function createCafe(e){
   if(MODE!=='sb') cafe.id = uid();
   try{
     MY_CAFE = await Store.createCafe(cafe);
-    toast('✅ تنشأ مشروعك — زيد الأقسام والأطباق');
+    toast(menuTypeOf(MY_CAFE) === 'photo' ? '✅ تنشأ مشروعك — صوّر المنيو تاعك من تبويب Menu' : '✅ تنشأ مشروعك — زيد الأقسام والأطباق');
     showDash();
   }catch(err){
     toast('❌ ' + err.message);
@@ -1438,6 +1521,7 @@ async function saveCafe(e){
   const patch = {
     name: $('#edName').value.trim(),
     type: $('#edType').value || 'restaurant',
+    menu_type: (document.querySelector('input[name="edMenuType"]:checked')||{}).value || 'detailed',
     slug: slugify($('#edSlug').value),
     whatsapp: $('#edWa').value.trim(),
     delivery_enabled: $('#edDelivery').checked,
@@ -1453,6 +1537,7 @@ async function saveCafe(e){
     renderDashHeader();
     setDashBg(cafeBg(MY_CAFE));
     applyDashFrameBgs();
+    renderMenuEditor();
     toast('✅ تحفظت التعديلات');
   }catch(err){
     toast('❌ ' + err.message);
@@ -1494,8 +1579,62 @@ function clearPhoto(inputId, prevId, clearId){
   setPhoto(prevId, clearId, '');
 }
 
+/* ---- صور المنيو (منيو بالصورة): رفع + حذف ---- */
+function renderMenuPhotos(){
+  const grid = $('#photoThumbs'); if(!grid) return;
+  const photos = cafePhotos(MY_CAFE);
+  grid.innerHTML = photos.length
+    ? photos.map((u,i) => '<div class="photo-thumb"><img src="'+esc(u)+'" alt="صفحة '+(i+1)+'" onerror="this.style.display=\'none\'"><button onclick="delMenuPhoto('+i+')" title="حذف الصورة">✖</button></div>').join('')
+    : '<p class="muted">ما كاش صور بعد — صوّر المنيو المكتوب تاعك ورفعو من فوق.</p>';
+}
+async function onMenuPhotosFile(input){
+  const files = Array.from(input.files || []);
+  input.value = '';
+  if(!files.length) return;
+  const cur = cafePhotos(MY_CAFE);
+  if(cur.length + files.length > 6){ toast('الحد الأقصى 6 صور للمنيو'); return; }
+  try{
+    for(const f of files){
+      const raw = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(new Error('ما تقراتش الصورة')); r.readAsDataURL(f); });
+      const small = await new Promise(res => compressImage(raw, 1200, 0.82, res));
+      cur.push(await uploadMenuPhoto(small));
+    }
+    MY_CAFE = await Store.updateCafe(MY_CAFE.id, {photos: cur});
+    renderMenuPhotos();
+    toast('✅ تزادت صور المنيو');
+  }catch(e){ toast('❌ ' + (e.message || e)); }
+}
+async function uploadMenuPhoto(dataUrl){
+  if(MODE === 'sb'){
+    // Supabase Storage — bucket menu-photos (قراءة عامة، كتابة غير للمالك)
+    const blob = await (await fetch(dataUrl)).blob();
+    const path = MY_CAFE.id + '/' + uid() + '.jpg';
+    const {error} = await sb.storage.from('menu-photos').upload(path, blob, {contentType:'image/jpeg', upsert:false});
+    if(error) throw error;
+    const {data} = sb.storage.from('menu-photos').getPublicUrl(path);
+    return data.publicUrl;
+  }
+  // الوضع التجريبي المحلي: base64 في localStorage (ديمو برك)
+  return dataUrl;
+}
+async function delMenuPhoto(i){
+  const cur = cafePhotos(MY_CAFE);
+  cur.splice(i, 1);
+  MY_CAFE = await Store.updateCafe(MY_CAFE.id, {photos: cur});
+  renderMenuPhotos();
+}
+
 /* ---- محرر Menu ---- */
 async function renderMenuEditor(){
+  const isPhoto = menuTypeOf(MY_CAFE) === 'photo';
+  $('#photoMenuCard').classList.toggle('hidden', !isPhoto);
+  $('#catAddCard').classList.toggle('hidden', isPhoto);
+  $('#itemAddCard').classList.toggle('hidden', isPhoto);
+  if(isPhoto){
+    renderMenuPhotos();
+    $('#menuEditor').innerHTML = '<div class="empty-mini">📸 المنيو تاعك بالصورة — الزبون يشوف صور المنيو ويكتب طلبو كنص حر، والطلب يوصل للمطبخ ديركت.</div>';
+    return;
+  }
   const cats = await Store.listCats(MY_CAFE.id);
   const items = await Store.listItems(MY_CAFE.id);
   renderDashStats(cats, items);
@@ -1548,7 +1687,6 @@ async function saveItem(e){
     category_id: catId, name,
     description: $('#itDesc').value.trim(),
     price: price,
-    emoji: $('#itEmoji').value,
     image_url: photoData('itImgPrev')
   };
   const editId = $('#itId').value;
@@ -1578,12 +1716,11 @@ async function editItem(id){
   $('#itName').value = it.name;
   $('#itDesc').value = it.description || '';
   $('#itPrice').value = it.price;
-  $('#itEmoji').value = it.emoji || '🍲';
   setPhoto('itImgPrev', 'itImgClear', it.image_url || ''); $('#itImgFile').value = '';
   $('#itemFormTitle').textContent = '✏️ تعديل الطبق';
   $('#itSubmitBtn').textContent = '💾 حفظ التعديلات';
   $('#itCancelEdit').classList.remove('hidden');
-  window.scrollTo({top: $('#itemFormTitle').offsetTop - 80, behavior:'smooth'});
+  document.getElementById('itemAddCard').scrollIntoView({behavior:'smooth', block:'start'});
 }
 function cancelEditItem(){
   $('#itId').value = '';
@@ -1777,6 +1914,12 @@ function renderMenu(){
 
   h += '<div class="container">';
   if(TABLE_NO && TABLE_CLOSED) h += closedFrameHTML();
+  if(menuTypeOf(cafe) === 'photo'){
+    h += photoMenuHTML(cafe, firstRender);
+    h += '</div>';
+    $('#menuContent').innerHTML = h;
+    return;
+  }
   h += '<div class="cat-nav">';
   h += '<button class="on" onclick="filterCat(\'all\',this)">الكل</button>';
   VIEW_CATS.forEach(c => {
@@ -1800,6 +1943,124 @@ function renderMenu(){
   h += '</div></div>';
   $('#menuContent').innerHTML = h;
 }
+
+/* ---------------- منيو بالصورة: معرض + طلب نص حر ---------------- */
+function photoMenuHTML(cafe, firstRender){
+  const photos = cafePhotos(cafe);
+  let h = '<div style="text-align:center"><span class="photo-note">💰 الأسعار في الصورة — شوف المنيو واكتب طلبك</span></div>';
+  if(!photos.length){
+    h += '<div class="menu-cat-card" style="' + frameBgStyle('', cafeBg(cafe)) + '"><p class="muted" style="text-align:center;padding:30px">المنيو بالصورة مازال فارغ — صاحب المشروع راح يصوّر المنيو قريباً.</p></div>';
+  } else {
+    h += '<div class="menu-cat-card' + (firstRender ? ' anim-in' : '') + '" style="' + frameBgStyle('صور المنيو', cafeBg(cafe)) + '"><div class="photo-gallery" id="photoGallery" onscroll="photoGalleryScroll(this)">';
+    photos.forEach((u,i) => {
+      h += '<div class="pg-item"><img src="' + esc(u) + '" alt="صفحة المنيو ' + (i+1) + '" onclick="openPhotoZoom(' + i + ')" onerror="this.style.display=\'none\'"></div>';
+    });
+    h += '</div><div class="photo-dots">' + photos.map((_,i) => '<i class="' + (i===0 ? 'on' : '') + '" data-dot="' + i + '"></i>').join('') + '</div>'
+      + '<p class="hint" style="text-align:center">اسحب باش تشوف باقي الصفحات — اضغط على الصورة باش تكبّرها 👆</p></div>';
+  }
+  h += '<div class="menu-cat-card" style="' + frameBgStyle('طلب', cafeBg(cafe)) + '"><h3>📝 اكتب طلبك</h3>'
+    + '<div class="photo-order"><textarea id="photoOrderText" placeholder="اكتب طلبك هنا... مثال: قهوة + كرواسون ×2" ' + (TABLE_CLOSED ? 'disabled' : '') + '></textarea></div>'
+    + '<button class="btn btn-amber btn-block" style="margin-top:12px" ' + (TABLE_CLOSED ? 'disabled' : '') + ' onclick="openPhotoOrderSheet()">📤 أرسل الطلب' + (TABLE_NO ? ' — الطاولة ' + esc(TABLE_NO) : '') + '</button>'
+    + '<p class="hint" style="margin-top:8px">' + (TABLE_CLOSED ? 'هاد الطاولة مسدودة — عيط للسارفور باش يفتحها.' : (TABLE_NO ? 'طلبك يوصل للمطبخ والكاشير ديركت مع رقم الطاولة.' : 'طلبك يوصل للمطبخ والكاشير ديركت من التطبيق.')) + '</p></div>';
+  return h;
+}
+function photoGalleryScroll(el){
+  const items = el.querySelectorAll('.pg-item');
+  if(!items.length) return;
+  const idx = Math.min(items.length - 1, Math.max(0, Math.round(el.scrollLeft / (items[0].offsetWidth + 12))));
+  const dots = el.parentElement.querySelectorAll('.photo-dots i');
+  dots.forEach((d,i) => d.classList.toggle('on', i === idx));
+}
+let PHOTO_ZOOM_IDX = 0;
+/* ---- تكبير صورة المنيو بالأصابع (pinch) ---- */
+let LB_SCALE = 1, LB_TX = 0, LB_TY = 0;
+function lbApplyZoom(animate){
+  const im = document.getElementById('lbImg'); if(!im) return;
+  im.style.transition = animate ? 'transform .18s ease' : 'none';
+  im.style.transform = 'translate(' + LB_TX + 'px,' + LB_TY + 'px) scale(' + LB_SCALE + ')';
+}
+function lbResetZoom(){ LB_SCALE = 1; LB_TX = 0; LB_TY = 0; lbApplyZoom(false); }
+function openPhotoZoom(i){
+  const photos = cafePhotos(VIEW_CAFE);
+  if(!photos.length) return;
+  PHOTO_ZOOM_IDX = Math.max(0, Math.min(photos.length - 1, i));
+  $('#lbImg').src = photos[PHOTO_ZOOM_IDX];
+  $('#lbCount').textContent = (PHOTO_ZOOM_IDX + 1) + ' / ' + photos.length;
+  $('#photoLightbox').classList.remove('hidden');
+  lbResetZoom();
+}
+function photoZoomNav(d){
+  const photos = cafePhotos(VIEW_CAFE);
+  if(!photos.length) return;
+  PHOTO_ZOOM_IDX = (PHOTO_ZOOM_IDX + d + photos.length) % photos.length;
+  $('#lbImg').src = photos[PHOTO_ZOOM_IDX];
+  $('#lbCount').textContent = (PHOTO_ZOOM_IDX + 1) + ' / ' + photos.length;
+  lbResetZoom();
+}
+function closePhotoZoom(){ $('#photoLightbox').classList.add('hidden'); const im = $('#lbImg'); if(im) im.src = ''; lbResetZoom(); }
+(function(){
+  const lb = document.getElementById('photoLightbox');
+  const im = document.getElementById('lbImg');
+  if(!lb || !im) return;
+  let pinch = false, pinchD0 = 0, pinchS0 = 1, midX0 = 0, midY0 = 0, tx0 = 0, ty0 = 0;
+  let drag = false, sx = 0, sy = 0, lastTap = 0;
+  function dist(a, b){ return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY); }
+  function clampPan(){
+    const maxX = Math.max(0, (LB_SCALE - 1) * im.clientWidth / 2);
+    const maxY = Math.max(0, (LB_SCALE - 1) * im.clientHeight / 2);
+    LB_TX = Math.max(-maxX, Math.min(maxX, LB_TX));
+    LB_TY = Math.max(-maxY, Math.min(maxY, LB_TY));
+  }
+  lb.addEventListener('touchstart', e => {
+    if(e.touches.length === 2){
+      pinch = true; drag = false;
+      pinchD0 = dist(e.touches[0], e.touches[1]);
+      pinchS0 = LB_SCALE;
+      midX0 = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      midY0 = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      tx0 = LB_TX; ty0 = LB_TY;
+      e.preventDefault();
+    } else if(e.touches.length === 1){
+      const now = Date.now();
+      if(now - lastTap < 300){
+        if(LB_SCALE > 1){ lbResetZoom(); }
+        else { LB_SCALE = 2.5; LB_TX = 0; LB_TY = 0; lbApplyZoom(true); }
+        lastTap = 0;
+      } else {
+        lastTap = now;
+      }
+      drag = true; sx = e.touches[0].clientX; sy = e.touches[0].clientY; tx0 = LB_TX; ty0 = LB_TY;
+    }
+  }, {passive:false});
+  lb.addEventListener('touchmove', e => {
+    if(pinch && e.touches.length === 2){
+      const d = dist(e.touches[0], e.touches[1]);
+      if(pinchD0 > 0) LB_SCALE = Math.max(1, Math.min(4, pinchS0 * d / pinchD0));
+      const mx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const my = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      LB_TX = tx0 + (mx - midX0); LB_TY = ty0 + (my - midY0);
+      clampPan(); lbApplyZoom(false);
+      e.preventDefault();
+    } else if(drag && e.touches.length === 1){
+      const dx = e.touches[0].clientX - sx, dy = e.touches[0].clientY - sy;
+      if(LB_SCALE > 1){
+        LB_TX = tx0 + dx; LB_TY = ty0 + dy; clampPan(); lbApplyZoom(false);
+        e.preventDefault();
+      }
+    }
+  }, {passive:false});
+  lb.addEventListener('touchend', e => {
+    if(pinch){
+      if(e.touches.length < 2){ pinch = false; if(LB_SCALE <= 1.01) lbResetZoom(); }
+      return;
+    }
+    if(drag){
+      drag = false;
+      const dx = e.changedTouches[0].clientX - sx;
+      if(LB_SCALE === 1 && Math.abs(dx) > 50) photoZoomNav(dx < 0 ? 1 : -1);
+    }
+  }, {passive:true});
+})();
 function filterCat(catId, btn){
   $$('.cat-nav button').forEach(b => b.classList.remove('on'));
   if(btn) btn.classList.add('on');
@@ -1868,6 +2129,16 @@ function orderType(){
 function validateOrder(){
   const btn = $('#orderConfirmBtn');
   if(!btn) return false;
+  if(isPhotoMenu()){
+    const txt = ($('#photoOrderText') ? $('#photoOrderText').value : '').trim();
+    if(TABLE_NO){ btn.disabled = !txt || !!TABLE_CLOSED; return !!txt && !TABLE_CLOSED; }
+    const name = $('#ordName').value.trim();
+    const phone = $('#ordPhone').value.trim();
+    const addr = $('#ordAddr').value.trim();
+    const ok = !!txt && !!name && !!phone && (orderType() !== 'delivery' || !!addr);
+    btn.disabled = !ok;
+    return ok;
+  }
   if(TABLE_NO){ btn.disabled = !!TABLE_CLOSED; return !TABLE_CLOSED; }
   const name = $('#ordName').value.trim();
   const phone = $('#ordPhone').value.trim();
@@ -1877,6 +2148,7 @@ function validateOrder(){
   return ok;
 }
 async function submitOrder(e){
+  if(isPhotoMenu()) return submitPhotoOrder(e);
   e.preventDefault();
   const type = orderType();
   if(!validateOrder()){ toast('عمّر الاسم والتيليفون' + (type === 'delivery' ? ' والعنوان' : '') + ' أولاً'); return; }
@@ -1919,6 +2191,75 @@ async function submitOrder(e){
     btn.disabled = false; btn.textContent = '✅ أرسل الطلب';
   }
 }
+/* ---- طلب نص حر (منيو بالصورة) — ديركت للمطبخ كطلب عادي ---- */
+async function submitPhotoOrder(e){
+  e.preventDefault();
+  if(TABLE_CLOSED){ toast('⛔ هاد الطاولة مسدودة — عيط للسارفور باش يفتحها'); return; }
+  if(!validateOrder()){ toast(TABLE_NO ? 'اكتب طلبك أولاً' : 'اكتب طلبك وعمّر الاسم والتيليفون أولاً'); return; }
+  const cafe = VIEW_CAFE;
+  const txt = $('#photoOrderText').value.trim();
+  const type = orderType();
+  if(TABLE_NO){
+    try{
+      TABLE_CLOSED = (await Store.getTableStatus(cafe.id, parseInt(TABLE_NO, 10) || 0)) === 'closed';
+      if(TABLE_CLOSED){ renderMenu(); toast('🔒 هاد الطاولة تسدت — عيط للسارفور باش يفتحها'); return; }
+    }catch(err){ /* التريغر في القاعدة هو الضمان — نكمّل المحاولة */ }
+  }
+  const btn = $('#orderConfirmBtn');
+  btn.disabled = true; btn.textContent = '⏳ جاري الإرسال...';
+  try{
+    const order = TABLE_NO
+      ? {cafe_id: cafe.id, kind:'table', table_no: parseInt(TABLE_NO, 10) || null, items:[{name: txt, price:0, qty:1}], total:0}
+      : {cafe_id: cafe.id, kind: type,
+          customer_name: $('#ordName').value.trim(),
+          customer_phone: $('#ordPhone').value.trim(),
+          address: type === 'delivery' ? $('#ordAddr').value.trim() : '',
+          items:[{name: txt, price:0, qty:1}], total:0};
+    await Store.addOrder(order);
+    $('#photoOrderText').value = '';
+    $('#orderForm').classList.add('hidden');
+    $('#orderSuccess').classList.remove('hidden');
+    $('#orderSuccessMsg').textContent = TABLE_NO
+      ? 'الطلب وصل للمطبخ والكاشير — الطاولة ' + TABLE_NO
+      : (type === 'delivery'
+        ? 'الطلب وصل — راح يعيطلك صاحب المقهى باش يكونفيرمي معاك'
+        : 'الطلب وصل — راح يعيطلك صاحب المقهى كي يوجد');
+  }catch(err){
+    const m = (err && err.message) || '';
+    toast('❌ ' + (m.includes('table_closed') ? 'هاد الطاولة تسدت — عيط للسارفور باش يفتحها' : (m || 'ما تبعثش الطلب — عاود')));
+  }finally{
+    btn.disabled = false; btn.textContent = '✅ أرسل الطلب';
+  }
+}
+function openPhotoOrderSheet(){
+  if(TABLE_NO && TABLE_CLOSED){ toast('🔒 هاد الطاولة تسدت — عيط للسارفور باش يفتحها'); return; }
+  const txt = ($('#photoOrderText') ? $('#photoOrderText').value : '').trim();
+  if(!txt){ toast('اكتب طلبك أولاً'); return; }
+  const cafe = VIEW_CAFE;
+  $('#orderForm').classList.remove('hidden');
+  $('#orderSuccess').classList.add('hidden');
+  $('#orderTitle').textContent = TABLE_NO ? ('🪑 طلب الطاولة ' + TABLE_NO) : '📝 طلبك';
+  $('#orderHint').textContent = TABLE_NO
+    ? 'راجع طلبك — راح يوصل للمطبخ والكاشير ديركت مع رقم الطاولة.'
+    : 'راجع طلبك وعبّي معلوماتك — الطلب يوصل للمطبخ والكاشير ديركت من التطبيق.';
+  $('#homeFields').classList.toggle('hidden', !!TABLE_NO);
+  if(!TABLE_NO){
+    const hasDelivery = !!cafe.delivery_enabled;
+    $('#orderTypeDeliveryLabel').classList.toggle('hidden', !hasDelivery);
+    const radios = document.querySelectorAll('input[name="orderType"]');
+    if(!hasDelivery && radios[1]) radios[1].checked = true;
+    toggleOrderType();
+  }
+  $('#orderLines').classList.add('hidden');
+  $('#orderTotal').parentElement.classList.add('hidden');
+  $('#photoOrderBox').classList.remove('hidden');
+  $('#photoOrderTextView').textContent = txt;
+  validateOrder();
+  const sh = $('#orderSheet');
+  sh.classList.remove('hidden');
+  void sh.offsetWidth;
+  sh.classList.add('open');
+}
 function openOrderSheet(){
   const {lines, total} = cartLines();
   if(!lines.length){ toast('السلة فارغة — زيد أطباق أولاً'); return; }
@@ -1926,6 +2267,9 @@ function openOrderSheet(){
   const cafe = VIEW_CAFE;
   $('#orderForm').classList.remove('hidden');
   $('#orderSuccess').classList.add('hidden');
+  $('#orderLines').classList.remove('hidden');
+  $('#orderTotal').parentElement.classList.remove('hidden');
+  $('#photoOrderBox').classList.add('hidden');
   $('#orderTitle').textContent = TABLE_NO ? ('🪑 طلب الطاولة ' + TABLE_NO) : '🛒 طلبك';
   $('#orderHint').textContent = TABLE_NO
     ? 'طلبك راح يوصل للمطبخ والكاشير ديركت مع رقم الطاولة — بلا ما تنادي النادل.'
@@ -1960,7 +2304,7 @@ function closeOrderSheet(){
   sh.classList.remove('open');
   setTimeout(() => sh.classList.add('hidden'), 320);
 }
-['ordName','ordPhone','ordAddr'].forEach(id => {
+['ordName','ordPhone','ordAddr','photoOrderText'].forEach(id => {
   document.addEventListener('input', e => { if(e.target && e.target.id === id) validateOrder(); });
 });
 
