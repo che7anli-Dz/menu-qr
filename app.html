@@ -199,6 +199,14 @@ body.dash-page header{background:rgba(10,15,12,.88);backdrop-filter:blur(10px);-
 .qty{display:flex;align-items:center;gap:8px;margin-top:6px}
 .qty button{width:30px;height:30px;border-radius:50%;border:1.5px solid #E8A317;background:transparent;color:#E8A317;font-weight:900;font-size:16px;line-height:1}
 .qty button:hover{background:#E8A317;color:#231A05}
+.qty button:disabled{opacity:.3;cursor:not-allowed}
+/* ---------- إطار الطاولة المسدودة (نابض، بألوان دافئة) ---------- */
+.closed-frame{margin:18px auto 6px;max-width:640px;background:linear-gradient(135deg,#1d2f24 0%,#16261d 55%,#2a1f10 100%);border:2px solid #E8A317;border-radius:18px;padding:24px 18px 20px;text-align:center;color:#fff;animation:closedPulse 1.8s ease-in-out infinite}
+.closed-frame .cf-ico{font-size:40px;line-height:1}
+.closed-frame h3{margin:10px 0 6px;font-size:22px;color:#FFD97A}
+.closed-frame p{margin:0;font-size:16px;color:#f5efe0}
+.closed-frame .cf-lang{margin-top:16px;background:rgba(232,163,23,.15);border:1px solid #E8A317;color:#FFD97A;border-radius:99px;padding:6px 18px;font-size:13px;font-weight:700;cursor:pointer}
+@keyframes closedPulse{0%,100%{box-shadow:0 0 0 0 rgba(232,163,23,.45)}50%{box-shadow:0 0 0 14px rgba(232,163,23,0)}}
 .qty b{min-width:20px;text-align:center}
 .cart-bar{position:fixed;bottom:0;right:0;left:0;z-index:60;background:var(--green-950);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 -4px 20px rgba(0,0,0,.2)}
 .cart-bar .tot b{font-size:18px}
@@ -247,7 +255,7 @@ body.has-cart{padding-bottom:78px}
 .shine::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.38) 50%,transparent 65%);background-size:200% 100%;animation:shine 2.8s linear infinite;pointer-events:none}
 @keyframes flyUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-36px) scale(1.2)}}
 .fly-plus{position:absolute;top:-4px;right:18px;color:#E8A317;font-weight:900;font-size:18px;animation:flyUp .8s ease-out forwards;pointer-events:none;z-index:61}
-@media (prefers-reduced-motion:reduce){.menu-item.anim-in,.menu-hero.anim-in,.menu-cat-card.anim-in,.sheet,.sheet-in,.cart-bar.pop,#cartCount.pop{animation:none!important;transition:none!important}.qty button,.btn{transition:none!important}#bgLayer,.shine::after,.fly-plus{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.menu-item.anim-in,.menu-hero.anim-in,.menu-cat-card.anim-in,.sheet,.sheet-in,.cart-bar.pop,#cartCount.pop{animation:none!important;transition:none!important}.qty button,.btn{transition:none!important}#bgLayer,.shine::after,.fly-plus,.closed-frame{animation:none!important}}
 /* ---------- footer ---------- */
 footer{margin-top:auto;background:var(--green-950);color:#a8a29e;padding:28px 0;text-align:center;font-size:13px}
 footer b{color:#fff}
@@ -1737,6 +1745,16 @@ function thumbHTML(it){
   }
   return '<div class="thumb">' + fb + '</div>';
 }
+/* ---------------- إطار الطاولة المسدودة (فصحى + English) ---------------- */
+let CLOSED_LANG = 'ar';
+function closedFrameHTML(){
+  const t = CLOSED_LANG === 'ar'
+    ? {dir:'rtl', title:'🔒 الطاولة ' + esc(TABLE_NO) + ' مغلقة', msg:'يُرجى مناداة النادل ليفتحها لك', btn:'English'}
+    : {dir:'ltr', title:'🔒 Table ' + esc(TABLE_NO) + ' is closed', msg:'Please call the waiter to open it for you', btn:'العربية'};
+  return '<div class="closed-frame" dir="' + t.dir + '"><div class="cf-ico">🪑</div><h3>' + t.title + '</h3><p>' + t.msg + '</p><button class="cf-lang" onclick="toggleClosedLang()">' + t.btn + '</button></div>';
+}
+function toggleClosedLang(){ CLOSED_LANG = CLOSED_LANG === 'ar' ? 'en' : 'ar'; renderMenu(); }
+
 function renderMenu(){
   const cafe = VIEW_CAFE;
   const firstRender = !window._menuAnimDone;
@@ -1746,9 +1764,7 @@ function renderMenu(){
   h += '<h1>' + esc(cafe.name) + '</h1>';
   if(cafe.tagline) h += '<p>' + esc(cafe.tagline) + '</p>';
   h += '<div><span style="display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:99px;padding:3px 12px;font-size:13px;font-weight:700">' + cafeTypeLabel(cafe) + '</span></div>';
-  if(TABLE_NO) h += TABLE_CLOSED
-    ? '<br><span class="table-badge" style="background:#7f1d1d;border-color:#ef4444">🔒 الطاولة ' + esc(TABLE_NO) + ' مسدودة — عيط للسارفور باش يفتحها</span>'
-    : '<br><span class="table-badge">🪑 الطاولة ' + esc(TABLE_NO) + ' — طلبك يوصل للمطبخ ديركت</span>';
+  if(TABLE_NO && !TABLE_CLOSED) h += '<br><span class="table-badge">🪑 الطاولة ' + esc(TABLE_NO) + ' — طلبك يوصل للمطبخ ديركت</span>';
   // بطاقة رقمية مدمجة: أزرار تواصل + عدد المشاهدات
   const wa = normWA(cafe.whatsapp);
   h += '<div class="contact-row">';
@@ -1759,7 +1775,9 @@ function renderMenu(){
   h += '<div class="views-pill">👁 ' + (cafe.views || 0) + ' مشاهدة</div>';
   h += '</div>';
 
-  h += '<div class="container"><div class="cat-nav">';
+  h += '<div class="container">';
+  if(TABLE_NO && TABLE_CLOSED) h += closedFrameHTML();
+  h += '<div class="cat-nav">';
   h += '<button class="on" onclick="filterCat(\'all\',this)">الكل</button>';
   VIEW_CATS.forEach(c => {
     h += '<button onclick="filterCat(\'' + esc(c.id) + '\',this)">' + esc(c.name) + '</button>';
@@ -1773,7 +1791,7 @@ function renderMenu(){
       const q = CART[it.id] || 0;
       h += '<div class="menu-item' + (firstRender ? ' anim-in' : '') + '" style="--i:' + idx + '">' + thumbHTML(it)
         + '<div class="info"><b>' + esc(it.name) + '</b><span>' + esc(it.description || '') + '</span>'
-        + '<div class="qty"><button onclick="addQty(\'' + esc(it.id) + '\',-1)">−</button><b>' + q + '</b><button onclick="addQty(\'' + esc(it.id) + '\',1)">+</button></div></div>'
+        + '<div class="qty"><button ' + (TABLE_CLOSED ? 'disabled' : '') + ' onclick="addQty(\'' + esc(it.id) + '\',-1)">−</button><b>' + q + '</b><button ' + (TABLE_CLOSED ? 'disabled' : '') + ' onclick="addQty(\'' + esc(it.id) + '\',1)">+</button></div></div>'
         + '<span class="price">' + esc(fmtPrice(it.price, cafe.currency)) + '</span></div>';
     });
     h += '</div></div>';
@@ -1797,6 +1815,7 @@ function filterCat(catId, btn){
 
 /* ---------------- السلة والطلب ---------------- */
 function addQty(id, d){
+  if(TABLE_CLOSED) return; // الطاولة مسدودة: لا زيادة ولا نقصان
   const it = VIEW_ITEMS.find(x => x.id === id);
   if(!it) return;
   CART[id] = Math.max(0, (CART[id] || 0) + d);
