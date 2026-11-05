@@ -553,7 +553,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
         <div id="tabMenu">
           <div id="photoMenuCard" class="card hidden" style="margin-bottom:16px" data-frame="صور المنيو">
             <h3 style="margin-bottom:6px">📸 صور المنيو</h3>
-            <p class="muted" style="margin-bottom:12px">صوّر المنيو المكتوب تاعك (صفحة ولا زوج) — الزبون يشوف الصور ويكتب طلبو كنص حر. الأسعار تبان في الصورة.</p>
+            <p class="muted" style="margin-bottom:12px">صوّر المنيو المكتوب تاعك (صفحة ولا بزاف) — الزبون يشوف الصور ويكتب طلبو كنص حر. الأسعار تبان في الصورة.</p>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <label for="menuPhotosCam" class="btn btn-amber" style="cursor:pointer">📷 صوّر بالكاميرا</label>
               <label for="menuPhotosFile" class="btn btn-ghost" style="cursor:pointer">🖼️ اختار من الغاليري</label>
@@ -561,7 +561,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
             <input type="file" id="menuPhotosCam" accept="image/*" capture="environment" class="hidden" onchange="onMenuPhotosFile(this)">
             <input type="file" id="menuPhotosFile" accept="image/*" multiple class="hidden" onchange="onMenuPhotosFile(this)">
             <div id="photoThumbs" class="photo-thumbs"></div>
-            <p class="hint" style="margin-top:10px">الحد الأقصى 6 صور. في الوضع التجريبي الصور تتحفظ في جهازك برك؛ مع القاعدة الحية تترفع لـ Supabase Storage.</p>
+            <p class="hint" style="margin-top:10px">صوّر قد ما تحب — بلا حدود. في الوضع التجريبي الصور تتحفظ في جهازك برك؛ مع القاعدة الحية تترفع لـ Supabase Storage.</p>
           </div>
           <div id="catAddCard" class="card" style="margin-bottom:16px" data-frame="أطباق">
             <form onsubmit="addCategory(event)" style="display:flex;gap:8px;flex-wrap:wrap">
@@ -1592,7 +1592,6 @@ async function onMenuPhotosFile(input){
   input.value = '';
   if(!files.length) return;
   const cur = cafePhotos(MY_CAFE);
-  if(cur.length + files.length > 6){ toast('الحد الأقصى 6 صور للمنيو'); return; }
   try{
     for(const f of files){
       const raw = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(new Error('ما تقراتش الصورة')); r.readAsDataURL(f); });
