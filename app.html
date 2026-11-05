@@ -396,6 +396,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
     </a>
     <div class="nav-btns">
       <span id="modeBadge" class="pill pill-grey hidden" title="وضع تجريبي: البيانات محفوظة في جهازك برك">وضع تجريبي</span>
+      <button id="btnPreviewBack" class="btn btn-amber btn-sm hidden" onclick="exitPreview()">↩ لوحة التحكم</button>
       <button id="btnDashTop" class="btn btn-ghost btn-sm hidden" onclick="showDash()">لوحة التحكم</button>
       <button id="btnAuthTop" class="btn btn-sm" onclick="showAuth()">دخول / تسجيل</button>
       <button id="btnLogoutTop" class="btn btn-ghost btn-sm hidden" onclick="logout()">خروج</button>
@@ -502,7 +503,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
         </div>
         <div class="dc-acts">
           <span id="subPill" class="pill pill-grey">—</span>
-          <button class="btn btn-ghost btn-sm" onclick="openMyMenu()">👁️ شوف Menu تاعي</button>
+          <button class="btn btn-amber btn-sm" onclick="openMyMenu()">👁️ شوف Menu تاعي</button>
         </div>
       </div>
       <div class="dash-stats hidden" id="dashStats"></div>
@@ -1251,6 +1252,8 @@ function setDashBg(url){
 }
 /* ---------------- التنقل بين الصفحات ---------------- */
 function showView(id){
+  if(id !== 'menu') PREVIEW = false; // الخروج من المنيو يلغي المعاينة ويرجع الشريط تاع المالك
+  applyPreviewHeader();
   if(id === 'landing'){ setPublicBg(LANDING_BG); applyLandingFrameBgs(); }
   else if(id === 'auth') setDashBg(LANDING_BG);
   else if(id === 'dash' || id === 'kitchen' || id === 'owner') setDashBg(MY_CAFE ? cafeBg(MY_CAFE) : LANDING_BG);
@@ -1313,16 +1316,39 @@ function goHome(){
   showView('landing');
 }
 function openDemoMenu(){
-  history.pushState({}, '', menuUrl('diwan'));
+  pushUrl(menuUrl('diwan'));
   showMenu('diwan');
 }
 function openDemoPhotoMenu(){
-  history.pushState({}, '', menuUrl('diwan-cafe'));
+  pushUrl(menuUrl('diwan-cafe'));
   showMenu('diwan-cafe');
+}
+/* تغيير الرابط بلا ما يطيح: في التطبيق (file://) pushState لعنوان https يرفض — المعاينة تخدم بلا تغيير الرابط */
+function pushUrl(url){ try{ history.pushState({}, '', url); }catch(e){} }
+/* معاينة الزبون: المنيو كيما يشوفو الزبون بالضبط — الشريط العلوي يولي تاع زبون (بلا أزرار المالك) */
+let PREVIEW = false;
+function applyPreviewHeader(){
+  if(PREVIEW){
+    $('#btnDashTop').classList.add('hidden');
+    $('#btnLogoutTop').classList.add('hidden');
+    $('#btnAuthTop').classList.remove('hidden');
+    $('#modeBadge').classList.add('hidden');
+    $('#btnPreviewBack').classList.remove('hidden');
+  } else {
+    $('#btnPreviewBack').classList.add('hidden');
+    updateAuthUI();
+    $('#modeBadge').classList.toggle('hidden', MODE !== 'local');
+  }
+}
+function exitPreview(){
+  PREVIEW = false;
+  applyPreviewHeader();
+  showDash();
 }
 function openMyMenu(){
   if(!MY_CAFE) return;
-  history.pushState({}, '', menuUrl(MY_CAFE.slug));
+  PREVIEW = true;
+  pushUrl(menuUrl(MY_CAFE.slug));
   showMenu(MY_CAFE.slug);
 }
 function updateAuthUI(){
