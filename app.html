@@ -963,7 +963,7 @@ ar: {
 'dash.img_remove':'🗑 نحّي الصورة',
 'dash.hint_img':'الصورة تتصغّر أوتوماتيكياً باش ما تثقلش الـ Menu.',
 'dash.editor_photo_note':'📸 المنيو تاعك بالصورة — الزبون يشوف صور المنيو ويكتب طلبو كنص حر، والطلب يوصل للمطبخ ديركت.',
-'dash.editor_no_cat_opt':'— زيد قسم أولاً —',
+'dash.editor_no_cat_opt':'— زيد قسم أولاً —','dash.editor_retry':'↻ إعادة المحاولة',
 'dash.editor_empty_t':'الـ Menu تاعك مازال فارغ',
 'dash.editor_empty_p':'زيد أول قسم من فوق، ومن بعد زيد الأطباق بالصور.',
 'dash.editor_count_one':'طبق واحد',
@@ -1294,7 +1294,7 @@ en: {
 'dash.img_remove':'🗑 Remove the photo',
 'dash.hint_img':'The photo is resized automatically so it does not slow down the menu.',
 'dash.editor_photo_note':'📸 Your menu is a photo menu — customers see the menu photos and write their order as free text, and the order goes straight to the kitchen.',
-'dash.editor_no_cat_opt':'— Add a section first —',
+'dash.editor_no_cat_opt':'— Add a section first —','dash.editor_retry':'↻ Retry',
 'dash.editor_empty_t':'Your menu is still empty',
 'dash.editor_empty_p':'Add your first section above, then add the dishes with photos.',
 'dash.editor_count_one':'1 dish',
@@ -2183,7 +2183,7 @@ async function showDash(){
   showView('dash');
   $('#dashErr').classList.add('hidden');
   try{
-    MY_CAFE = await Store.getMyCafe(USER.id);
+    MY_CAFE = await loadWithRetry(() => Store.getMyCafe(USER.id));
   }catch(err){
     const b = $('#dashErr'); b.textContent = '❌ ' + err.message; b.classList.remove('hidden');
     return;
@@ -2205,13 +2205,18 @@ async function showDash(){
     $('#dashMain').classList.remove('hidden');
     $('#dashCafeCard').classList.remove('hidden');
     $('#dashStats').classList.remove('hidden');
-    renderDashHeader();
-    fillSettingsForm();
-    renderSubTab();
-    await renderMenuEditor();
-    renderQrTab();
-    renderOrders();
-    subscribeOrders();
+    try{
+      renderDashHeader();
+      fillSettingsForm();
+      renderSubTab();
+      await renderMenuEditor();
+      renderQrTab();
+      renderOrders();
+      subscribeOrders();
+    }catch(err){
+      const b = $('#dashErr'); b.textContent = '❌ ' + (err.message || t('menu.err_t')); b.classList.remove('hidden');
+      console.error(err);
+    }
     dashTab('menu');
   }
 }
@@ -2397,6 +2402,15 @@ async function delMenuPhoto(i){
 }
 
 /* ---- محرر Menu ---- */
+/* إعادة محاولة التحميل: الشبكة في التيليفون تقدر تفشل مرة — نعاود 3 مرات قبل ما نبين خطأ */
+async function loadWithRetry(fn, tries){
+  let lastErr;
+  for(let i = 0; i < (tries || 3); i++){
+    try{ return await fn(); }
+    catch(e){ lastErr = e; await new Promise(function(r){ setTimeout(r, 700); }); }
+  }
+  throw lastErr;
+}
 async function renderMenuEditor(){
   const isPhoto = menuTypeOf(MY_CAFE) === 'photo';
   $('#photoMenuCard').classList.toggle('hidden', !isPhoto);
@@ -2407,8 +2421,15 @@ async function renderMenuEditor(){
     $('#menuEditor').innerHTML = '<div class="empty-mini">' + t('dash.editor_photo_note') + '</div>';
     return;
   }
-  const cats = await Store.listCats(MY_CAFE.id);
-  const items = await Store.listItems(MY_CAFE.id);
+  let cats, items;
+  try{
+    cats = await loadWithRetry(() => Store.listCats(MY_CAFE.id));
+    items = await loadWithRetry(() => Store.listItems(MY_CAFE.id));
+  }catch(err){
+    $('#menuEditor').innerHTML = '<div class="notice"><h2>' + t('menu.err_t') + '</h2><p class="muted">' + esc(err.message || '') + '</p><button class="btn btn-amber" onclick="renderMenuEditor()">' + t('dash.editor_retry') + '</button></div>';
+    console.error(err);
+    return;
+  }
   renderDashStats(cats, items);
   const sel = $('#itCat');
   sel.innerHTML = cats.map(c => '<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join('') || '<option value="">' + t('dash.editor_no_cat_opt') + '</option>';
