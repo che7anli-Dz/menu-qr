@@ -48,6 +48,10 @@ header{position:sticky;top:0;z-index:50;background:rgba(10,15,12,.92);backdrop-f
 .btn-danger{background:transparent;color:#FCA5A5;border:1.5px solid #7F1D1D}
 .btn-danger:hover{background:rgba(220,38,38,.14)}
 .btn-sm{padding:7px 13px;font-size:13px;border-radius:10px}
+.btn.lang-toggle{border:1.5px solid #E8A317;background:transparent;color:#E8A317;border-radius:999px;padding:6px 14px;font-size:13px}
+.btn.lang-toggle:hover{border-color:#F2B32C;color:#F2B32C}
+.lang-row{display:flex;gap:8px;flex-wrap:wrap}
+.lang-row .on{background:#E8A317;color:#231A05;border-color:#E8A317}
 .btn-block{width:100%}
 .btn:disabled{opacity:.55;cursor:not-allowed}
 /* ---------- hero ---------- */
@@ -392,14 +396,15 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
   <div class="header-in">
     <a class="brand" href="#" onclick="goHome();return false">
       <img id="appLogo" src="logo.svg" alt="Menu QR 🍽" onclick="onLogoTap(event)">
-      <span>Menu QR 🍽<small>Menu إلكتروني لمطعمك أو مقهاك</small></span>
+      <span>Menu QR 🍽<small data-i18n="hdr.tagline">Menu إلكتروني لمطعمك أو مقهاك</small></span>
     </a>
     <div class="nav-btns">
-      <span id="modeBadge" class="pill pill-grey hidden" title="وضع تجريبي: البيانات محفوظة في جهازك برك">وضع تجريبي</span>
-      <button id="btnPreviewBack" class="btn btn-amber btn-sm hidden" onclick="exitPreview()">↩ لوحة التحكم</button>
-      <button id="btnDashTop" class="btn btn-ghost btn-sm hidden" onclick="showDash()">لوحة التحكم</button>
-      <button id="btnAuthTop" class="btn btn-sm" onclick="showAuth()">دخول / تسجيل</button>
-      <button id="btnLogoutTop" class="btn btn-ghost btn-sm hidden" onclick="logout()">خروج</button>
+      <button class="btn btn-ghost btn-sm lang-toggle" onclick="toggleLang()">English</button>
+      <span id="modeBadge" class="pill pill-grey hidden" data-i18n="hdr.demo_mode" data-i18n-title="hdr.demo_mode_title" title="وضع تجريبي: البيانات محفوظة في جهازك برك">وضع تجريبي</span>
+      <button id="btnPreviewBack" class="btn btn-amber btn-sm hidden" onclick="exitPreview()" data-i18n="hdr.back_dash">↩ لوحة التحكم</button>
+      <button id="btnDashTop" class="btn btn-ghost btn-sm hidden" onclick="showDash()" data-i18n="hdr.dash">لوحة التحكم</button>
+      <button id="btnAuthTop" class="btn btn-sm" onclick="showAuth()" data-i18n="hdr.auth">دخول / تسجيل</button>
+      <button id="btnLogoutTop" class="btn btn-ghost btn-sm hidden" onclick="logout()" data-i18n="hdr.logout">خروج</button>
     </div>
   </div>
 </header>
@@ -410,61 +415,61 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
     <div class="hero">
       <div class="hero-in">
         <img class="hero-logo" src="logo.svg" alt="Menu QR 🍽">
-        <span class="hero-badge">امسح، شوف، واطلب!</span>
-        <h1>ودّع Menu الورقي!</h1>
-        <p>Menu مطعمك أو مقهاك، الآن في هاتف زبونك! أنشئ Menu إلكتروني خاص بمشروعك، شارك QR Code مع زبائنك، وخليهم يشوفوا الأطباق والأسعار ويطلبوا ديركت من التطبيق.</p>
+        <span class="hero-badge" data-i18n="land.badge">امسح، شوف، واطلب!</span>
+        <h1 data-i18n="land.h1">ودّع Menu الورقي!</h1>
+        <p data-i18n="land.hero_p">Menu مطعمك أو مقهاك، الآن في هاتف زبونك! أنشئ Menu إلكتروني خاص بمشروعك، شارك QR Code مع زبائنك، وخليهم يشوفوا الأطباق والأسعار ويطلبوا ديركت من التطبيق.</p>
         <div class="hero-cta">
-          <button class="btn btn-amber" onclick="showAuth()">🚀 ابدأ مجاناً — 14 يوم</button>
-          <button class="btn btn-ghost" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)" onclick="openDemoMenu()">🍽️ شوف Menu تجريبي</button>
+          <button class="btn btn-amber" onclick="showAuth()">🚀 <span data-i18n="land.cta_start">ابدأ مجاناً — 14 يوم</span></button>
+          <button class="btn btn-ghost" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)" onclick="openDemoMenu()">🍽️ <span data-i18n="land.cta_demo">شوف Menu تجريبي</span></button>
         </div>
-        <p style="margin-top:14px"><a href="#" onclick="openDemoPhotoMenu();return false" style="color:#FCD34D;font-weight:800">📸 جرّب منيو بالصورة — مقهى الديوان</a></p>
+        <p style="margin-top:14px"><a href="#" onclick="openDemoPhotoMenu();return false" style="color:#FCD34D;font-weight:800">📸 <span data-i18n="land.photo_demo">جرّب منيو بالصورة — مقهى الديوان</span></a></p>
       </div>
     </div>
 
     <div class="container">
       <section class="landing-sec">
-        <h2 class="sec-title">علاش Menu QR 🍽؟</h2>
-        <p class="sec-sub">كلش لي يحتاجو صاحب المطعم أو المقهى، بلا تعقيد وبلا مصاريف زايدة</p>
+        <h2 class="sec-title" data-i18n="land.why_t">علاش Menu QR 🍽؟</h2>
+        <p class="sec-sub" data-i18n="land.why_s">كلش لي يحتاجو صاحب المطعم أو المقهى، بلا تعقيد وبلا مصاريف زايدة</p>
         <div class="grid grid-3">
-          <div class="card feat"><div class="ic">📱</div><h3>Menu يفتح في ثانية</h3><p>الزبون يسكان الـ QR ويشوف Menu كامل في تيليفونو، بلا تطبيق وبلا تسجيل</p></div>
-          <div class="card feat"><div class="ic">💬</div><h3>الطلب يوصل للمطبخ والكاشير</h3><p>الزبون يختار واش يحب والطلب يوصل للمطبخ والكاشير ديركت من التطبيق — مع رقم الطاولة إذا كان في المحل</p></div>
-          <div class="card feat"><div class="ic">✏️</div><h3>بدّل الأسعار وقت ما تحب</h3><p>زيد طبق، نقص طبق، بدّل السعر — التعديل يبان في Menu مباشرة، بلا ما تعاود تطبع</p></div>
-          <div class="card feat"><div class="ic">🖨️</div><h3>QR جاهز للطباعة</h3><p>حمّل الـ QR كصورة ولا اطبعو مباشرة من لوحة التحكم وحطو على الطاولات</p></div>
-          <div class="card feat"><div class="ic">🪑</div><h3>QR لكل طاولة</h3><p>كل طاولة عندها كودها: الطلب يوصل للمطبخ مع رقم الطاولة مباشرة، بلا ما الزبون ينادي النادل</p></div>
-          <div class="card feat"><div class="ic">💰</div><h3>سعر في المتناول</h3><p>700 دج/شهر في الجزائر، $9/شهر في الخليج — وأول 14 يوم مجاناً باش تجرب براحتك</p></div>
+          <div class="card feat"><div class="ic">📱</div><h3 data-i18n="land.f1t">Menu يفتح في ثانية</h3><p data-i18n="land.f1d">الزبون يسكان الـ QR ويشوف Menu كامل في تيليفونو، بلا تطبيق وبلا تسجيل</p></div>
+          <div class="card feat"><div class="ic">💬</div><h3 data-i18n="land.f2t">الطلب يوصل للمطبخ والكاشير</h3><p data-i18n="land.f2d">الزبون يختار واش يحب والطلب يوصل للمطبخ والكاشير ديركت من التطبيق — مع رقم الطاولة إذا كان في المحل</p></div>
+          <div class="card feat"><div class="ic">✏️</div><h3 data-i18n="land.f3t">بدّل الأسعار وقت ما تحب</h3><p data-i18n="land.f3d">زيد طبق، نقص طبق، بدّل السعر — التعديل يبان في Menu مباشرة، بلا ما تعاود تطبع</p></div>
+          <div class="card feat"><div class="ic">🖨️</div><h3 data-i18n="land.f4t">QR جاهز للطباعة</h3><p data-i18n="land.f4d">حمّل الـ QR كصورة ولا اطبعو مباشرة من لوحة التحكم وحطو على الطاولات</p></div>
+          <div class="card feat"><div class="ic">🪑</div><h3 data-i18n="land.f5t">QR لكل طاولة</h3><p data-i18n="land.f5d">كل طاولة عندها كودها: الطلب يوصل للمطبخ مع رقم الطاولة مباشرة، بلا ما الزبون ينادي النادل</p></div>
+          <div class="card feat"><div class="ic">💰</div><h3 data-i18n="land.f6t">سعر في المتناول</h3><p data-i18n="land.f6d">700 دج/شهر في الجزائر، $9/شهر في الخليج — وأول 14 يوم مجاناً باش تجرب براحتك</p></div>
         </div>
       </section>
 
       <section class="landing-sec">
-        <h2 class="sec-title">كيفاش تخدم؟</h2>
-        <p class="sec-sub">3 خطوات برك وتولي عندك Menu إلكتروني</p>
+        <h2 class="sec-title" data-i18n="land.how_t">كيفاش تخدم؟</h2>
+        <p class="sec-sub" data-i18n="land.how_s">3 خطوات برك وتولي عندك Menu إلكتروني</p>
         <div class="grid grid-3">
-          <div class="card step"><div class="n">1</div><div><h3>سجّل مشروعك</h3><p>دير حساب ودخل اسم المطعم أو المقهى ورقم الواتساب تاعك</p></div></div>
-          <div class="card step"><div class="n">2</div><div><h3>زيد الأطباق والأسعار</h3><p>أقسام وأطباق بالصور، وتقدر تبدلهم في أي وقت</p></div></div>
-          <div class="card step"><div class="n">3</div><div><h3>اطبع الـ QR</h3><p>حمّل الـ QR ولا اطبعو وحطو على الطاولات — والطلبات توصلك ديركت من التطبيق</p></div></div>
+          <div class="card step"><div class="n">1</div><div><h3 data-i18n="land.s1t">سجّل مشروعك</h3><p data-i18n="land.s1d">دير حساب ودخل اسم المطعم أو المقهى ورقم الواتساب تاعك</p></div></div>
+          <div class="card step"><div class="n">2</div><div><h3 data-i18n="land.s2t">زيد الأطباق والأسعار</h3><p data-i18n="land.s2d">أقسام وأطباق بالصور، وتقدر تبدلهم في أي وقت</p></div></div>
+          <div class="card step"><div class="n">3</div><div><h3 data-i18n="land.s3t">اطبع الـ QR</h3><p data-i18n="land.s3d">حمّل الـ QR ولا اطبعو وحطو على الطاولات — والطلبات توصلك ديركت من التطبيق</p></div></div>
         </div>
       </section>
 
       <section id="pricing" class="landing-sec">
-        <h2 class="sec-title">الأسعار</h2>
-        <p class="sec-sub">أول 14 يوم مجاناً، بلا بطاقة بنكية، بلا التزام</p>
+        <h2 class="sec-title" data-i18n="land.price_t">الأسعار</h2>
+        <p class="sec-sub" data-i18n="land.price_s">أول 14 يوم مجاناً، بلا بطاقة بنكية، بلا التزام</p>
         <div class="grid grid-2">
           <div class="card price-card">
-            <h3>🇩🇿 الجزائر</h3>
-            <div class="p">700<small> دج / شهر</small></div>
-            <ul><li>Menu غير محدود الأطباق</li><li>QR + طباعة + QR الطاولات</li><li>طلبات غير محدودة من التطبيق</li><li>الدفع CCP / BaridiMob / كاش</li><li>تفعيل يدوي عبر واتساب</li></ul>
-            <button class="btn btn-block" onclick="showAuth()">ابدأ الآن</button>
+            <h3 data-i18n="land.p_dz">🇩🇿 الجزائر</h3>
+            <div class="p">700<small data-i18n="land.per_dz"> دج / شهر</small></div>
+            <ul><li data-i18n="land.p_dz_f1">Menu غير محدود الأطباق</li><li data-i18n="land.p_dz_f2">QR + طباعة + QR الطاولات</li><li data-i18n="land.p_dz_f3">طلبات غير محدودة من التطبيق</li><li data-i18n="land.p_dz_f4">الدفع CCP / BaridiMob / كاش</li><li data-i18n="land.p_dz_f5">تفعيل يدوي عبر واتساب</li></ul>
+            <button class="btn btn-block" onclick="showAuth()" data-i18n="land.p_start">ابدأ الآن</button>
           </div>
           <div class="card price-card hl">
-            <span class="tag">الخليج 🌍</span>
-            <h3>السعودية والإمارات</h3>
-            <div class="p">$9<small> / شهر</small></div>
-            <ul><li>نفس المزايا كاملة</li><li>QR + طباعة + QR الطاولات</li><li>طلبات غير محدودة من التطبيق</li><li>الدفع عبر Paddle (قريباً)</li><li>دعم بالعربية</li></ul>
-            <button class="btn btn-amber btn-block" onclick="showAuth()">ابدأ الآن</button>
+            <span class="tag" data-i18n="land.p_gulf_tag">الخليج 🌍</span>
+            <h3 data-i18n="land.p_gulf">السعودية والإمارات</h3>
+            <div class="p">$9<small data-i18n="land.per_gulf"> / شهر</small></div>
+            <ul><li data-i18n="land.p_gulf_f1">نفس المزايا كاملة</li><li data-i18n="land.p_dz_f2">QR + طباعة + QR الطاولات</li><li data-i18n="land.p_dz_f3">طلبات غير محدودة من التطبيق</li><li data-i18n="land.p_gulf_f3">الدفع عبر Paddle (قريباً)</li><li data-i18n="land.p_gulf_f4">دعم بالعربية</li></ul>
+            <button class="btn btn-amber btn-block" onclick="showAuth()" data-i18n="land.p_start">ابدأ الآن</button>
           </div>
         </div>
-        <div class="founder-banner">🎉 <b>الأوائل 20:</b> سعرهم مثبت للأبد — 700 دج / $9 ما يتبدلش عليهم، حتى كي يطلع السعر من بعد.</div>
-        <p class="hint" style="text-align:center;margin-top:18px">بعد التجربة المجانية، التفعيل يدوي عبر واتساب — تبعث ميساج ونفعّلولك الاشتراك في نفس اليوم إن شاء الله.</p>
+        <div class="founder-banner" data-i18n-html="land.founder">🎉 <b>الأوائل 20:</b> سعرهم مثبت للأبد — 700 دج / $9 ما يتبدلش عليهم، حتى كي يطلع السعر من بعد.</div>
+        <p class="hint" style="text-align:center;margin-top:18px"><span data-i18n="land.price_hint">بعد التجربة المجانية، التفعيل يدوي عبر واتساب — تبعث ميساج ونفعّلولك الاشتراك في نفس اليوم إن شاء الله.</span></p>
       </section>
     </div>
   </section>
@@ -472,23 +477,23 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
   <!-- ============ تسجيل الدخول ============ -->
   <section id="view-auth" class="hidden">
     <div class="container auth-wrap">
-      <h2 class="sec-title">حساب صاحب المطعم أو المقهى</h2>
-      <p class="sec-sub">دخول ولا تسجيل جديد — باش تدير Menu تاع مشروعك</p>
+      <h2 class="sec-title" data-i18n="auth.title">حساب صاحب المطعم أو المقهى</h2>
+      <p class="sec-sub" data-i18n="auth.sub">دخول ولا تسجيل جديد — باش تدير Menu تاع مشروعك</p>
       <div class="card">
         <div class="tabs">
-          <button id="tabLogin" class="on" onclick="authTab('login')">دخول</button>
-          <button id="tabSignup" onclick="authTab('signup')">تسجيل جديد</button>
+          <button id="tabLogin" class="on" onclick="authTab('login')" data-i18n="auth.tab_login">دخول</button>
+          <button id="tabSignup" onclick="authTab('signup')" data-i18n="auth.tab_signup">تسجيل جديد</button>
         </div>
         <div id="authErr" class="error hidden"></div>
         <div id="authOk" class="okbox hidden"></div>
         <form onsubmit="doAuth(event)">
-          <div class="form-row"><label>الإيميل</label><input id="authEmail" type="email" required dir="ltr" placeholder="restaurant@email.com"></div>
-          <div class="form-row"><label>كلمة السر</label><input id="authPass" type="password" required minlength="6" dir="ltr" placeholder="6 حروف على الأقل"></div>
-          <button class="btn btn-block" id="authBtn">دخول</button>
+          <div class="form-row"><label data-i18n="auth.lbl_email">الإيميل</label><input id="authEmail" type="email" required dir="ltr" placeholder="restaurant@email.com"></div>
+          <div class="form-row"><label data-i18n="auth.lbl_pass">كلمة السر</label><input id="authPass" type="password" required minlength="6" dir="ltr" data-i18n-ph="auth.ph_pass" placeholder="6 حروف على الأقل"></div>
+          <button class="btn btn-block" id="authBtn" data-i18n="auth.btn_login">دخول</button>
         </form>
-        <p class="hint" style="text-align:center;margin-top:12px">بالتسجيل راك توافق بلي تستعمل التطبيق لمطعمك أو مقهاك. بياناتك محفوظة وماشي راح تتباع.</p>
+        <p class="hint" style="text-align:center;margin-top:12px"><span data-i18n="auth.hint">بالتسجيل راك توافق بلي تستعمل التطبيق لمطعمك أو مقهاك. بياناتك محفوظة وماشي راح تتباع.</span></p>
       </div>
-      <p style="text-align:center;margin-top:14px"><a href="#" onclick="goHome();return false">← رجوع للرئيسية</a></p>
+      <p style="text-align:center;margin-top:14px"><a href="#" onclick="goHome();return false" data-i18n="auth.back">← رجوع للرئيسية</a></p>
     </div>
   </section>
 
@@ -503,7 +508,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
         </div>
         <div class="dc-acts">
           <span id="subPill" class="pill pill-grey">—</span>
-          <button class="btn btn-amber btn-sm" onclick="openMyMenu()">👁️ شوف Menu تاعي</button>
+          <button class="btn btn-amber btn-sm" onclick="openMyMenu()" data-i18n="dash.view_menu">👁️ شوف Menu تاعي</button>
         </div>
       </div>
       <div class="dash-stats hidden" id="dashStats"></div>
@@ -511,88 +516,88 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
 
       <!-- إنشاء مشروع -->
       <div id="dashNoCafe" class="card hidden" data-frame="مطعم">
-        <h3 style="margin-bottom:6px">أنشئ مشروعك الأول</h3>
-        <p class="muted" style="margin-bottom:16px">دخل معلومات المطعم أو المقهى، ومن بعد تقدر تزيد الأقسام والأطباق.</p>
+        <h3 style="margin-bottom:6px" data-i18n="dash.create_t">أنشئ مشروعك الأول</h3>
+        <p class="muted" style="margin-bottom:16px" data-i18n="dash.create_p">دخل معلومات المطعم أو المقهى، ومن بعد تقدر تزيد الأقسام والأطباق.</p>
         <form onsubmit="createCafe(event)">
-          <div class="form-row"><label>اسم المطعم أو المقهى *</label><input id="cfName" required placeholder="مثال: مطعم الديوان"></div>
-          <div class="form-row"><label>نوع المحل *</label><select id="cfType"><option value="restaurant">🍽️ مطعم</option><option value="cafe">☕ مقهى</option><option value="patisserie">🍰 باتيسري</option><option value="fastfood">🍔 فاست فود</option><option value="snack">🥪 سناك</option><option value="juice">🧃 عصير</option></select><p class="hint">خلفية Menu تتبدل حسب نوع المحل تاعك.</p></div>
-          <div class="form-row"><label>نوع المنيو *</label>
+          <div class="form-row"><label data-i18n="dash.lbl_name">اسم المطعم أو المقهى *</label><input id="cfName" required data-i18n-ph="dash.ph_name" placeholder="مثال: مطعم الديوان"></div>
+          <div class="form-row"><label data-i18n="dash.lbl_type">نوع المحل *</label><select id="cfType"><option value="restaurant" data-i18n="type.restaurant">🍽️ مطعم</option><option value="cafe" data-i18n="type.cafe">☕ مقهى</option><option value="patisserie" data-i18n="type.patisserie">🍰 باتيسري</option><option value="fastfood" data-i18n="type.fastfood">🍔 فاست فود</option><option value="snack" data-i18n="type.snack">🥪 سناك</option><option value="juice" data-i18n="type.juice">🧃 عصير</option></select><p class="hint" data-i18n="dash.hint_bg">خلفية Menu تتبدل حسب نوع المحل تاعك.</p></div>
+          <div class="form-row"><label data-i18n="dash.lbl_menu_type">نوع المنيو *</label>
             <div class="radio-row">
-              <label><input type="radio" name="cfMenuType" value="detailed" checked><span>📋 منيو مفصلة</span></label>
-              <label><input type="radio" name="cfMenuType" value="photo"><span>📸 منيو بالصورة</span></label>
+              <label><input type="radio" name="cfMenuType" value="detailed" checked><span data-i18n="dash.mt_detailed">📋 منيو مفصلة</span></label>
+              <label><input type="radio" name="cfMenuType" value="photo"><span data-i18n="dash.mt_photo">📸 منيو بالصورة</span></label>
             </div>
-            <p class="hint">منيو مفصلة: تكتب الأطباق والأسعار واحد بواحد. منيو بالصورة: تصوّر المنيو المكتوب تاعك برك — بلا كتابة.</p>
+            <p class="hint" data-i18n="dash.hint_menu_type">منيو مفصلة: تكتب الأطباق والأسعار واحد بواحد. منيو بالصورة: تصوّر المنيو المكتوب تاعك برك — بلا كتابة.</p>
           </div>
-          <div class="form-row"><label>الرابط (slug) *</label><input id="cfSlug" required dir="ltr" placeholder="diwan"><p class="hint">الرابط تاع Menu تاعك راح يكون: <span id="slugPreview" dir="ltr">…?cafe=diwan</span> — حروف وأرقام وشرطات برك.</p></div>
-          <div class="form-row"><label>رقم الواتساب *</label><input id="cfWa" required dir="ltr" placeholder="0550123456"><p class="hint">رقم تواصل المطعم — يظهر في Menu باش الزبون يعيطلك ولا يبعثلك واتساب.</p></div>
-          <div class="form-row"><label><input type="checkbox" id="cfDelivery" style="width:auto"> 🚚 كاين توصيل للدار؟</label><p class="hint">إذا فعّلتها، الزبون اللي من الدار يكتب رقم هاتفو مع الطلب باش تعيطلو وتكونفيرمي معاه.</p></div>
-          <div class="form-row"><label>رابط الفايسبوك (اختياري)</label><input id="cfFb" dir="ltr" placeholder="https://facebook.com/..."></div>
-          <div class="form-row"><label>شعار المطعم أو المقهى (اختياري)</label>
+          <div class="form-row"><label data-i18n="dash.lbl_slug">الرابط (slug) *</label><input id="cfSlug" required dir="ltr" placeholder="diwan"><p class="hint"><span data-i18n="dash.hint_slug_a">الرابط تاع Menu تاعك راح يكون:</span> <span id="slugPreview" dir="ltr">…?cafe=diwan</span> <span data-i18n="dash.hint_slug_b">— حروف وأرقام وشرطات برك.</span></p></div>
+          <div class="form-row"><label data-i18n="dash.lbl_wa">رقم الواتساب *</label><input id="cfWa" required dir="ltr" placeholder="0550123456"><p class="hint" data-i18n="dash.hint_wa">رقم تواصل المطعم — يظهر في Menu باش الزبون يعيطلك ولا يبعثلك واتساب.</p></div>
+          <div class="form-row"><label data-i18n="dash.delivery"><input type="checkbox" id="cfDelivery" style="width:auto"> 🚚 كاين توصيل للدار؟</label><p class="hint" data-i18n="dash.hint_delivery">إذا فعّلتها، الزبون اللي من الدار يكتب رقم هاتفو مع الطلب باش تعيطلو وتكونفيرمي معاه.</p></div>
+          <div class="form-row"><label data-i18n="dash.lbl_fb">رابط الفايسبوك (اختياري)</label><input id="cfFb" dir="ltr" placeholder="https://facebook.com/..."></div>
+          <div class="form-row"><label data-i18n="dash.lbl_logo">شعار المطعم أو المقهى (اختياري)</label>
           <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
             <img id="cfLogoPrev" class="hidden" style="width:72px;height:72px;object-fit:cover;border-radius:12px;border:1px solid #e5e7eb" alt="">
-            <label for="cfLogoFile" class="btn btn-ghost" style="cursor:pointer">📷 اختار الشعار من تيليفونك</label>
-            <button type="button" class="btn btn-ghost hidden" id="cfLogoClear" onclick="clearPhoto('cfLogoFile','cfLogoPrev','cfLogoClear')">🗑 نحّي الشعار</button>
+            <label for="cfLogoFile" class="btn btn-ghost" style="cursor:pointer" data-i18n="dash.logo_pick">📷 اختار الشعار من تيليفونك</label>
+            <button type="button" class="btn btn-ghost hidden" id="cfLogoClear" onclick="clearPhoto('cfLogoFile','cfLogoPrev','cfLogoClear')" data-i18n="dash.logo_remove">🗑 نحّي الشعار</button>
           </div>
           <input type="file" id="cfLogoFile" accept="image/*" class="hidden" onchange="onPhotoFile(this,'cfLogoPrev','cfLogoClear')">
         </div>
-          <div class="form-row"><label>العملة</label><select id="cfCur"><option value="دج">دج (دينار جزائري)</option><option value="$">$ (دولار)</option><option value="ر.س">ر.س (ريال سعودي)</option><option value="د.إ">د.إ (درهم إماراتي)</option></select></div>
-          <button class="btn btn-block">✅ أنشئ المشروع</button>
+          <div class="form-row"><label data-i18n="dash.lbl_cur">العملة</label><select id="cfCur"><option value="دج" data-i18n="dash.cur_dzd">دج (دينار جزائري)</option><option value="$" data-i18n="dash.cur_usd">$ (دولار)</option><option value="ر.س" data-i18n="dash.cur_sar">ر.س (ريال سعودي)</option><option value="د.إ" data-i18n="dash.cur_aed">د.إ (درهم إماراتي)</option></select></div>
+          <button class="btn btn-block" data-i18n="dash.create_btn">✅ أنشئ المشروع</button>
         </form>
       </div>
 
       <!-- عندو مشروع -->
       <div id="dashMain" class="hidden">
         <div class="dash-tabs">
-          <button id="dtMenu" class="on" onclick="dashTab('menu')">📋 Menu</button>
-          <button id="dtOrders" onclick="dashTab('orders')">📥 الطلبات</button>
-          <button id="dtSettings" onclick="dashTab('settings')">⚙️ إعدادات المشروع</button>
-          <button id="dtQr" onclick="dashTab('qr')">🔳 الـ QR والطباعة</button>
-          <button id="dtSub" onclick="dashTab('sub')">💳 الاشتراك</button>
+          <button id="dtMenu" class="on" onclick="dashTab('menu')" data-i18n="dash.tab_menu">📋 Menu</button>
+          <button id="dtOrders" onclick="dashTab('orders')" data-i18n="dash.tab_orders">📥 الطلبات</button>
+          <button id="dtSettings" onclick="dashTab('settings')" data-i18n="dash.tab_settings">⚙️ إعدادات المشروع</button>
+          <button id="dtQr" onclick="dashTab('qr')" data-i18n="dash.tab_qr">🔳 الـ QR والطباعة</button>
+          <button id="dtSub" onclick="dashTab('sub')" data-i18n="dash.tab_sub">💳 الاشتراك</button>
         </div>
 
         <!-- تبويب Menu -->
         <div id="tabMenu">
           <div id="photoMenuCard" class="card hidden" style="margin-bottom:16px" data-frame="صور المنيو">
-            <h3 style="margin-bottom:6px">📸 صور المنيو</h3>
-            <p class="muted" style="margin-bottom:12px">صوّر المنيو المكتوب تاعك (صفحة ولا بزاف) — الزبون يشوف الصور ويكتب طلبو كنص حر. الأسعار تبان في الصورة.</p>
+            <h3 style="margin-bottom:6px" data-i18n="dash.photos_t">📸 صور المنيو</h3>
+            <p class="muted" style="margin-bottom:12px" data-i18n="dash.photos_p">صوّر المنيو المكتوب تاعك (صفحة ولا بزاف) — الزبون يشوف الصور ويكتب طلبو كنص حر. الأسعار تبان في الصورة.</p>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <label for="menuPhotosCam" class="btn btn-amber" style="cursor:pointer">📷 صوّر بالكاميرا</label>
-              <label for="menuPhotosFile" class="btn btn-ghost" style="cursor:pointer">🖼️ اختار من الغاليري</label>
+              <label for="menuPhotosCam" class="btn btn-amber" style="cursor:pointer" data-i18n="dash.photos_cam">📷 صوّر بالكاميرا</label>
+              <label for="menuPhotosFile" class="btn btn-ghost" style="cursor:pointer" data-i18n="dash.photos_gallery">🖼️ اختار من الغاليري</label>
             </div>
             <input type="file" id="menuPhotosCam" accept="image/*" capture="environment" class="hidden" onchange="onMenuPhotosFile(this)">
             <input type="file" id="menuPhotosFile" accept="image/*" multiple class="hidden" onchange="onMenuPhotosFile(this)">
             <div id="photoThumbs" class="photo-thumbs"></div>
-            <p class="hint" style="margin-top:10px">صوّر قد ما تحب — بلا حدود. في الوضع التجريبي الصور تتحفظ في جهازك برك؛ مع القاعدة الحية تترفع لـ Supabase Storage.</p>
+            <p class="hint" style="margin-top:10px" data-i18n="dash.photos_hint">صوّر قد ما تحب — بلا حدود. في الوضع التجريبي الصور تتحفظ في جهازك برك؛ مع القاعدة الحية تترفع لـ Supabase Storage.</p>
           </div>
           <div id="catAddCard" class="card" style="margin-bottom:16px" data-frame="أطباق">
             <form onsubmit="addCategory(event)" style="display:flex;gap:8px;flex-wrap:wrap">
-              <input id="catName" required placeholder="اسم قسم جديد: أطباق رئيسية، مشروبات، حلويات..." style="flex:1;min-width:180px">
-              <button class="btn">+ زيد قسم</button>
+              <input id="catName" required data-i18n-ph="dash.cat_ph" placeholder="اسم قسم جديد: أطباق رئيسية، مشروبات، حلويات..." style="flex:1;min-width:180px">
+              <button class="btn" data-i18n="dash.cat_add">+ زيد قسم</button>
             </form>
           </div>
           <div id="menuEditor"></div>
           <div id="itemAddCard" class="card" style="margin-top:16px" data-frame="طبق">
-            <h3 style="margin-bottom:12px" id="itemFormTitle">➕ زيد طبق جديد</h3>
+            <h3 style="margin-bottom:12px" id="itemFormTitle" data-i18n="dash.item_form_t">➕ زيد طبق جديد</h3>
             <form onsubmit="saveItem(event)">
               <input type="hidden" id="itId" value="">
-              <div class="form-row"><label>القسم *</label><select id="itCat" required></select></div>
-              <div class="form-row"><label>اسم الطبق *</label><input id="itName" required placeholder="مثال: كسكس بالخضرة"></div>
-              <div class="form-row"><label>الوصف</label><input id="itDesc" placeholder="وصف قصير يشهي الزبون"></div>
+              <div class="form-row"><label data-i18n="dash.lbl_cat">القسم *</label><select id="itCat" required></select></div>
+              <div class="form-row"><label data-i18n="dash.lbl_dish">اسم الطبق *</label><input id="itName" required data-i18n-ph="dash.ph_dish" placeholder="مثال: كسكس بالخضرة"></div>
+              <div class="form-row"><label data-i18n="dash.lbl_desc">الوصف</label><input id="itDesc" data-i18n-ph="dash.ph_desc" placeholder="وصف قصير يشهي الزبون"></div>
               <div style="display:flex;gap:10px;flex-wrap:wrap">
-                <div class="form-row" style="flex:1;min-width:140px"><label>السعر *</label><input id="itPrice" type="number" min="0" step="any" required placeholder="450"></div>
+                <div class="form-row" style="flex:1;min-width:140px"><label data-i18n="dash.lbl_price">السعر *</label><input id="itPrice" type="number" min="0" step="any" required placeholder="450"></div>
               </div>
-              <div class="form-row"><label>صورة الطبق (اختياري)</label>
+              <div class="form-row"><label data-i18n="dash.lbl_img">صورة الطبق (اختياري)</label>
               <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                 <img id="itImgPrev" class="hidden" style="width:72px;height:72px;object-fit:cover;border-radius:12px;border:1px solid #e5e7eb" alt="">
-                <label for="itImgFile" class="btn btn-ghost" style="cursor:pointer">📷 اختار صورة من تيليفونك</label>
-                <button type="button" class="btn btn-ghost hidden" id="itImgClear" onclick="clearPhoto('itImgFile','itImgPrev','itImgClear')">🗑 نحّي الصورة</button>
+                <label for="itImgFile" class="btn btn-ghost" style="cursor:pointer" data-i18n="dash.img_pick">📷 اختار صورة من تيليفونك</label>
+                <button type="button" class="btn btn-ghost hidden" id="itImgClear" onclick="clearPhoto('itImgFile','itImgPrev','itImgClear')" data-i18n="dash.img_remove">🗑 نحّي الصورة</button>
               </div>
               <input type="file" id="itImgFile" accept="image/*" class="hidden" onchange="onPhotoFile(this,'itImgPrev','itImgClear')">
-              <p class="hint">الصورة تتصغّر أوتوماتيكياً باش ما تثقلش الـ Menu.</p>
+              <p class="hint" data-i18n="dash.hint_img">الصورة تتصغّر أوتوماتيكياً باش ما تثقلش الـ Menu.</p>
             </div>
               <div style="display:flex;gap:10px">
-                <button class="btn btn-block" id="itSubmitBtn">✅ زيد الطبق</button>
-                <button type="button" class="btn btn-ghost hidden" id="itCancelEdit" onclick="cancelEditItem()">إلغاء</button>
+                <button class="btn btn-block" id="itSubmitBtn" data-i18n="dash.item_submit_add">✅ زيد الطبق</button>
+                <button type="button" class="btn btn-ghost hidden" id="itCancelEdit" onclick="cancelEditItem()" data-i18n="dash.item_cancel">إلغاء</button>
               </div>
             </form>
           </div>
@@ -601,14 +606,14 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
         <!-- تبويب الطلبات -->
         <div id="tabOrders" class="hidden">
           <div class="card" style="margin-bottom:16px" data-frame="طلبات">
-            <h3 style="margin-bottom:8px">📥 الطلبات</h3>
-            <p class="muted">الطلبات توصل هنا ديركت من التطبيق — بلا واتساب. الطباخ يشوف الأطباق والطاولة، والكاشير يشوف المجموع.</p>
-            <button class="btn btn-amber" onclick="openKitchen()">🖥️ افتح شاشة المطبخ</button>
-            <p class="hint" style="margin-top:10px">باش الطباخ والكاشير يشوفو الطلبات من تيليفوناتهم، افتح شاشة المطبخ مرة وحدة من حسابك في تيليفون كل واحد فيهم.</p>
+            <h3 style="margin-bottom:8px" data-i18n="dash.ord_t">📥 الطلبات</h3>
+            <p class="muted" data-i18n="dash.ord_p">الطلبات توصل هنا ديركت من التطبيق — بلا واتساب. الطباخ يشوف الأطباق والطاولة، والكاشير يشوف المجموع.</p>
+            <button class="btn btn-amber" onclick="openKitchen()" data-i18n="dash.ord_kitchen">🖥️ افتح شاشة المطبخ</button>
+            <p class="hint" style="margin-top:10px" data-i18n="dash.ord_hint">باش الطباخ والكاشير يشوفو الطلبات من تيليفوناتهم، افتح شاشة المطبخ مرة وحدة من حسابك في تيليفون كل واحد فيهم.</p>
             <div style="display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap">
-              <label style="font-weight:700">🪑 شحال من طاولة؟</label>
+              <label style="font-weight:700" data-i18n="dash.ord_tables_q">🪑 شحال من طاولة؟</label>
               <input id="tablesCountSet" type="number" min="1" max="50" style="max-width:90px" dir="ltr">
-              <button class="btn btn-sm" onclick="saveTablesCount()">💾 حفظ</button>
+              <button class="btn btn-sm" onclick="saveTablesCount()" data-i18n="dash.ord_save">💾 حفظ</button>
             </div>
             <div id="tablesStrip" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap"></div>
           </div>
@@ -618,31 +623,38 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
         <!-- تبويب الإعدادات -->
         <div id="tabSettings" class="hidden">
           <div class="card" data-frame="معلومات">
-            <h3 style="margin-bottom:12px">⚙️ معلومات المشروع</h3>
+            <h3 style="margin-bottom:12px" data-i18n="dash.set_t">⚙️ معلومات المشروع</h3>
             <form onsubmit="saveCafe(event)">
-              <div class="form-row"><label>اسم المطعم أو المقهى *</label><input id="edName" required></div>
-              <div class="form-row"><label>نوع المحل *</label><select id="edType"><option value="restaurant">🍽️ مطعم</option><option value="cafe">☕ مقهى</option><option value="patisserie">🍰 باتيسري</option><option value="fastfood">🍔 فاست فود</option><option value="snack">🥪 سناك</option><option value="juice">🧃 عصير</option></select><p class="hint">خلفية Menu تتبدل حسب نوع المحل تاعك.</p></div>
-              <div class="form-row"><label>نوع المنيو *</label>
+              <div class="form-row"><label data-i18n="dash.lbl_name">اسم المطعم أو المقهى *</label><input id="edName" required></div>
+              <div class="form-row"><label data-i18n="dash.lbl_type">نوع المحل *</label><select id="edType"><option value="restaurant" data-i18n="type.restaurant">🍽️ مطعم</option><option value="cafe" data-i18n="type.cafe">☕ مقهى</option><option value="patisserie" data-i18n="type.patisserie">🍰 باتيسري</option><option value="fastfood" data-i18n="type.fastfood">🍔 فاست فود</option><option value="snack" data-i18n="type.snack">🥪 سناك</option><option value="juice" data-i18n="type.juice">🧃 عصير</option></select><p class="hint" data-i18n="dash.hint_bg">خلفية Menu تتبدل حسب نوع المحل تاعك.</p></div>
+              <div class="form-row"><label data-i18n="dash.lbl_menu_type">نوع المنيو *</label>
                 <div class="radio-row">
-                  <label><input type="radio" name="edMenuType" value="detailed" checked><span>📋 منيو مفصلة</span></label>
-                  <label><input type="radio" name="edMenuType" value="photo"><span>📸 منيو بالصورة</span></label>
+                  <label><input type="radio" name="edMenuType" value="detailed" checked><span data-i18n="dash.mt_detailed">📋 منيو مفصلة</span></label>
+                  <label><input type="radio" name="edMenuType" value="photo"><span data-i18n="dash.mt_photo">📸 منيو بالصورة</span></label>
                 </div>
-                <p class="hint">منيو بالصورة: الزبون يشوف صور المنيو ويكتب طلبو كنص حر — بلا سلة.</p>
+                <p class="hint" data-i18n="dash.set_photo_hint">منيو بالصورة: الزبون يشوف صور المنيو ويكتب طلبو كنص حر — بلا سلة.</p>
               </div>
-              <div class="form-row"><label>الرابط (slug) *</label><input id="edSlug" required dir="ltr"><p class="hint">تبديل الرابط يبدّل الـ QR تاعك — عاود طبعو من بعد.</p></div>
-              <div class="form-row"><label>رقم الواتساب *</label><input id="edWa" required dir="ltr"></div>
-              <div class="form-row"><label><input type="checkbox" id="edDelivery" style="width:auto"> 🚚 كاين توصيل للدار؟</label><p class="hint">إذا فعّلتها، الزبون اللي من الدار يكتب رقم هاتفو مع الطلب باش تعيطلو وتكونفيرمي معاه.</p></div>
-              <div class="form-row"><label>رابط الفايسبوك</label><input id="edFb" dir="ltr"></div>
-              <div class="form-row"><label>شعار المطعم أو المقهى</label>
+              <div class="form-row"><label data-i18n="dash.lbl_slug">الرابط (slug) *</label><input id="edSlug" required dir="ltr"><p class="hint" data-i18n="dash.set_slug_hint">تبديل الرابط يبدّل الـ QR تاعك — عاود طبعو من بعد.</p></div>
+              <div class="form-row"><label data-i18n="dash.lbl_wa">رقم الواتساب *</label><input id="edWa" required dir="ltr"></div>
+              <div class="form-row"><label data-i18n="dash.delivery"><input type="checkbox" id="edDelivery" style="width:auto"> 🚚 كاين توصيل للدار؟</label><p class="hint" data-i18n="dash.hint_delivery">إذا فعّلتها، الزبون اللي من الدار يكتب رقم هاتفو مع الطلب باش تعيطلو وتكونفيرمي معاه.</p></div>
+              <div class="form-row"><label data-i18n="dash.lbl_fb2">رابط الفايسبوك</label><input id="edFb" dir="ltr"></div>
+              <div class="form-row"><label data-i18n="dash.lbl_logo2">شعار المطعم أو المقهى</label>
               <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                 <img id="edLogoPrev" class="hidden" style="width:72px;height:72px;object-fit:cover;border-radius:12px;border:1px solid #e5e7eb" alt="">
-                <label for="edLogoFile" class="btn btn-ghost" style="cursor:pointer">📷 اختار الشعار من تيليفونك</label>
-                <button type="button" class="btn btn-ghost hidden" id="edLogoClear" onclick="clearPhoto('edLogoFile','edLogoPrev','edLogoClear')">🗑 نحّي الشعار</button>
+                <label for="edLogoFile" class="btn btn-ghost" style="cursor:pointer" data-i18n="dash.logo_pick">📷 اختار الشعار من تيليفونك</label>
+                <button type="button" class="btn btn-ghost hidden" id="edLogoClear" onclick="clearPhoto('edLogoFile','edLogoPrev','edLogoClear')" data-i18n="dash.logo_remove">🗑 نحّي الشعار</button>
               </div>
               <input type="file" id="edLogoFile" accept="image/*" class="hidden" onchange="onPhotoFile(this,'edLogoPrev','edLogoClear')">
             </div>
-              <div class="form-row"><label>العملة</label><select id="edCur"><option value="دج">دج (دينار جزائري)</option><option value="$">$ (دولار)</option><option value="ر.س">ر.س (ريال سعودي)</option><option value="د.إ">د.إ (درهم إماراتي)</option></select></div>
-              <button class="btn btn-block">💾 حفظ التعديلات</button>
+              <div class="form-row"><label data-i18n="dash.lbl_cur">العملة</label><select id="edCur"><option value="دج" data-i18n="dash.cur_dzd">دج (دينار جزائري)</option><option value="$" data-i18n="dash.cur_usd">$ (دولار)</option><option value="ر.س" data-i18n="dash.cur_sar">ر.س (ريال سعودي)</option><option value="د.إ" data-i18n="dash.cur_aed">د.إ (درهم إماراتي)</option></select></div>
+              <div class="form-row"><label data-i18n="dash.set_lang_t">🌐 لغة التطبيق</label>
+                <div class="lang-row">
+                  <button type="button" class="btn btn-sm" data-lang-btn="ar" onclick="setLang('ar')">العربية</button>
+                  <button type="button" class="btn btn-sm" data-lang-btn="en" onclick="setLang('en')">English</button>
+                </div>
+                <p class="hint" data-i18n="dash.set_lang_p">بدّل لغة التطبيق كامل: اللاندينج، الـ Menu، ولوحة التحكم.</p>
+              </div>
+              <button class="btn btn-block" data-i18n="dash.set_save">💾 حفظ التعديلات</button>
             </form>
           </div>
         </div>
@@ -650,23 +662,23 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
         <!-- تبويب QR -->
         <div id="tabQr" class="hidden">
           <div class="qr-box" data-frame="طاولة">
-            <h3>🔳 الـ QR تاع Menu</h3>
-            <p class="muted">اطبعو وحطو على الطاولات — الزبون يسكان ويشوف Menu مباشرة</p>
+            <h3 data-i18n="dash.qr_t">🔳 الـ QR تاع Menu</h3>
+            <p class="muted" data-i18n="dash.qr_p">اطبعو وحطو على الطاولات — الزبون يسكان ويشوف Menu مباشرة</p>
             <div class="qr-holder" id="qrHolder"></div>
             <p class="muted" dir="ltr" id="qrUrl" style="word-break:break-all"></p>
             <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px">
-              <button class="btn" onclick="downloadQR()">⬇️ حمّل PNG</button>
-              <button class="btn btn-amber" onclick="printQR()">🖨️ اطبع</button>
-              <button class="btn btn-ghost" onclick="copyMenuLink()">🔗 نسخ الرابط</button>
+              <button class="btn" onclick="downloadQR()" data-i18n="dash.qr_dl">⬇️ حمّل PNG</button>
+              <button class="btn btn-amber" onclick="printQR()" data-i18n="dash.qr_print">🖨️ اطبع</button>
+              <button class="btn btn-ghost" onclick="copyMenuLink()" data-i18n="dash.qr_copy">🔗 نسخ الرابط</button>
             </div>
           </div>
           <div class="qr-box" style="margin-top:16px" data-frame="طاولة">
-            <h3>🪑 QR الطاولات</h3>
-            <p class="muted">كل طاولة عندها كودها — الطلب يوصل للمطبخ مع رقم الطاولة. ولّد الأكواد واطبعهم.</p>
+            <h3 data-i18n="dash.qr_tables_t">🪑 QR الطاولات</h3>
+            <p class="muted" data-i18n="dash.qr_tables_p">كل طاولة عندها كودها — الطلب يوصل للمطبخ مع رقم الطاولة. ولّد الأكواد واطبعهم.</p>
             <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap">
               <input id="tablesCount" type="number" min="1" max="50" value="8" style="max-width:110px" dir="ltr">
-              <button class="btn" onclick="genTableQRs()">ولّد أكواد الطاولات</button>
-              <button class="btn btn-amber" id="btnPrintTables" onclick="printTables()" disabled>🖨️ اطبع الكل</button>
+              <button class="btn" onclick="genTableQRs()" data-i18n="dash.qr_gen">ولّد أكواد الطاولات</button>
+              <button class="btn btn-amber" id="btnPrintTables" onclick="printTables()" disabled data-i18n="dash.qr_print_all">🖨️ اطبع الكل</button>
             </div>
             <div class="table-qr-grid" id="tableQrGrid"></div>
           </div>
@@ -675,12 +687,12 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
         <!-- تبويب الاشتراك -->
         <div id="tabSub" class="hidden">
           <div class="card" data-frame="اشتراك">
-            <h3 style="margin-bottom:8px">💳 الاشتراك</h3>
+            <h3 style="margin-bottom:8px" data-i18n="dash.sub_t">💳 الاشتراك</h3>
             <p id="subInfo" class="muted" style="margin-bottom:16px"></p>
             <div id="subActivate">
-              <p style="margin-bottom:12px">باش تفعّل الاشتراك، ابعث ميساج واتساب ونفعّلوهولك في نفس اليوم إن شاء الله:</p>
-              <a id="subWaBtn" class="btn btn-amber btn-block" href="#" target="_blank">💬 فعّل اشتراكك عبر واتساب</a>
-              <p class="hint" style="margin-top:12px">الأسعار: 700 دج/شهر للجزائر — $9/شهر للخليج. الأوائل 20 سعرهم مثبت للأبد. التفعيل يدوي، والدفع بالتحويل ولا CCP للجزائر.</p>
+              <p style="margin-bottom:12px" data-i18n="dash.sub_p">باش تفعّل الاشتراك، ابعث ميساج واتساب ونفعّلوهولك في نفس اليوم إن شاء الله:</p>
+              <a id="subWaBtn" class="btn btn-amber btn-block" href="#" target="_blank" data-i18n="dash.sub_wa">💬 فعّل اشتراكك عبر واتساب</a>
+              <p class="hint" style="margin-top:12px" data-i18n="dash.sub_hint">الأسعار: 700 دج/شهر للجزائر — $9/شهر للخليج. الأوائل 20 سعرهم مثبت للأبد. التفعيل يدوي، والدفع بالتحويل ولا CCP للجزائر.</p>
             </div>
           </div>
         </div>
@@ -693,10 +705,10 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
     <div class="container">
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-          <h3 style="margin:0">🖥️ شاشة المطبخ والكاشير</h3>
-          <button class="btn btn-ghost btn-sm" onclick="closeKitchen()">← رجوع للوحة التحكم</button>
+          <h3 style="margin:0" data-i18n="dash.kitchen_t">🖥️ شاشة المطبخ والكاشير</h3>
+          <button class="btn btn-ghost btn-sm" onclick="closeKitchen()" data-i18n="dash.kitchen_back">← رجوع للوحة التحكم</button>
         </div>
-        <p class="muted" style="margin:8px 0 0">الطلبات الجديدة تظهر هنا لحظياً مع صوت — خلي هاد الصفحة مفتوحة عند الطباخ والكاشير.</p>
+        <p class="muted" style="margin:8px 0 0" data-i18n="dash.kitchen_p">الطلبات الجديدة تظهر هنا لحظياً مع صوت — خلي هاد الصفحة مفتوحة عند الطباخ والكاشير.</p>
       </div>
       <div id="kitchenOrders" style="margin-top:16px"></div>
     </div>
@@ -707,10 +719,10 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
     <div class="container">
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-          <h3 style="margin:0">👑 لوحة المالك</h3>
-          <button class="btn btn-ghost btn-sm" onclick="goHome()">← رجوع للرئيسية</button>
+          <h3 style="margin:0" data-i18n="dash.owner_t">👑 لوحة المالك</h3>
+          <button class="btn btn-ghost btn-sm" onclick="goHome()" data-i18n="dash.owner_back">← رجوع للرئيسية</button>
         </div>
-        <p class="muted" style="margin:8px 0 0">غير ليك — فعّل ولا وقّف اشتراك أي مشروع من هنا، بلا ما تدخل Supabase.</p>
+        <p class="muted" style="margin:8px 0 0" data-i18n="dash.owner_p">غير ليك — فعّل ولا وقّف اشتراك أي مشروع من هنا، بلا ما تدخل Supabase.</p>
       </div>
       <div id="ownerList" style="margin-top:16px"></div>
     </div>
@@ -722,26 +734,26 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
   </section>
 
   <div id="menuNotFound" class="notice hidden">
-    <h2>😕 المشروع غير موجود</h2>
-    <p class="muted">الرابط غلط ولا المشروع تحذف. جرّب Menu التجريبي ولا دير Menu لمشروعك.</p>
+    <h2 data-i18n="menu.notfound_t">😕 المشروع غير موجود</h2>
+    <p class="muted" data-i18n="menu.notfound_p">الرابط غلط ولا المشروع تحذف. جرّب Menu التجريبي ولا دير Menu لمشروعك.</p>
     <div style="display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap">
-      <button class="btn" onclick="openDemoMenu()">🍽️ شوف Menu التجريبي</button>
-      <button class="btn btn-ghost" onclick="goHome()">رجوع للرئيسية</button>
+      <button class="btn" onclick="openDemoMenu()" data-i18n="menu.notfound_demo">🍽️ شوف Menu التجريبي</button>
+      <button class="btn btn-ghost" onclick="goHome()" data-i18n="menu.home_btn">رجوع للرئيسية</button>
     </div>
   </div>
 
   <div id="menuExpired" class="notice hidden">
-    <h2>⏸️ اشتراك هاد المشروع منتهي</h2>
-    <p class="muted">Menu متوقف مؤقتاً حتى يتجدد الاشتراك. إذا كنت صاحب المشروع، فعّل اشتراكك عبر واتساب.</p>
+    <h2 data-i18n="menu.expired_t">⏸️ اشتراك هاد المشروع منتهي</h2>
+    <p class="muted" data-i18n="menu.expired_p">Menu متوقف مؤقتاً حتى يتجدد الاشتراك. إذا كنت صاحب المشروع، فعّل اشتراكك عبر واتساب.</p>
     <div style="display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap">
-      <a class="btn btn-amber" id="expiredWaBtn" href="#" target="_blank">💬 فعّل الاشتراك</a>
-      <button class="btn btn-ghost" onclick="goHome()">رجوع للرئيسية</button>
+      <a class="btn btn-amber" id="expiredWaBtn" href="#" target="_blank" data-i18n="menu.expired_btn">💬 فعّل الاشتراك</a>
+      <button class="btn btn-ghost" onclick="goHome()" data-i18n="menu.home_btn">رجوع للرئيسية</button>
     </div>
   </div>
 </main>
 
 <footer>
-  <div class="container">
+  <div class="container" data-i18n-html="footer.line">
     <b>Menu QR 🍽</b> — Menu إلكتروني لمطعمك أو مقهاك<br>
     صُنع بحب في الجزائر 🇩🇿 — للاستفسار: <a href="https://wa.me/213797475073" target="_blank" style="color:#f59e0b">واتساب</a>
   </div>
@@ -749,7 +761,7 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
 
 <div id="cartBar" class="cart-bar hidden">
   <div class="tot"><span id="cartCount">0 طبق</span><b id="cartTotal">0 دج</b></div>
-  <button class="btn btn-amber shine" onclick="openOrderSheet()">🛒 أرسل الطلب</button>
+  <button class="btn btn-amber shine" onclick="openOrderSheet()" data-i18n="cart.send">🛒 أرسل الطلب</button>
 </div>
 
 <!-- ورقة الطلب -->
@@ -760,25 +772,25 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
       <h3 style="margin-bottom:4px" id="orderTitle">🛒 طلبك</h3>
       <p class="muted" id="orderHint" style="margin-bottom:14px"></p>
       <div id="orderLines"></div>
-      <div id="photoOrderBox" class="hidden" style="background:#0F1F16;border:1px solid #2A3D31;border-radius:12px;padding:12px;margin-bottom:6px"><b style="font-size:14px">📝 طلبك:</b><p id="photoOrderTextView" style="white-space:pre-wrap;overflow-wrap:anywhere;margin-top:4px"></p></div>
-      <div class="order-total"><span>المجموع</span><span id="orderTotal"></span></div>
+      <div id="photoOrderBox" class="hidden" style="background:#0F1F16;border:1px solid #2A3D31;border-radius:12px;padding:12px;margin-bottom:6px"><b style="font-size:14px" data-i18n="order.your_order">📝 طلبك:</b><p id="photoOrderTextView" style="white-space:pre-wrap;overflow-wrap:anywhere;margin-top:4px"></p></div>
+      <div class="order-total"><span data-i18n="order.total">المجموع</span><span id="orderTotal"></span></div>
       <div id="homeFields">
         <div class="radio-row" style="margin-top:14px">
-          <label id="orderTypeDeliveryLabel"><input type="radio" name="orderType" value="delivery" checked onchange="toggleOrderType()"><span>🏠 توصيل للدار</span></label>
-          <label><input type="radio" name="orderType" value="pickup" onchange="toggleOrderType()"><span>🛍️ نجي نديها</span></label>
+          <label id="orderTypeDeliveryLabel"><input type="radio" name="orderType" value="delivery" checked onchange="toggleOrderType()"><span data-i18n="order.delivery">🏠 توصيل للدار</span></label>
+          <label><input type="radio" name="orderType" value="pickup" onchange="toggleOrderType()"><span data-i18n="order.pickup">🛍️ نجي نديها</span></label>
         </div>
-        <div class="form-row"><label>اسمك *</label><input id="ordName" placeholder="مثال: أمين"></div>
-        <div class="form-row"><label>رقم التيليفون *</label><input id="ordPhone" dir="ltr" placeholder="0550123456"></div>
-        <div class="form-row" id="ordAddrRow"><label>العنوان *</label><input id="ordAddr" placeholder="الحي، الشارع، رقم الدار..."></div>
+        <div class="form-row"><label data-i18n="order.lbl_name">اسمك *</label><input id="ordName" data-i18n-ph="order.ph_name" placeholder="مثال: أمين"></div>
+        <div class="form-row"><label data-i18n="order.lbl_phone">رقم التيليفون *</label><input id="ordPhone" dir="ltr" placeholder="0550123456"></div>
+        <div class="form-row" id="ordAddrRow"><label data-i18n="order.lbl_addr">العنوان *</label><input id="ordAddr" data-i18n-ph="order.ph_addr" placeholder="الحي، الشارع، رقم الدار..."></div>
       </div>
-      <button id="orderConfirmBtn" class="btn btn-amber btn-block shine" style="margin-top:6px" onclick="submitOrder(event)">✅ أرسل الطلب</button>
-      <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="closeOrderSheet()">إلغاء</button>
+      <button id="orderConfirmBtn" class="btn btn-amber btn-block shine" style="margin-top:6px" onclick="submitOrder(event)" data-i18n="order.send">✅ أرسل الطلب</button>
+      <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="closeOrderSheet()" data-i18n="order.cancel">إلغاء</button>
     </div>
     <div id="orderSuccess" class="hidden" style="text-align:center;padding:10px 0">
       <div style="font-size:44px">✅</div>
-      <h3 id="orderSuccessTitle" style="margin:8px 0 4px">وصل الطلب!</h3>
+      <h3 id="orderSuccessTitle" style="margin:8px 0 4px" data-i18n="order.success_t">وصل الطلب!</h3>
       <p class="muted" id="orderSuccessMsg"></p>
-      <button class="btn btn-block" style="margin-top:14px" onclick="closeOrderSheet()">تم</button>
+      <button class="btn btn-block" style="margin-top:14px" onclick="closeOrderSheet()" data-i18n="order.done">تم</button>
     </div>
   </div>
 </div>
@@ -787,10 +799,10 @@ body.public-page .views-pill{color:#f5f5f4;text-shadow:0 1px 4px rgba(0,0,0,.6)}
 <div id="photoLightbox" class="hidden" onclick="if(event.target===this)closePhotoZoom()">
   <img id="lbImg" src="" alt="صورة المنيو">
   <div class="lb-bar">
-    <button onclick="photoZoomNav(-1)">‹ السابق</button>
+    <button onclick="photoZoomNav(-1)" data-i18n="lb.prev">‹ السابق</button>
     <span id="lbCount"></span>
-    <button onclick="photoZoomNav(1)">التالي ›</button>
-    <button onclick="closePhotoZoom()">✖ إغلاق</button>
+    <button onclick="photoZoomNav(1)" data-i18n="lb.next">التالي ›</button>
+    <button onclick="closePhotoZoom()" data-i18n="lb.close">✖ إغلاق</button>
   </div>
 </div>
 
@@ -810,6 +822,730 @@ const CONFIG = {
   TRIAL_DAYS: 14,
   LOGO: 'logo.svg'            // اللوغو: بدّل ملف logo.svg برك
 };
+
+/* ---------------- اللغة: عربي / English ----------------
+   مفتاح واحد (mq_lang) يتحفظ في localStorage؛ الافتراضي عربي.
+   النصوص الثابتة تترجم بـ data-i18n / data-i18n-html / data-i18n-ph / data-i18n-title،
+   والنصوص اللي يولّدها الجافاسكربت تترجم بـ t('key'). */
+const I18N = {
+ar: {
+'meta.title':'Menu QR 🍽 — Menu إلكتروني لمطعمك أو مقهاك',
+'hdr.tagline':'Menu إلكتروني لمطعمك أو مقهاك',
+'hdr.demo_mode':'وضع تجريبي',
+'hdr.demo_mode_title':'وضع تجريبي: البيانات محفوظة في جهازك برك',
+'hdr.back_dash':'↩ لوحة التحكم',
+'hdr.dash':'لوحة التحكم',
+'hdr.auth':'دخول / تسجيل',
+'hdr.logout':'خروج',
+'land.badge':'امسح، شوف، واطلب!',
+'land.h1':'ودّع Menu الورقي!',
+'land.hero_p':'Menu مطعمك أو مقهاك، الآن في هاتف زبونك! أنشئ Menu إلكتروني خاص بمشروعك، شارك QR Code مع زبائنك، وخليهم يشوفوا الأطباق والأسعار ويطلبوا ديركت من التطبيق.',
+'land.cta_start':'🚀 ابدأ مجاناً — 14 يوم',
+'land.cta_demo':'🍽️ شوف Menu تجريبي',
+'land.photo_demo':'📸 جرّب منيو بالصورة — مقهى الديوان',
+'land.why_t':'علاش Menu QR 🍽؟',
+'land.why_s':'كلش لي يحتاجو صاحب المطعم أو المقهى، بلا تعقيد وبلا مصاريف زايدة',
+'land.f1t':'Menu يفتح في ثانية',
+'land.f1d':'الزبون يسكان الـ QR ويشوف Menu كامل في تيليفونو، بلا تطبيق وبلا تسجيل',
+'land.f2t':'الطلب يوصل للمطبخ والكاشير',
+'land.f2d':'الزبون يختار واش يحب والطلب يوصل للمطبخ والكاشير ديركت من التطبيق — مع رقم الطاولة إذا كان في المحل',
+'land.f3t':'بدّل الأسعار وقت ما تحب',
+'land.f3d':'زيد طبق، نقص طبق، بدّل السعر — التعديل يبان في Menu مباشرة، بلا ما تعاود تطبع',
+'land.f4t':'QR جاهز للطباعة',
+'land.f4d':'حمّل الـ QR كصورة ولا اطبعو مباشرة من لوحة التحكم وحطو على الطاولات',
+'land.f5t':'QR لكل طاولة',
+'land.f5d':'كل طاولة عندها كودها: الطلب يوصل للمطبخ مع رقم الطاولة مباشرة، بلا ما الزبون ينادي النادل',
+'land.f6t':'سعر في المتناول',
+'land.f6d':'700 دج/شهر في الجزائر، $9/شهر في الخليج — وأول 14 يوم مجاناً باش تجرب براحتك',
+'land.how_t':'كيفاش تخدم؟',
+'land.how_s':'3 خطوات برك وتولي عندك Menu إلكتروني',
+'land.s1t':'سجّل مشروعك',
+'land.s1d':'دير حساب ودخل اسم المطعم أو المقهى ورقم الواتساب تاعك',
+'land.s2t':'زيد الأطباق والأسعار',
+'land.s2d':'أقسام وأطباق بالصور، وتقدر تبدلهم في أي وقت',
+'land.s3t':'اطبع الـ QR',
+'land.s3d':'حمّل الـ QR ولا اطبعو وحطو على الطاولات — والطلبات توصلك ديركت من التطبيق',
+'land.price_t':'الأسعار',
+'land.price_s':'أول 14 يوم مجاناً، بلا بطاقة بنكية، بلا التزام',
+'land.p_dz':'🇩🇿 الجزائر',
+'land.per_dz':' دج / شهر',
+'land.p_dz_f1':'Menu غير محدود الأطباق',
+'land.p_dz_f2':'QR + طباعة + QR الطاولات',
+'land.p_dz_f3':'طلبات غير محدودة من التطبيق',
+'land.p_dz_f4':'الدفع CCP / BaridiMob / كاش',
+'land.p_dz_f5':'تفعيل يدوي عبر واتساب',
+'land.p_start':'ابدأ الآن',
+'land.p_gulf_tag':'الخليج 🌍',
+'land.p_gulf':'السعودية والإمارات',
+'land.per_gulf':' / شهر',
+'land.p_gulf_f1':'نفس المزايا كاملة',
+'land.p_gulf_f3':'الدفع عبر Paddle (قريباً)',
+'land.p_gulf_f4':'دعم بالعربية',
+'land.founder':'🎉 <b>الأوائل 20:</b> سعرهم مثبت للأبد — 700 دج / $9 ما يتبدلش عليهم، حتى كي يطلع السعر من بعد.',
+'land.price_hint':'بعد التجربة المجانية، التفعيل يدوي عبر واتساب — تبعث ميساج ونفعّلولك الاشتراك في نفس اليوم إن شاء الله.',
+'auth.title':'حساب صاحب المطعم أو المقهى',
+'auth.sub':'دخول ولا تسجيل جديد — باش تدير Menu تاع مشروعك',
+'auth.tab_login':'دخول',
+'auth.tab_signup':'تسجيل جديد',
+'auth.lbl_email':'الإيميل',
+'auth.lbl_pass':'كلمة السر',
+'auth.ph_pass':'6 حروف على الأقل',
+'auth.btn_login':'دخول',
+'auth.btn_signup':'أنشئ الحساب',
+'auth.hint':'بالتسجيل راك توافق بلي تستعمل التطبيق لمطعمك أو مقهاك. بياناتك محفوظة وماشي راح تتباع.',
+'auth.back':'← رجوع للرئيسية',
+'auth.err_creds':'الإيميل وكلمة السر (6 حروف على الأقل) لازمين',
+'auth.warn_registered':'⚠️ هاد الإيميل مسجل أصلاً — ادخل مباشرة من تبويب «دخول»',
+'auth.ok_registered':'✅ تسجل الحساب — تحقق من إيميلك باش تفعّلو، ومن بعد ادخل',
+'auth.err_registered':'هاد الإيميل مسجل من قبل — ادخل بيه',
+'auth.err_wrong':'الإيميل ولا كلمة السر غلط',
+'auth.welcome':'مرحبا بيك 👋',
+'auth.err_login':'مشكلة في الدخول',
+'dash.create_t':'أنشئ مشروعك الأول',
+'dash.create_p':'دخل معلومات المطعم أو المقهى، ومن بعد تقدر تزيد الأقسام والأطباق.',
+'dash.lbl_name':'اسم المطعم أو المقهى *',
+'dash.lbl_type':'نوع المحل *',
+'dash.lbl_menu_type':'نوع المنيو *',
+'dash.mt_detailed':'📋 منيو مفصلة',
+'dash.mt_photo':'📸 منيو بالصورة',
+'dash.hint_menu_type':'منيو مفصلة: تكتب الأطباق والأسعار واحد بواحد. منيو بالصورة: تصوّر المنيو المكتوب تاعك برك — بلا كتابة.',
+'dash.lbl_slug':'الرابط (slug) *',
+'dash.hint_slug_a':'الرابط تاع Menu تاعك راح يكون:',
+'dash.hint_slug_b':'— حروف وأرقام وشرطات برك.',
+'dash.lbl_wa':'رقم الواتساب *',
+'dash.hint_wa':'رقم تواصل المطعم — يظهر في Menu باش الزبون يعيطلك ولا يبعثلك واتساب.',
+'dash.delivery':'🚚 كاين توصيل للدار؟',
+'dash.hint_delivery':'إذا فعّلتها، الزبون اللي من الدار يكتب رقم هاتفو مع الطلب باش تعيطلو وتكونفيرمي معاه.',
+'dash.lbl_fb':'رابط الفايسبوك (اختياري)',
+'dash.lbl_fb2':'رابط الفايسبوك',
+'dash.lbl_logo':'شعار المطعم أو المقهى (اختياري)',
+'dash.lbl_logo2':'شعار المطعم أو المقهى',
+'dash.logo_pick':'📷 اختار الشعار من تيليفونك',
+'dash.logo_remove':'🗑 نحّي الشعار',
+'dash.lbl_cur':'العملة',
+'dash.cur_dzd':'دج (دينار جزائري)',
+'dash.cur_usd':'$ (دولار)',
+'dash.cur_sar':'ر.س (ريال سعودي)',
+'dash.cur_aed':'د.إ (درهم إماراتي)',
+'dash.create_btn':'✅ أنشئ المشروع',
+'dash.hint_bg':'خلفية Menu تتبدل حسب نوع المحل تاعك.',
+'dash.err_fields':'عمر الحقول اللي فيهم *',
+'dash.created_photo':'✅ تنشأ مشروعك — صوّر المنيو تاعك من تبويب Menu',
+'dash.created_detailed':'✅ تنشأ مشروعك — زيد الأقسام والأطباق',
+'dash.saved':'✅ تحفظت التعديلات',
+'dash.view_menu':'👁️ شوف Menu تاعي',
+'dash.tab_menu':'📋 Menu',
+'dash.tab_orders':'📥 الطلبات',
+'dash.tab_settings':'⚙️ إعدادات المشروع',
+'dash.tab_qr':'🔳 الـ QR والطباعة',
+'dash.tab_sub':'💳 الاشتراك',
+'dash.photos_t':'📸 صور المنيو',
+'dash.photos_p':'صوّر المنيو المكتوب تاعك (صفحة ولا بزاف) — الزبون يشوف الصور ويكتب طلبو كنص حر. الأسعار تبان في الصورة.',
+'dash.photos_cam':'📷 صوّر بالكاميرا',
+'dash.photos_gallery':'🖼️ اختار من الغاليري',
+'dash.photos_hint':'صوّر قد ما تحب — بلا حدود. في الوضع التجريبي الصور تتحفظ في جهازك برك؛ مع القاعدة الحية تترفع لـ Supabase Storage.',
+'dash.cat_ph':'اسم قسم جديد: أطباق رئيسية، مشروبات، حلويات...',
+'dash.cat_add':'+ زيد قسم',
+'dash.item_form_t':'➕ زيد طبق جديد',
+'dash.item_form_edit':'✏️ تعديل الطبق',
+'dash.item_submit_add':'✅ زيد الطبق',
+'dash.item_submit_save':'💾 حفظ التعديلات',
+'dash.item_cancel':'إلغاء',
+'dash.lbl_cat':'القسم *',
+'dash.lbl_dish':'اسم الطبق *',
+'dash.ph_dish':'مثال: كسكس بالخضرة',
+'dash.ph_name':'مثال: مطعم الديوان',
+'dash.lbl_desc':'الوصف',
+'dash.ph_desc':'وصف قصير يشهي الزبون',
+'dash.lbl_price':'السعر *',
+'dash.lbl_img':'صورة الطبق (اختياري)',
+'dash.img_pick':'📷 اختار صورة من تيليفونك',
+'dash.img_remove':'🗑 نحّي الصورة',
+'dash.hint_img':'الصورة تتصغّر أوتوماتيكياً باش ما تثقلش الـ Menu.',
+'dash.editor_photo_note':'📸 المنيو تاعك بالصورة — الزبون يشوف صور المنيو ويكتب طلبو كنص حر، والطلب يوصل للمطبخ ديركت.',
+'dash.editor_no_cat_opt':'— زيد قسم أولاً —',
+'dash.editor_empty_t':'الـ Menu تاعك مازال فارغ',
+'dash.editor_empty_p':'زيد أول قسم من فوق، ومن بعد زيد الأطباق بالصور.',
+'dash.editor_count_one':'طبق واحد',
+'dash.editor_count_n':'{n} أطباق',
+'dash.editor_del_cat':'🗑 حذف القسم',
+'dash.editor_no_items':'ما كاش أطباق في هاد القسم بعد — زيد أول طبق من لتحت 👇',
+'dash.editor_avail_on':'متوفر — اضغط باش توقفو',
+'dash.editor_avail_off':'متوقف — اضغط باش تفعّلو',
+'dash.toast_cat_added':'✅ زاد القسم',
+'dash.confirm_del_cat':'تحذف هاد القسم وكل الأطباق اللي فيه؟',
+'dash.toast_fields':'عمر القسم والاسم والسعر (رقم موجب)',
+'dash.toast_item_saved':'✅ تحفظ التعديل',
+'dash.toast_item_added':'✅ زاد الطبق',
+'dash.confirm_del_item':'تحذف هاد الطبق؟',
+'dash.photos_empty':'ما كاش صور بعد — صوّر المنيو المكتوب تاعك ورفعو من فوق.',
+'dash.photos_alt':'صفحة {n}',
+'dash.photos_err':'ما تقراتش الصورة',
+'dash.photos_added':'✅ تزادت صور المنيو',
+'dash.ord_t':'📥 الطلبات',
+'dash.ord_p':'الطلبات توصل هنا ديركت من التطبيق — بلا واتساب. الطباخ يشوف الأطباق والطاولة، والكاشير يشوف المجموع.',
+'dash.ord_kitchen':'🖥️ افتح شاشة المطبخ',
+'dash.ord_hint':'باش الطباخ والكاشير يشوفو الطلبات من تيليفوناتهم، افتح شاشة المطبخ مرة وحدة من حسابك في تيليفون كل واحد فيهم.',
+'dash.ord_tables_q':'🪑 شحال من طاولة؟',
+'dash.ord_save':'💾 حفظ',
+'dash.ord_empty':'ما كاش طلبات بعد — كي يطلب زبون يظهر هنا ديركت.',
+'dash.ord_delivery':'🏠 توصيل',
+'dash.ord_pickup':'🛍️ استلام',
+'dash.st_new':'جديد',
+'dash.st_preparing':'قيد التحضير',
+'dash.st_done':'تم ✅',
+'dash.st_cancelled':'ملغي',
+'dash.ord_close_btn':'✅ تم — سد الطاولة',
+'dash.ord_preparing_btn':'👨‍🍳 قيد التحضير',
+'dash.ord_done_btn':'✅ تم',
+'dash.ord_cancel_btn':'✖ إلغاء',
+'dash.ord_del_btn':'🗑 محي الطلب',
+'dash.toast_table_closed':'🔒 الطاولة {n} تسدت — الزبون ما يقدرش يزيد يطلب حتى تفتحها',
+'dash.toast_table_open':'🪑 الطاولة {n} تفتحت — الزبون يقدر يطلب',
+'dash.toast_tables_saved':'✅ تسجلو {n} طاولات',
+'dash.table_closed':'مسدودة',
+'dash.table_open':'مفتوحة',
+'dash.table_open_btn':'افتحها',
+'dash.table_close_btn':'سدّها',
+'dash.table_st_closed':'🔒 مسدودة — افتحها',
+'dash.table_st_open':'🪑 مفتوحة — سدّها',
+'dash.confirm_del_order':'تمحي هاد الطلب نهائياً؟',
+'dash.toast_order_deleted':'🗑 تمحى الطلب',
+'dash.set_t':'⚙️ معلومات المشروع',
+'dash.set_lang_t':'🌐 لغة التطبيق',
+'dash.set_lang_p':'بدّل لغة التطبيق كامل: اللاندينج، الـ Menu، ولوحة التحكم.',
+'dash.set_slug_hint':'تبديل الرابط يبدّل الـ QR تاعك — عاود طبعو من بعد.',
+'dash.set_photo_hint':'منيو بالصورة: الزبون يشوف صور المنيو ويكتب طلبو كنص حر — بلا سلة.',
+'dash.set_save':'💾 حفظ التعديلات',
+'dash.qr_t':'🔳 الـ QR تاع Menu',
+'dash.qr_p':'اطبعو وحطو على الطاولات — الزبون يسكان ويشوف Menu مباشرة',
+'dash.qr_dl':'⬇️ حمّل PNG',
+'dash.qr_print':'🖨️ اطبع',
+'dash.qr_copy':'🔗 نسخ الرابط',
+'dash.qr_tables_t':'🪑 QR الطاولات',
+'dash.qr_tables_p':'كل طاولة عندها كودها — الطلب يوصل للمطبخ مع رقم الطاولة. ولّد الأكواد واطبعهم.',
+'dash.qr_gen':'ولّد أكواد الطاولات',
+'dash.qr_print_all':'🖨️ اطبع الكل',
+'dash.toast_no_qr':'ما لقيتش الـ QR',
+'dash.toast_qr_dl':'✅ تحمّل الـ QR',
+'dash.toast_link_copied':'✅ تنسخ الرابط',
+'dash.prompt_copy':'نسخ الرابط:',
+'dash.toast_tables_gen':'✅ تولّدت أكواد {n} طاولة',
+'dash.print_p':'امسح الكود وشوف Menu واطلب ديركت من التطبيق',
+'dash.print_tables_p':'امسح الكود وشوف Menu واطلب — الطلب يوصل للمطبخ مع رقم الطاولة',
+'dash.sub_t':'💳 الاشتراك',
+'dash.sub_active':'اشتراكك فعال ✅ — شكراً ليك. ',
+'dash.sub_founder':'أنت من الأوائل 20، سعرك مثبت للأبد.',
+'dash.sub_trial':'راك في التجربة المجانية — باقي ليك {n} يوم. بعدها لازم تفعّل الاشتراك باش Menu يبقى خدام.',
+'dash.sub_expired':'التجربة المجانية خلصت — فعّل اشتراكك باش Menu يرجع يخدم.',
+'dash.sub_p':'باش تفعّل الاشتراك، ابعث ميساج واتساب ونفعّلوهولك في نفس اليوم إن شاء الله:',
+'dash.sub_wa':'💬 فعّل اشتراكك عبر واتساب',
+'dash.sub_hint':'الأسعار: 700 دج/شهر للجزائر — $9/شهر للخليج. الأوائل 20 سعرهم مثبت للأبد. التفعيل يدوي، والدفع بالتحويل ولا CCP للجزائر.',
+'dash.sub_wa_msg':'سلام، أنا صاحب مشروع "{name}" ({slug})، حاب نفعّل اشتراك Menu QR 🍽.',
+'dash.sub_expired_msg':'سلام، أنا صاحب مشروع "{name}"، حاب نفعّل اشتراك Menu QR 🍽.',
+'dash.kitchen_t':'🖥️ شاشة المطبخ والكاشير',
+'dash.kitchen_back':'← رجوع للوحة التحكم',
+'dash.kitchen_p':'الطلبات الجديدة تظهر هنا لحظياً مع صوت — خلي هاد الصفحة مفتوحة عند الطباخ والكاشير.',
+'dash.owner_t':'👑 لوحة المالك',
+'dash.owner_back':'← رجوع للرئيسية',
+'dash.owner_p':'غير ليك — فعّل ولا وقّف اشتراك أي مشروع من هنا، بلا ما تدخل Supabase.',
+'owner.loading':'جاري تحميل المشاريع...',
+'owner.sb_only':'هاد اللوحة تخدم غير مع القاعدة الحية — سجل الدخول أولاً.',
+'owner.login_first':'سجل الدخول بحسابك أولاً باش تفتح اللوحة.',
+'owner.auth_btn':'دخول / تسجيل',
+'owner.only_owner':'🔒 هاد اللوحة غير لصاحب المنصة.',
+'owner.none':'ما كاش مشاريع بعد.',
+'owner.active':'✅ مفعّل',
+'owner.trial':'تجربة — باقي {n} يوم',
+'owner.expired':'⏸️ منتهي',
+'owner.pause':'⏸️ وقّف',
+'owner.activate':'✅ فعّل',
+'owner.activated':'✅ تفعّل المشروع',
+'owner.paused':'⏸️ توقّف المشروع',
+'menu.loading':'جاري تحميل Menu...',
+'menu.err_t':'❌ مشكلة في تحميل Menu',
+'menu.err_p':'عاود من بعد ولا جرّب Menu التجريبي.',
+'menu.notfound_t':'😕 المشروع غير موجود',
+'menu.notfound_p':'الرابط غلط ولا المشروع تحذف. جرّب Menu التجريبي ولا دير Menu لمشروعك.',
+'menu.notfound_demo':'🍽️ شوف Menu التجريبي',
+'menu.home_btn':'رجوع للرئيسية',
+'menu.expired_t':'⏸️ اشتراك هاد المشروع منتهي',
+'menu.expired_p':'Menu متوقف مؤقتاً حتى يتجدد الاشتراك. إذا كنت صاحب المشروع، فعّل اشتراكك عبر واتساب.',
+'menu.expired_btn':'💬 فعّل الاشتراك',
+'menu.table_badge':'🪑 الطاولة {n} — طلبك يوصل للمطبخ ديركت',
+'menu.wa':'💬 واتساب',
+'menu.call':'📞 اتصال',
+'menu.fb':'👍 فايسبوك',
+'menu.views':'{n} مشاهدة',
+'menu.filter_all':'الكل',
+'menu.empty':'Menu مازال فارغ — صاحب المشروع راح يزيد الأطباق قريباً.',
+'menu.photo_note':'💰 الأسعار في الصورة — شوف المنيو واكتب طلبك',
+'menu.photo_empty':'المنيو بالصورة مازال فارغ — صاحب المشروع راح يصوّر المنيو قريباً.',
+'menu.photo_alt':'صفحة المنيو {n}',
+'menu.photo_hint':'اسحب باش تشوف باقي الصفحات — اضغط على الصورة باش تكبّرها 👆',
+'menu.photo_write':'📝 اكتب طلبك',
+'menu.photo_ph':'اكتب طلبك هنا... مثال: قهوة + كرواسون ×2',
+'menu.photo_send':'📤 أرسل الطلب',
+'menu.photo_send_table':'📤 أرسل الطلب — الطاولة {n}',
+'menu.photo_hint_closed':'هاد الطاولة مسدودة — عيط للسارفور باش يفتحها.',
+'menu.photo_hint_table':'طلبك يوصل للمطبخ والكاشير ديركت مع رقم الطاولة.',
+'menu.photo_hint_app':'طلبك يوصل للمطبخ والكاشير ديركت من التطبيق.',
+'table.label':'🪑 الطاولة {n}',
+'cart.send':'🛒 أرسل الطلب',
+'order.title_table':'🪑 طلب الطاولة {n}',
+'order.title_photo':'📝 طلبك',
+'order.title_cart':'🛒 طلبك',
+'order.hint_table':'راجع طلبك — راح يوصل للمطبخ والكاشير ديركت مع رقم الطاولة.',
+'order.hint_home':'راجع طلبك وعبّي معلوماتك — الطلب يوصل للمطبخ والكاشير ديركت من التطبيق.',
+'order.hint_table2':'طلبك راح يوصل للمطبخ والكاشير ديركت مع رقم الطاولة — بلا ما تنادي النادل.',
+'order.hint_home2':'عبّي معلوماتك، والطلب يوصل للمطبخ والكاشير ديركت من التطبيق.',
+'order.your_order':'📝 طلبك:',
+'order.total':'المجموع',
+'order.delivery':'🏠 توصيل للدار',
+'order.pickup':'🛍️ نجي نديها',
+'order.lbl_name':'اسمك *',
+'order.ph_name':'مثال: أمين',
+'order.lbl_phone':'رقم التيليفون *',
+'order.lbl_addr':'العنوان *',
+'order.ph_addr':'الحي، الشارع، رقم الدار...',
+'order.send':'✅ أرسل الطلب',
+'order.sending':'⏳ جاري الإرسال...',
+'order.cancel':'إلغاء',
+'order.success_t':'وصل الطلب!',
+'order.done':'تم',
+'order.err_fill_base':'عمّر الاسم والتيليفون',
+'order.err_fill_addr':' والعنوان',
+'order.err_fill_end':' أولاً',
+'order.err_empty':'السلة فارغة',
+'order.err_empty2':'السلة فارغة — زيد أطباق أولاً',
+'order.err_closed':'🔒 هاد الطاولة تسدت — عيط للسارفور باش يفتحها',
+'order.err_closed2':'⛔ هاد الطاولة مسدودة — عيط للسارفور باش يفتحها',
+'order.err_write':'اكتب طلبك أولاً',
+'order.err_write_info':'اكتب طلبك وعمّر الاسم والتيليفون أولاً',
+'order.ok_table':'الطلب وصل للمطبخ والكاشير — الطاولة {n}',
+'order.ok_delivery':'الطلب وصل — راح يعيطلك صاحب المقهى باش يكونفيرمي معاك',
+'order.ok_pickup':'الطلب وصل — راح يعيطلك صاحب المقهى كي يوجد',
+'order.err_send':'ما تبعثش الطلب — عاود',
+'sub.active':'اشتراك فعال ✅',
+'sub.founder':' • مؤسس (سعر مثبت)',
+'sub.trial':'تجربة مجانية — باقي {n} يوم',
+'sub.expired':'الاشتراك منتهي',
+'stat.dishes':'طبق',
+'stat.cats':'قسم',
+'stat.views':'مشاهدة',
+'stat.active':'فعّال ✅',
+'stat.days':'{n} يوم',
+'stat.ended':'منتهي',
+'stat.sub':'الاشتراك',
+'stat.trial':'التجربة',
+'type.restaurant':'🍽️ مطعم',
+'type.cafe':'☕ مقهى',
+'type.patisserie':'🍰 باتيسري',
+'type.fastfood':'🍔 فاست فود',
+'type.snack':'🥪 سناك',
+'type.juice':'🧃 عصير',
+'err.slug_used':'هاد الرابط مستعمل من قبل، بدّل slug',
+'err.cafe_missing':'المشروع غير موجود',
+'err.item_missing':'الطبق غير موجود',
+'err.order_missing':'الطلب غير موجود',
+'footer.line':'<b>Menu QR 🍽</b> — Menu إلكتروني لمطعمك أو مقهاك<br>صُنع بحب في الجزائر 🇩🇿 — للاستفسار: <a href="https://wa.me/213797475073" target="_blank" style="color:#f59e0b">واتساب</a>',
+'lb.prev':'‹ السابق',
+'lb.next':'التالي ›',
+'lb.close':'✖ إغلاق',
+'qty.dish_1':'طبق',
+'qty.dish_n':'طبق',
+'closed.title':'🔒 الطاولة {n} مغلقة',
+'closed.msg':'يُرجى مناداة النادل ليفتحها لك',
+'closed.btn':'English',
+'dash.photos_del':'حذف الصورة'
+},
+en: {
+'meta.title':'Menu QR 🍽 — A digital menu for your restaurant or café',
+'hdr.tagline':'A digital menu for your restaurant or café',
+'hdr.demo_mode':'Demo mode',
+'hdr.demo_mode_title':'Demo mode: data is saved on your device only',
+'hdr.back_dash':'↩ Dashboard',
+'hdr.dash':'Dashboard',
+'hdr.auth':'Login / Sign up',
+'hdr.logout':'Log out',
+'land.badge':'Scan, see, order!',
+'land.h1':'Say goodbye to the paper menu!',
+'land.hero_p':'Your restaurant or café menu, now on your customer’s phone! Create a digital menu for your business, share the QR code, and let customers browse the dishes and prices and order straight from the app.',
+'land.cta_start':'🚀 Start free — 14 days',
+'land.cta_demo':'🍽️ See a demo menu',
+'land.photo_demo':'📸 Try the photo menu — Diwan Café',
+'land.why_t':'Why Menu QR 🍽?',
+'land.why_s':'Everything a restaurant or café owner needs, with no complexity and no extra costs',
+'land.f1t':'Menu opens in a second',
+'land.f1d':'The customer scans the QR and sees the full menu on their phone — no app, no sign-up',
+'land.f2t':'Orders reach the kitchen & cashier',
+'land.f2d':'The customer picks what they like and the order goes straight to the kitchen and cashier from the app — with the table number when they are in the restaurant',
+'land.f3t':'Change prices whenever you like',
+'land.f3d':'Add a dish, remove a dish, change a price — the change shows in the menu instantly, no reprinting',
+'land.f4t':'Print-ready QR',
+'land.f4d':'Download the QR as an image or print it straight from the dashboard and put it on the tables',
+'land.f5t':'A QR code per table',
+'land.f5d':'Every table has its own code: the order reaches the kitchen with the table number, no need to call the waiter',
+'land.f6t':'An affordable price',
+'land.f6d':'700 DZD/month in Algeria, $9/month in the Gulf — and the first 14 days free so you can try it out',
+'land.how_t':'How does it work?',
+'land.how_s':'Just 3 steps and you have a digital menu',
+'land.s1t':'Register your business',
+'land.s1d':'Create an account and enter your restaurant or café name and your WhatsApp number',
+'land.s2t':'Add dishes and prices',
+'land.s2d':'Sections and dishes with photos, and you can change them anytime',
+'land.s3t':'Print the QR',
+'land.s3d':'Download the QR or print it and put it on the tables — orders come to you straight from the app',
+'land.price_t':'Pricing',
+'land.price_s':'First 14 days free, no bank card, no commitment',
+'land.p_dz':'🇩🇿 Algeria',
+'land.per_dz':' DZD / month',
+'land.p_dz_f1':'Unlimited dishes in the menu',
+'land.p_dz_f2':'QR + printing + table QR codes',
+'land.p_dz_f3':'Unlimited in-app orders',
+'land.p_dz_f4':'Payment: CCP / BaridiMob / cash',
+'land.p_dz_f5':'Manual activation via WhatsApp',
+'land.p_start':'Start now',
+'land.p_gulf_tag':'Gulf 🌍',
+'land.p_gulf':'Saudi Arabia & UAE',
+'land.per_gulf':' / month',
+'land.p_gulf_f1':'All the same features',
+'land.p_gulf_f3':'Payment via Paddle (soon)',
+'land.p_gulf_f4':'Support in Arabic',
+'land.founder':'🎉 <b>First 20:</b> their price is locked forever — 700 DZD / $9 never changes for them, even if the price goes up later.',
+'land.price_hint':'After the free trial, activation is manual via WhatsApp — send us a message and we will activate your subscription the same day, God willing.',
+'auth.title':'Restaurant or café owner account',
+'auth.sub':'Login or create a new account — to manage your business menu',
+'auth.tab_login':'Login',
+'auth.tab_signup':'Sign up',
+'auth.lbl_email':'Email',
+'auth.lbl_pass':'Password',
+'auth.ph_pass':'At least 6 characters',
+'auth.btn_login':'Login',
+'auth.btn_signup':'Create account',
+'auth.hint':'By signing up you agree to use the app for your restaurant or café. Your data is stored and will not be sold.',
+'auth.back':'← Back to home',
+'auth.err_creds':'Email and password (at least 6 characters) are required',
+'auth.warn_registered':'⚠️ This email is already registered — log in directly from the “Login” tab',
+'auth.ok_registered':'✅ Account created — check your email to activate it, then log in',
+'auth.err_registered':'This email is already registered — log in with it',
+'auth.err_wrong':'Wrong email or password',
+'auth.welcome':'Welcome 👋',
+'auth.err_login':'Login problem',
+'dash.create_t':'Create your first business',
+'dash.create_p':'Enter your restaurant or café details, then you can add sections and dishes.',
+'dash.lbl_name':'Restaurant or café name *',
+'dash.lbl_type':'Business type *',
+'dash.lbl_menu_type':'Menu type *',
+'dash.mt_detailed':'📋 Detailed menu',
+'dash.mt_photo':'📸 Photo menu',
+'dash.hint_menu_type':'Detailed menu: you write the dishes and prices one by one. Photo menu: just photograph your written menu — no typing.',
+'dash.lbl_slug':'Link (slug) *',
+'dash.hint_slug_a':'Your menu link will be:',
+'dash.hint_slug_b':'— letters, numbers and dashes only.',
+'dash.lbl_wa':'WhatsApp number *',
+'dash.hint_wa':'The restaurant’s contact number — it shows in the menu so customers can call or message you on WhatsApp.',
+'dash.delivery':'🚚 Home delivery available?',
+'dash.hint_delivery':'If you enable it, customers ordering from home enter their phone number with the order so you can call and confirm with them.',
+'dash.lbl_fb':'Facebook link (optional)',
+'dash.lbl_fb2':'Facebook link',
+'dash.lbl_logo':'Restaurant or café logo (optional)',
+'dash.lbl_logo2':'Restaurant or café logo',
+'dash.logo_pick':'📷 Choose the logo from your phone',
+'dash.logo_remove':'🗑 Remove the logo',
+'dash.lbl_cur':'Currency',
+'dash.cur_dzd':'DZD (Algerian dinar)',
+'dash.cur_usd':'$ (US dollar)',
+'dash.cur_sar':'SAR (Saudi riyal)',
+'dash.cur_aed':'AED (UAE dirham)',
+'dash.create_btn':'✅ Create the business',
+'dash.hint_bg':'The menu background changes with your business type.',
+'dash.err_fields':'Fill in the fields marked *',
+'dash.created_photo':'✅ Your business is created — photograph your menu from the Menu tab',
+'dash.created_detailed':'✅ Your business is created — add sections and dishes',
+'dash.saved':'✅ Changes saved',
+'dash.view_menu':'👁️ See my menu',
+'dash.tab_menu':'📋 Menu',
+'dash.tab_orders':'📥 Orders',
+'dash.tab_settings':'⚙️ Business settings',
+'dash.tab_qr':'🔳 QR & printing',
+'dash.tab_sub':'💳 Subscription',
+'dash.photos_t':'📸 Menu photos',
+'dash.photos_p':'Photograph your written menu (one page or many) — customers see the photos and write their order as free text. Prices show in the photo.',
+'dash.photos_cam':'📷 Take a photo',
+'dash.photos_gallery':'🖼️ Choose from gallery',
+'dash.photos_hint':'Take as many photos as you like — no limit. In demo mode photos are saved on your device only; with the live database they upload to Supabase Storage.',
+'dash.cat_ph':'New section name: Main dishes, drinks, desserts...',
+'dash.cat_add':'+ Add section',
+'dash.item_form_t':'➕ Add a new dish',
+'dash.item_form_edit':'✏️ Edit dish',
+'dash.item_submit_add':'✅ Add dish',
+'dash.item_submit_save':'💾 Save changes',
+'dash.item_cancel':'Cancel',
+'dash.lbl_cat':'Section *',
+'dash.lbl_dish':'Dish name *',
+'dash.ph_dish':'e.g. Couscous with vegetables',
+'dash.ph_name':'e.g. Diwan Restaurant',
+'dash.lbl_desc':'Description',
+'dash.ph_desc':'A short description that tempts the customer',
+'dash.lbl_price':'Price *',
+'dash.lbl_img':'Dish photo (optional)',
+'dash.img_pick':'📷 Choose a photo from your phone',
+'dash.img_remove':'🗑 Remove the photo',
+'dash.hint_img':'The photo is resized automatically so it does not slow down the menu.',
+'dash.editor_photo_note':'📸 Your menu is a photo menu — customers see the menu photos and write their order as free text, and the order goes straight to the kitchen.',
+'dash.editor_no_cat_opt':'— Add a section first —',
+'dash.editor_empty_t':'Your menu is still empty',
+'dash.editor_empty_p':'Add your first section above, then add the dishes with photos.',
+'dash.editor_count_one':'1 dish',
+'dash.editor_count_n':'{n} dishes',
+'dash.editor_del_cat':'🗑 Delete section',
+'dash.editor_no_items':'No dishes in this section yet — add your first dish below 👇',
+'dash.editor_avail_on':'Available — tap to stop it',
+'dash.editor_avail_off':'Stopped — tap to activate it',
+'dash.toast_cat_added':'✅ Section added',
+'dash.confirm_del_cat':'Delete this section and all its dishes?',
+'dash.toast_fields':'Fill in the section, name and price (a positive number)',
+'dash.toast_item_saved':'✅ Changes saved',
+'dash.toast_item_added':'✅ Dish added',
+'dash.confirm_del_item':'Delete this dish?',
+'dash.photos_empty':'No photos yet — photograph your written menu and upload it above.',
+'dash.photos_alt':'Page {n}',
+'dash.photos_err':'Could not read the photo',
+'dash.photos_added':'✅ Menu photos added',
+'dash.ord_t':'📥 Orders',
+'dash.ord_p':'Orders arrive here straight from the app — no WhatsApp. The cook sees the dishes and the table, the cashier sees the total.',
+'dash.ord_kitchen':'🖥️ Open the kitchen screen',
+'dash.ord_hint':'So the cook and the cashier can see orders on their own phones, open the kitchen screen once from your account on each of their phones.',
+'dash.ord_tables_q':'🪑 How many tables?',
+'dash.ord_save':'💾 Save',
+'dash.ord_empty':'No orders yet — when a customer orders, it appears here right away.',
+'dash.ord_delivery':'🏠 Delivery',
+'dash.ord_pickup':'🛍️ Pickup',
+'dash.st_new':'New',
+'dash.st_preparing':'Preparing',
+'dash.st_done':'Done ✅',
+'dash.st_cancelled':'Cancelled',
+'dash.ord_close_btn':'✅ Done — close the table',
+'dash.ord_preparing_btn':'👨‍🍳 Preparing',
+'dash.ord_done_btn':'✅ Done',
+'dash.ord_cancel_btn':'✖ Cancel',
+'dash.ord_del_btn':'🗑 Delete order',
+'dash.toast_table_closed':'🔒 Table {n} is closed — customers cannot order again until you open it',
+'dash.toast_table_open':'🪑 Table {n} is open — customers can order',
+'dash.toast_tables_saved':'✅ {n} tables saved',
+'dash.table_closed':'Closed',
+'dash.table_open':'Open',
+'dash.table_open_btn':'Open it',
+'dash.table_close_btn':'Close it',
+'dash.table_st_closed':'🔒 Closed — open it',
+'dash.table_st_open':'🪑 Open — close it',
+'dash.confirm_del_order':'Delete this order permanently?',
+'dash.toast_order_deleted':'🗑 Order deleted',
+'dash.set_t':'⚙️ Business details',
+'dash.set_lang_t':'🌐 App language',
+'dash.set_lang_p':'Change the whole app language: landing page, menu, and dashboard.',
+'dash.set_slug_hint':'Changing the link changes your QR — reprint it afterwards.',
+'dash.set_photo_hint':'Photo menu: customers see the menu photos and write their order as free text — no cart.',
+'dash.set_save':'💾 Save changes',
+'dash.qr_t':'🔳 Menu QR code',
+'dash.qr_p':'Print it and put it on the tables — customers scan it and see the menu right away',
+'dash.qr_dl':'⬇️ Download PNG',
+'dash.qr_print':'🖨️ Print',
+'dash.qr_copy':'🔗 Copy link',
+'dash.qr_tables_t':'🪑 Table QR codes',
+'dash.qr_tables_p':'Every table has its own code — the order reaches the kitchen with the table number. Generate the codes and print them.',
+'dash.qr_gen':'Generate table codes',
+'dash.qr_print_all':'🖨️ Print all',
+'dash.toast_no_qr':'QR code not found',
+'dash.toast_qr_dl':'✅ QR code downloaded',
+'dash.toast_link_copied':'✅ Link copied',
+'dash.prompt_copy':'Copy link:',
+'dash.toast_tables_gen':'✅ Generated codes for {n} tables',
+'dash.print_p':'Scan the code, see the menu and order straight from the app',
+'dash.print_tables_p':'Scan the code, see the menu and order — the order reaches the kitchen with the table number',
+'dash.sub_t':'💳 Subscription',
+'dash.sub_active':'Your subscription is active ✅ — thank you. ',
+'dash.sub_founder':'You are one of the first 20, your price is locked forever.',
+'dash.sub_trial':'You are on the free trial — {n} days left. After that you need to activate the subscription so your menu keeps working.',
+'dash.sub_expired':'The free trial ended — activate your subscription so your menu works again.',
+'dash.sub_p':'To activate your subscription, send us a WhatsApp message and we will activate it for you the same day, God willing:',
+'dash.sub_wa':'💬 Activate your subscription on WhatsApp',
+'dash.sub_hint':'Prices: 700 DZD/month for Algeria — $9/month for the Gulf. The first 20 have their price locked forever. Activation is manual, payment by transfer or CCP in Algeria.',
+'dash.sub_wa_msg':'Hi, I own the business "{name}" ({slug}), and I would like to activate my Menu QR 🍽 subscription.',
+'dash.sub_expired_msg':'Hi, I own the business "{name}", and I would like to activate my Menu QR 🍽 subscription.',
+'dash.kitchen_t':'🖥️ Kitchen & cashier screen',
+'dash.kitchen_back':'← Back to dashboard',
+'dash.kitchen_p':'New orders appear here instantly with a sound — keep this page open for the cook and the cashier.',
+'dash.owner_t':'👑 Owner panel',
+'dash.owner_back':'← Back to home',
+'dash.owner_p':'Only for you — activate or pause any business subscription from here, without opening Supabase.',
+'owner.loading':'Loading businesses...',
+'owner.sb_only':'This panel only works with the live database — log in first.',
+'owner.login_first':'Log in with your account first to open this panel.',
+'owner.auth_btn':'Login / Sign up',
+'owner.only_owner':'🔒 This panel is only for the platform owner.',
+'owner.none':'No businesses yet.',
+'owner.active':'✅ Active',
+'owner.trial':'Trial — {n} days left',
+'owner.expired':'⏸️ Expired',
+'owner.pause':'⏸️ Pause',
+'owner.activate':'✅ Activate',
+'owner.activated':'✅ Business activated',
+'owner.paused':'⏸️ Business paused',
+'menu.loading':'Loading menu...',
+'menu.err_t':'❌ Problem loading the menu',
+'menu.err_p':'Try again later or try the demo menu.',
+'menu.notfound_t':'😕 Business not found',
+'menu.notfound_p':'The link is wrong or the business was deleted. Try the demo menu or create a menu for your business.',
+'menu.notfound_demo':'🍽️ See the demo menu',
+'menu.home_btn':'Back to home',
+'menu.expired_t':'⏸️ This business subscription has expired',
+'menu.expired_p':'The menu is paused until the subscription is renewed. If you own this business, activate your subscription on WhatsApp.',
+'menu.expired_btn':'💬 Activate the subscription',
+'menu.table_badge':'🪑 Table {n} — your order goes straight to the kitchen',
+'menu.wa':'💬 WhatsApp',
+'menu.call':'📞 Call',
+'menu.fb':'👍 Facebook',
+'menu.views':'{n} views',
+'menu.filter_all':'All',
+'menu.empty':'The menu is still empty — the owner will add dishes soon.',
+'menu.photo_note':'💰 Prices are in the photo — look at the menu and write your order',
+'menu.photo_empty':'The photo menu is still empty — the owner will photograph the menu soon.',
+'menu.photo_alt':'Menu page {n}',
+'menu.photo_hint':'Swipe to see the other pages — tap a photo to zoom in 👆',
+'menu.photo_write':'📝 Write your order',
+'menu.photo_ph':'Write your order here... e.g. Coffee + croissant ×2',
+'menu.photo_send':'📤 Send the order',
+'menu.photo_send_table':'📤 Send the order — Table {n}',
+'menu.photo_hint_closed':'This table is closed — call the waiter to open it.',
+'menu.photo_hint_table':'Your order goes straight to the kitchen and the cashier with the table number.',
+'menu.photo_hint_app':'Your order goes straight to the kitchen and the cashier from the app.',
+'table.label':'🪑 Table {n}',
+'cart.send':'🛒 Send the order',
+'order.title_table':'🪑 Table {n} order',
+'order.title_photo':'📝 Your order',
+'order.title_cart':'🛒 Your order',
+'order.hint_table':'Check your order — it will go straight to the kitchen and the cashier with the table number.',
+'order.hint_home':'Check your order and fill in your details — the order goes straight to the kitchen and the cashier from the app.',
+'order.hint_table2':'Your order will go straight to the kitchen and the cashier with the table number — no need to call the waiter.',
+'order.hint_home2':'Fill in your details, and the order goes straight to the kitchen and the cashier from the app.',
+'order.your_order':'📝 Your order:',
+'order.total':'Total',
+'order.delivery':'🏠 Home delivery',
+'order.pickup':'🛍️ I will pick it up',
+'order.lbl_name':'Your name *',
+'order.ph_name':'e.g. Amine',
+'order.lbl_phone':'Phone number *',
+'order.lbl_addr':'Address *',
+'order.ph_addr':'Neighborhood, street, house number...',
+'order.send':'✅ Send the order',
+'order.sending':'⏳ Sending...',
+'order.cancel':'Cancel',
+'order.success_t':'Order sent!',
+'order.done':'Done',
+'order.err_fill_base':'Fill in your name and phone',
+'order.err_fill_addr':' and address',
+'order.err_fill_end':' first',
+'order.err_empty':'The cart is empty',
+'order.err_empty2':'The cart is empty — add dishes first',
+'order.err_closed':'🔒 This table is closed — call the waiter to open it',
+'order.err_closed2':'⛔ This table is closed — call the waiter to open it',
+'order.err_write':'Write your order first',
+'order.err_write_info':'Write your order and fill in your name and phone first',
+'order.ok_table':'The order reached the kitchen and the cashier — Table {n}',
+'order.ok_delivery':'Order received — the café owner will call you to confirm',
+'order.ok_pickup':'Order received — the café owner will call you when it is ready',
+'order.err_send':'The order was not sent — try again',
+'sub.active':'Active subscription ✅',
+'sub.founder':' • Founder (locked price)',
+'sub.trial':'Free trial — {n} days left',
+'sub.expired':'Subscription expired',
+'stat.dishes':'Dishes',
+'stat.cats':'Sections',
+'stat.views':'Views',
+'stat.active':'Active ✅',
+'stat.days':'{n} days',
+'stat.ended':'Ended',
+'stat.sub':'Subscription',
+'stat.trial':'Trial',
+'type.restaurant':'🍽️ Restaurant',
+'type.cafe':'☕ Café',
+'type.patisserie':'🍰 Patisserie',
+'type.fastfood':'🍔 Fast food',
+'type.snack':'🥪 Snack',
+'type.juice':'🧃 Juice',
+'err.slug_used':'This link is already used, change the slug',
+'err.cafe_missing':'Business not found',
+'err.item_missing':'Dish not found',
+'err.order_missing':'Order not found',
+'footer.line':'<b>Menu QR 🍽</b> — A digital menu for your restaurant or café<br>Made with love in Algeria 🇩🇿 — Contact us: <a href="https://wa.me/213797475073" target="_blank" style="color:#f59e0b">WhatsApp</a>',
+'lb.prev':'‹ Previous',
+'lb.next':'Next ›',
+'lb.close':'✖ Close',
+'qty.dish_1':'dish',
+'qty.dish_n':'dishes',
+'closed.title':'🔒 Table {n} is closed',
+'closed.msg':'Please call the waiter to open it for you',
+'closed.btn':'العربية',
+'dash.photos_del':'Delete photo'
+}
+};
+let LANG = 'ar';
+try{ const _savedLang = localStorage.getItem('mq_lang'); if(_savedLang === 'en' || _savedLang === 'ar') LANG = _savedLang; }catch(e){}
+function t(k, vars){
+  let s = (I18N[LANG] && I18N[LANG][k] != null) ? I18N[LANG][k] : (I18N.ar[k] != null ? I18N.ar[k] : k);
+  if(vars) for(const key in vars) s = String(s).split('{'+key+'}').join(vars[key]);
+  return s;
+}
+function toggleLang(){ setLang(LANG === 'ar' ? 'en' : 'ar'); }
+function setLang(l){
+  LANG = (l === 'en') ? 'en' : 'ar';
+  try{ localStorage.setItem('mq_lang', LANG); }catch(e){}
+  applyLang();
+}
+function applyLang(){
+  document.documentElement.lang = LANG;
+  document.documentElement.dir = LANG === 'en' ? 'ltr' : 'rtl';
+  document.title = t('meta.title');
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.dataset.i18nTitle); });
+  document.querySelectorAll('.lang-toggle').forEach(b => { b.textContent = LANG === 'en' ? 'العربية' : 'English'; });
+  document.querySelectorAll('[data-lang-btn]').forEach(b => b.classList.toggle('on', b.dataset.langBtn === LANG));
+  rerenderForLang();
+}
+function rerenderForLang(){
+  try{
+    if(!document.getElementById('view-menu').classList.contains('hidden') && typeof VIEW_CAFE !== 'undefined' && VIEW_CAFE){
+      renderMenu(); updateCartBar();
+      if(!document.getElementById('orderSheet').classList.contains('hidden')) refreshOrderSheet();
+    }
+    if(!document.getElementById('view-dash').classList.contains('hidden') && typeof MY_CAFE !== 'undefined' && MY_CAFE){
+      renderDashHeader(); renderSubTab(); renderQrTab();
+      renderMenuEditor().catch(function(){});
+      renderOrders();
+    }
+    if(!document.getElementById('view-kitchen').classList.contains('hidden') && typeof MY_CAFE !== 'undefined' && MY_CAFE) renderOrders();
+    if(!document.getElementById('view-owner').classList.contains('hidden')) renderOwnerList();
+    if(!document.getElementById('view-auth').classList.contains('hidden') && typeof AUTH_MODE !== 'undefined') authTab(AUTH_MODE);
+  }catch(e){ console.warn('rerenderForLang:', e.message); }
+}
+function refreshOrderSheet(){
+  const titleEl = document.getElementById('orderTitle'), hintEl = document.getElementById('orderHint');
+  if(!titleEl || !hintEl) return;
+  if(typeof isPhotoMenu === 'function' && isPhotoMenu()){
+    titleEl.textContent = TABLE_NO ? t('order.title_table', {n: TABLE_NO}) : t('order.title_photo');
+    hintEl.textContent = TABLE_NO ? t('order.hint_table') : t('order.hint_home');
+  } else {
+    titleEl.textContent = TABLE_NO ? t('order.title_table', {n: TABLE_NO}) : t('order.title_cart');
+    hintEl.textContent = TABLE_NO ? t('order.hint_table2') : t('order.hint_home2');
+  }
+  const btn = document.getElementById('orderConfirmBtn');
+  if(btn && btn.textContent.indexOf('⏳') === -1) btn.textContent = t('order.send');
+}
+
 
 /* ---------------- أدوات ---------------- */
 const $ = s => document.querySelector(s);
@@ -852,10 +1588,10 @@ function normUrl(u){
 }
 function subStatus(cafe){
   if(!cafe) return {label:'—', cls:'pill-grey'};
-  if(cafe.is_active) return {label:'اشتراك فعال ✅' + (cafe.founder ? ' • مؤسس (سعر مثبت)' : ''), cls:'pill-green'};
+  if(cafe.is_active) return {label:t('sub.active') + (cafe.founder ? t('sub.founder') : ''), cls:'pill-green'};
   const left = daysLeft(cafe.trial_ends_at);
-  if(left > 0) return {label:'تجربة مجانية — باقي ' + left + ' يوم', cls:'pill-amber'};
-  return {label:'الاشتراك منتهي', cls:'pill-red'};
+  if(left > 0) return {label:t('sub.trial', {n:left}), cls:'pill-amber'};
+  return {label:t('sub.expired'), cls:'pill-red'};
 }
 function isExpired(cafe){
   if(!cafe || cafe.id === 'demo' || cafe.id === 'demo2') return false;
@@ -866,17 +1602,17 @@ function isExpired(cafe){
    صور حقيقية من Unsplash (ماشي AI)، كل رابط متحقق منو بـ curl (200).
    كل نوع عندو خلفية فاتحة للشهية تخصو؛ اللاندينج العامة عندها flat-lay محايد. */
 const CAFE_TYPES = {
-  restaurant:{label:'🍽️ مطعم', bg:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1600&q=80'},
-  cafe:{label:'☕ مقهى', bg:'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1600&q=80'},
-  patisserie:{label:'🍰 باتيسري', bg:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=1600&q=80'},
-  fastfood:{label:'🍔 فاست فود', bg:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1600&q=80'},
-  snack:{label:'🥪 سناك', bg:'https://images.unsplash.com/photo-1521305916504-4a1121188589?auto=format&fit=crop&w=1600&q=80'},
-  juice:{label:'🧃 عصير', bg:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=1600&q=80'}
+  restaurant:{bg:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1600&q=80'},
+  cafe:{bg:'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1600&q=80'},
+  patisserie:{bg:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=1600&q=80'},
+  fastfood:{bg:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1600&q=80'},
+  snack:{bg:'https://images.unsplash.com/photo-1521305916504-4a1121188589?auto=format&fit=crop&w=1600&q=80'},
+  juice:{bg:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=1600&q=80'}
 };
 const LANDING_BG = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=80';
 function cafeTypeOf(cafe){ return (cafe && CAFE_TYPES[cafe.type]) ? cafe.type : 'restaurant'; }
 function cafeBg(cafe){ return CAFE_TYPES[cafeTypeOf(cafe)].bg; }
-function cafeTypeLabel(cafe){ return CAFE_TYPES[cafeTypeOf(cafe)].label; }
+function cafeTypeLabel(cafe){ return t('type.' + cafeTypeOf(cafe)); }
 
 /* ---------------- نوع المنيو: مفصلة ولا بالصورة ---------------- */
 function menuTypeOf(cafe){ return (cafe && cafe.menu_type === 'photo') ? 'photo' : 'detailed'; }
@@ -893,15 +1629,15 @@ function cafePhotos(cafe){ const p = cafe && cafe.photos; return Array.isArray(p
    مشروب/قهوة/عصير ← مشروبات | حلو/حلويات/باتيسري/كيك ← حلويات
    سعر/أسعار/اشتراك ← flat-lay محايد | كيفاش ← طاولة */
 const FRAME_BG = [
-  {keys:['طاولة','طاولات','طاوله','طلب','واتساب','طباعة','اطبع','كيفاش'], img:'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80'},
-  {keys:['طبق','أطباق','رئيسي','رئيسية','فطور','بيتزا','برغر','سندويتش','مقبلات','سلطة','Menu'], img:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1200&q=80'},
-  {keys:['مشروب','مشروبات','قهوة','عصير','عصائر','شاي'], img:'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=1200&q=80'},
-  {keys:['حلو','حلويات','باتيسري','كيك','كرواسون','مثلجات','حلا'], img:'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=1200&q=80'},
-  {keys:['سعر','أسعار','اشتراك','الجزائر','السعودية','الإمارات','الخليج','دج'], img:LANDING_BG}
+  {keys:['طاولة','طاولات','طاوله','طلب','واتساب','طباعة','اطبع','كيفاش','table','order','whatsapp','print'], img:'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80'},
+  {keys:['طبق','أطباق','رئيسي','رئيسية','فطور','بيتزا','برغر','سندويتش','مقبلات','سلطة','menu','dish','dishes','pizza','burger','sandwich'], img:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1200&q=80'},
+  {keys:['مشروب','مشروبات','قهوة','عصير','عصائر','شاي','drink','drinks','coffee','juice','tea'], img:'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=1200&q=80'},
+  {keys:['حلو','حلويات','باتيسري','كيك','كرواسون','مثلجات','حلا','sweet','sweets','cake','dessert'], img:'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=1200&q=80'},
+  {keys:['سعر','أسعار','اشتراك','الجزائر','السعودية','الإمارات','الخليج','دج','price','prices','subscribe','algeria','saudi','emirates','gulf','dzd'], img:LANDING_BG}
 ];
 function frameBg(text, fallback){
-  const t = String(text || '');
-  for(const row of FRAME_BG){ for(const k of row.keys){ if(t.indexOf(k) !== -1) return row.img; } }
+  const s = String(text || '').toLowerCase();
+  for(const row of FRAME_BG){ for(const k of row.keys){ if(s.indexOf(String(k).toLowerCase()) !== -1) return row.img; } }
   return fallback || LANDING_BG;
 }
 function frameBgStyle(text, fallback){
@@ -1039,7 +1775,7 @@ const Store = {
     }
     seedLocal();
     const cafes = LS.get('cafes', []);
-    if(cafes.some(c => c.slug === cafe.slug)) throw new Error('هاد الرابط مستعمل من قبل، بدّل slug');
+    if(cafes.some(c => c.slug === cafe.slug)) throw new Error(t('err.slug_used'));
     cafes.push(cafe); LS.set('cafes', cafes);
     return cafe;
   },
@@ -1051,8 +1787,8 @@ const Store = {
     }
     const cafes = LS.get('cafes', []);
     const i = cafes.findIndex(c => c.id === id);
-    if(i < 0) throw new Error('المشروع غير موجود');
-    if(patch.slug && cafes.some(c => c.slug === patch.slug && c.id !== id)) throw new Error('هاد الرابط مستعمل من قبل');
+    if(i < 0) throw new Error(t('err.cafe_missing'));
+    if(patch.slug && cafes.some(c => c.slug === patch.slug && c.id !== id)) throw new Error(t('err.slug_used'));
     cafes[i] = {...cafes[i], ...patch}; LS.set('cafes', cafes);
     return cafes[i];
   },
@@ -1111,7 +1847,7 @@ const Store = {
     }
     const items = LS.get('items', []);
     const i = items.findIndex(x => x.id === id);
-    if(i < 0) throw new Error('الطبق غير موجود');
+    if(i < 0) throw new Error(t('err.item_missing'));
     items[i] = {...items[i], ...patch}; LS.set('items', items);
     return items[i];
   },
@@ -1167,7 +1903,7 @@ const Store = {
     }
     const orders = LS.get('orders', []);
     const i = orders.findIndex(o => o.id === id);
-    if(i < 0) throw new Error('الطلب غير موجود');
+    if(i < 0) throw new Error(t('err.order_missing'));
     orders[i] = {...orders[i], ...patch}; LS.set('orders', orders);
     return orders[i];
   },
@@ -1288,22 +2024,22 @@ function onLogoTap(e){
 async function openOwnerPanel(){
   showView('owner');
   const box = $('#ownerList');
-  box.innerHTML = '<div class="empty-state">جاري تحميل المشاريع...</div>';
-  if(MODE !== 'sb'){ box.innerHTML = '<div class="empty-state">هاد اللوحة تخدم غير مع القاعدة الحية — سجل الدخول أولاً.</div>'; return; }
+  box.innerHTML = '<div class="empty-state">' + t('owner.loading') + '</div>';
+  if(MODE !== 'sb'){ box.innerHTML = '<div class="empty-state">' + t('owner.sb_only') + '</div>'; return; }
   const {data: {user}} = await sb.auth.getUser();
-  if(!user){ box.innerHTML = '<div class="empty-state">سجل الدخول بحسابك أولاً باش تفتح اللوحة.<br><br><button class="btn" onclick="showAuth()">دخول / تسجيل</button></div>'; return; }
-  if(user.id !== CONFIG.OWNER_UID){ box.innerHTML = '<div class="empty-state">🔒 هاد اللوحة غير لصاحب المنصة.</div>'; return; }
+  if(!user){ box.innerHTML = '<div class="empty-state">' + t('owner.login_first') + '<br><br><button class="btn" onclick="showAuth()">' + t('owner.auth_btn') + '</button></div>'; return; }
+  if(user.id !== CONFIG.OWNER_UID){ box.innerHTML = '<div class="empty-state">' + t('owner.only_owner') + '</div>'; return; }
   renderOwnerList();
 }
 async function renderOwnerList(){
   const box = $('#ownerList');
   try{
     const cafes = await Store.listCafes();
-    if(!cafes.length){ box.innerHTML = '<div class="empty-state">ما كاش مشاريع بعد.</div>'; return; }
+    if(!cafes.length){ box.innerHTML = '<div class="empty-state">' + t('owner.none') + '</div>'; return; }
     box.innerHTML = cafes.map(c => {
       const left = daysLeft(c.trial_ends_at);
-      const st = c.is_active ? '<span class="pill" style="background:#14532d;color:#bbf7d0">✅ مفعّل</span>' : (left > 0 ? '<span class="pill pill-amber">تجربة — باقي ' + left + ' يوم</span>' : '<span class="pill" style="background:#7f1d1d;color:#fecaca">⏸️ منتهي</span>');
-      return '<div class="item-row"><div class="info"><b>' + esc(c.name) + '</b><span>/' + esc(c.slug) + '</span></div>' + st + '<div class="row-acts"><button class="btn btn-sm" style="background:' + (c.is_active ? '#7f1d1d;color:#fff' : '#14532d;color:#fff') + '" onclick="toggleCafeActive(\'' + esc(c.id) + '\',' + (!c.is_active) + ',this)">' + (c.is_active ? '⏸️ وقّف' : '✅ فعّل') + '</button></div></div>';
+      const st = c.is_active ? '<span class="pill" style="background:#14532d;color:#bbf7d0">' + t('owner.active') + '</span>' : (left > 0 ? '<span class="pill pill-amber">' + t('owner.trial', {n:left}) + '</span>' : '<span class="pill" style="background:#7f1d1d;color:#fecaca">' + t('owner.expired') + '</span>');
+      return '<div class="item-row"><div class="info"><b>' + esc(c.name) + '</b><span>/' + esc(c.slug) + '</span></div>' + st + '<div class="row-acts"><button class="btn btn-sm" style="background:' + (c.is_active ? '#7f1d1d;color:#fff' : '#14532d;color:#fff') + '" onclick="toggleCafeActive(\'' + esc(c.id) + '\',' + (!c.is_active) + ',this)">' + (c.is_active ? t('owner.pause') : t('owner.activate')) + '</button></div></div>';
     }).join('');
   }catch(err){ box.innerHTML = '<div class="empty-state">❌ ' + esc(err.message || err) + '</div>'; }
 }
@@ -1312,7 +2048,7 @@ async function toggleCafeActive(id, active, btn){
   try{
     const {data, error} = await sb.rpc('admin_set_cafe_active', {p_cafe_id: id, p_active: active});
     if(error) throw error;
-    toast(active ? '✅ تفعّل المشروع' : '⏸️ توقّف المشروع');
+    toast(active ? t('owner.activated') : t('owner.paused'));
     renderOwnerList();
   }catch(err){ toast('❌ ' + (err.message || err)); if(btn) btn.disabled = false; }
 }
@@ -1377,7 +2113,7 @@ function authTab(mode){
   AUTH_MODE = mode;
   $('#tabLogin').classList.toggle('on', mode==='login');
   $('#tabSignup').classList.toggle('on', mode==='signup');
-  $('#authBtn').textContent = mode==='login' ? 'دخول' : 'أنشئ الحساب';
+  $('#authBtn').textContent = mode==='login' ? t('auth.btn_login') : t('auth.btn_signup');
 }
 async function doAuth(e){
   e.preventDefault();
@@ -1385,7 +2121,7 @@ async function doAuth(e){
   const pass = $('#authPass').value;
   const errBox = $('#authErr'), okBox = $('#authOk');
   errBox.classList.add('hidden'); okBox.classList.add('hidden'); okBox.classList.remove('warn');
-  if(!email || pass.length < 6){ errBox.textContent = 'الإيميل وكلمة السر (6 حروف على الأقل) لازمين'; errBox.classList.remove('hidden'); return; }
+  if(!email || pass.length < 6){ errBox.textContent = t('auth.err_creds'); errBox.classList.remove('hidden'); return; }
   try{
     if(MODE==='sb'){
       if(AUTH_MODE==='signup'){
@@ -1394,11 +2130,11 @@ async function doAuth(e){
         if(data.session){ USER = data.session.user; }
         else if(data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0){
           // الإيميل مسجل أصلاً — Supabase ما يبعثش إيميل تأكيد جديد
-          okBox.textContent = '⚠️ هاد الإيميل مسجل أصلاً — ادخل مباشرة من تبويب «دخول»';
+          okBox.textContent = t('auth.warn_registered');
           okBox.classList.add('warn');
           okBox.classList.remove('hidden'); return;
         }
-        else { okBox.textContent = '✅ تسجل الحساب — تحقق من إيميلك باش تفعّلو، ومن بعد ادخل'; okBox.classList.remove('hidden'); return; }
+        else { okBox.textContent = t('auth.ok_registered'); okBox.classList.remove('hidden'); return; }
       } else {
         const {data, error} = await sb.auth.signInWithPassword({email, password: pass});
         if(error) throw error;
@@ -1408,22 +2144,22 @@ async function doAuth(e){
       // وضع تجريبي محلي: حسابات محفوظة في جهازك برك (ماشي أمان حقيقي)
       const users = LS.get('users', []);
       if(AUTH_MODE==='signup'){
-        if(users.some(u => u.email === email)) throw new Error('هاد الإيميل مسجل من قبل — ادخل بيه');
+        if(users.some(u => u.email === email)) throw new Error(t('auth.err_registered'));
         const u = {id: uid(), email, pass};
         users.push(u); LS.set('users', users);
         USER = {id: u.id, email: u.email};
       } else {
         const u = users.find(u => u.email === email && u.pass === pass);
-        if(!u) throw new Error('الإيميل ولا كلمة السر غلط');
+        if(!u) throw new Error(t('auth.err_wrong'));
         USER = {id: u.id, email: u.email};
       }
       LS.set('user', USER);
     }
     updateAuthUI();
-    toast('مرحبا بيك 👋');
+    toast(t('auth.welcome'));
     showDash();
   }catch(err){
-    errBox.textContent = '❌ ' + (err.message || 'مشكلة في الدخول');
+    errBox.textContent = '❌ ' + (err.message || t('auth.err_login'));
     errBox.classList.remove('hidden');
   }
 }
@@ -1484,13 +2220,13 @@ function renderDashHeader(){
 function renderDashStats(cats, items){
   const c = MY_CAFE; if(!c) return;
   const left = daysLeft(c.trial_ends_at);
-  const trialVal = c.is_active ? 'فعّال ✅' : (left > 0 ? left + ' يوم' : 'منتهي');
-  const trialLabel = c.is_active ? 'الاشتراك' : 'التجربة';
+  const trialVal = c.is_active ? t('stat.active') : (left > 0 ? t('stat.days', {n:left}) : t('stat.ended'));
+  const trialLabel = c.is_active ? t('stat.sub') : t('stat.trial');
   const stat = (v, l) => '<div class="stat"><b>' + esc(String(v)) + '</b><span>' + l + '</span></div>';
   $('#dashStats').innerHTML =
-    stat(items.length, 'طبق') +
-    stat(cats.length, 'قسم') +
-    stat(c.views || 0, 'مشاهدة') +
+    stat(items.length, t('stat.dishes')) +
+    stat(cats.length, t('stat.cats')) +
+    stat(c.views || 0, t('stat.views')) +
     stat(trialVal, trialLabel);
 }
 function applyDashFrameBgs(){
@@ -1526,7 +2262,7 @@ async function createCafe(e){
   const name = $('#cfName').value.trim();
   const slug = slugify($('#cfSlug').value);
   const wa = $('#cfWa').value.trim();
-  if(!name || !slug || !wa){ toast('عمر الحقول اللي فيهم *'); return; }
+  if(!name || !slug || !wa){ toast(t('dash.err_fields')); return; }
   const cafe = {
     owner_id: USER.id, name, slug, type: $('#cfType').value || 'restaurant',
     menu_type: (document.querySelector('input[name="cfMenuType"]:checked')||{}).value || 'detailed', photos: [],
@@ -1542,7 +2278,7 @@ async function createCafe(e){
   if(MODE!=='sb') cafe.id = uid();
   try{
     MY_CAFE = await Store.createCafe(cafe);
-    toast(menuTypeOf(MY_CAFE) === 'photo' ? '✅ تنشأ مشروعك — صوّر المنيو تاعك من تبويب Menu' : '✅ تنشأ مشروعك — زيد الأقسام والأطباق');
+    toast(menuTypeOf(MY_CAFE) === 'photo' ? t('dash.created_photo') : t('dash.created_detailed'));
     showDash();
   }catch(err){
     toast('❌ ' + err.message);
@@ -1570,7 +2306,7 @@ async function saveCafe(e){
     setDashBg(cafeBg(MY_CAFE));
     applyDashFrameBgs();
     renderMenuEditor();
-    toast('✅ تحفظت التعديلات');
+    toast(t('dash.saved'));
   }catch(err){
     toast('❌ ' + err.message);
   }
@@ -1616,8 +2352,8 @@ function renderMenuPhotos(){
   const grid = $('#photoThumbs'); if(!grid) return;
   const photos = cafePhotos(MY_CAFE);
   grid.innerHTML = photos.length
-    ? photos.map((u,i) => '<div class="photo-thumb"><img src="'+esc(u)+'" alt="صفحة '+(i+1)+'" onerror="this.style.display=\'none\'"><button onclick="delMenuPhoto('+i+')" title="حذف الصورة">✖</button></div>').join('')
-    : '<p class="muted">ما كاش صور بعد — صوّر المنيو المكتوب تاعك ورفعو من فوق.</p>';
+    ? photos.map((u,i) => '<div class="photo-thumb"><img src="'+esc(u)+'" alt="'+t('dash.photos_alt', {n:(i+1)})+'" onerror="this.style.display=\'none\'"><button onclick="delMenuPhoto('+i+')" title="'+t('dash.photos_del')+'">✖</button></div>').join('')
+    : '<p class="muted">' + t('dash.photos_empty') + '</p>';
 }
 async function onMenuPhotosFile(input){
   const files = Array.from(input.files || []);
@@ -1626,13 +2362,13 @@ async function onMenuPhotosFile(input){
   const cur = cafePhotos(MY_CAFE);
   try{
     for(const f of files){
-      const raw = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(new Error('ما تقراتش الصورة')); r.readAsDataURL(f); });
+      const raw = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(new Error(t('dash.photos_err'))); r.readAsDataURL(f); });
       const small = await new Promise(res => compressImage(raw, 1200, 0.82, res));
       cur.push(await uploadMenuPhoto(small));
     }
     MY_CAFE = await Store.updateCafe(MY_CAFE.id, {photos: cur});
     renderMenuPhotos();
-    toast('✅ تزادت صور المنيو');
+    toast(t('dash.photos_added'));
   }catch(e){ toast('❌ ' + (e.message || e)); }
 }
 async function uploadMenuPhoto(dataUrl){
@@ -1663,27 +2399,27 @@ async function renderMenuEditor(){
   $('#itemAddCard').classList.toggle('hidden', isPhoto);
   if(isPhoto){
     renderMenuPhotos();
-    $('#menuEditor').innerHTML = '<div class="empty-mini">📸 المنيو تاعك بالصورة — الزبون يشوف صور المنيو ويكتب طلبو كنص حر، والطلب يوصل للمطبخ ديركت.</div>';
+    $('#menuEditor').innerHTML = '<div class="empty-mini">' + t('dash.editor_photo_note') + '</div>';
     return;
   }
   const cats = await Store.listCats(MY_CAFE.id);
   const items = await Store.listItems(MY_CAFE.id);
   renderDashStats(cats, items);
   const sel = $('#itCat');
-  sel.innerHTML = cats.map(c => '<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join('') || '<option value="">— زيد قسم أولاً —</option>';
+  sel.innerHTML = cats.map(c => '<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join('') || '<option value="">' + t('dash.editor_no_cat_opt') + '</option>';
   let h = '';
-  if(!cats.length) h = '<div class="empty-state"><span class="big">🍽️</span><b>الـ Menu تاعك مازال فارغ</b>زيد أول قسم من فوق، ومن بعد زيد الأطباق بالصور.</div>';
+  if(!cats.length) h = '<div class="empty-state"><span class="big">🍽️</span><b>' + t('dash.editor_empty_t') + '</b>' + t('dash.editor_empty_p') + '</div>';
   cats.forEach(c => {
     const ci = items.filter(i => i.category_id === c.id);
-    h += '<div class="cat-head"><b>'+esc(c.name)+'</b><span class="count">'+(ci.length === 1 ? 'طبق واحد' : ci.length + ' أطباق')+'</span><div class="acts"><button class="btn btn-sm btn-danger" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.5)" onclick="delCat(\''+esc(c.id)+'\')">🗑 حذف القسم</button></div></div>';
-    if(!ci.length) h += '<div class="empty-mini">ما كاش أطباق في هاد القسم بعد — زيد أول طبق من لتحت 👇</div>';
+    h += '<div class="cat-head"><b>'+esc(c.name)+'</b><span class="count">'+(ci.length === 1 ? t('dash.editor_count_one') : t('dash.editor_count_n', {n: ci.length}))+'</span><div class="acts"><button class="btn btn-sm btn-danger" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.5)" onclick="delCat(\''+esc(c.id)+'\')">' + t('dash.editor_del_cat') + '</button></div></div>';
+    if(!ci.length) h += '<div class="empty-mini">' + t('dash.editor_no_items') + '</div>';
     ci.forEach(it => {
       h += '<div class="item-row'+(it.available?'':' off')+'">'
         + '<div class="thumb">'+(it.image_url ? '<img src="'+esc(it.image_url)+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:12px" onerror="this.style.display=\'none\'">' : '') + esc(it.emoji||'🍽️') + '</div>'
         + '<div class="info"><b>'+esc(it.name)+'</b><span>'+esc(it.description||'')+'</span></div>'
         + '<span class="price">'+esc(fmtPrice(it.price, MY_CAFE.currency))+'</span>'
         + '<div class="row-acts">'
-        + '<label class="switch" title="'+(it.available?'متوفر — اضغط باش توقفو':'متوقف — اضغط باش تفعّلو')+'"><input type="checkbox" '+(it.available?'checked':'')+' onchange="toggleItem(\''+esc(it.id)+'\',this.checked)"><span></span></label>'
+        + '<label class="switch" title="'+(it.available ? t('dash.editor_avail_on') : t('dash.editor_avail_off'))+'"><input type="checkbox" '+(it.available?'checked':'')+' onchange="toggleItem(\''+esc(it.id)+'\',this.checked)"><span></span></label>'
         + '<button class="btn btn-ghost btn-sm" onclick="editItem(\''+esc(it.id)+'\')">✏️</button>'
         + '<button class="btn btn-danger btn-sm" onclick="delItem(\''+esc(it.id)+'\')">🗑</button>'
         + '</div></div>';
@@ -1701,10 +2437,10 @@ async function addCategory(e){
   await Store.addCat(cat);
   $('#catName').value = '';
   renderMenuEditor();
-  toast('✅ زاد القسم');
+  toast(t('dash.toast_cat_added'));
 }
 async function delCat(id){
-  if(!confirm('تحذف هاد القسم وكل الأطباق اللي فيه؟')) return;
+  if(!confirm(t('dash.confirm_del_cat'))) return;
   await Store.delCat(id);
   renderMenuEditor();
 }
@@ -1713,7 +2449,7 @@ async function saveItem(e){
   const catId = $('#itCat').value;
   const name = $('#itName').value.trim();
   const price = parseFloat($('#itPrice').value);
-  if(!catId || !name || isNaN(price) || price < 0){ toast('عمر القسم والاسم والسعر (رقم موجب)'); return; }
+  if(!catId || !name || isNaN(price) || price < 0){ toast(t('dash.toast_fields')); return; }
   const data = {
     category_id: catId, name,
     description: $('#itDesc').value.trim(),
@@ -1724,13 +2460,13 @@ async function saveItem(e){
   try{
     if(editId){
       await Store.updateItem(editId, data);
-      toast('✅ تحفظ التعديل');
+      toast(t('dash.toast_item_saved'));
     } else {
       const items = await Store.listItems(MY_CAFE.id);
       const item = {cafe_id: MY_CAFE.id, ...data, available:true, sort: items.length + 1};
       if(MODE!=='sb') item.id = uid();
       await Store.addItem(item);
-      toast('✅ زاد الطبق');
+      toast(t('dash.toast_item_added'));
     }
     cancelEditItem();
     renderMenuEditor();
@@ -1748,20 +2484,20 @@ async function editItem(id){
   $('#itDesc').value = it.description || '';
   $('#itPrice').value = it.price;
   setPhoto('itImgPrev', 'itImgClear', it.image_url || ''); $('#itImgFile').value = '';
-  $('#itemFormTitle').textContent = '✏️ تعديل الطبق';
-  $('#itSubmitBtn').textContent = '💾 حفظ التعديلات';
+  $('#itemFormTitle').textContent = t('dash.item_form_edit');
+  $('#itSubmitBtn').textContent = t('dash.item_submit_save');
   $('#itCancelEdit').classList.remove('hidden');
   document.getElementById('itemAddCard').scrollIntoView({behavior:'smooth', block:'start'});
 }
 function cancelEditItem(){
   $('#itId').value = '';
   $('#itName').value = ''; $('#itDesc').value = ''; $('#itPrice').value = ''; clearPhoto('itImgFile', 'itImgPrev', 'itImgClear');
-  $('#itemFormTitle').textContent = '➕ زيد طبق جديد';
-  $('#itSubmitBtn').textContent = '✅ زيد الطبق';
+  $('#itemFormTitle').textContent = t('dash.item_form_t');
+  $('#itSubmitBtn').textContent = t('dash.item_submit_add');
   $('#itCancelEdit').classList.add('hidden');
 }
 async function delItem(id){
-  if(!confirm('تحذف هاد الطبق؟')) return;
+  if(!confirm(t('dash.confirm_del_item'))) return;
   await Store.delItem(id);
   renderMenuEditor();
 }
@@ -1789,23 +2525,23 @@ function renderQrTab(){
 }
 function downloadQR(){
   const src = qrImgSrc($('#qrHolder'));
-  if(!src){ toast('ما لقيتش الـ QR'); return; }
+  if(!src){ toast(t('dash.toast_no_qr')); return; }
   const a = document.createElement('a');
   a.href = src; a.download = 'menu-qr-' + MY_CAFE.slug + '.png'; a.click();
-  toast('✅ تحمّل الـ QR');
+  toast(t('dash.toast_qr_dl'));
 }
 function printQR(){
   const src = qrImgSrc($('#qrHolder'));
   $('#printArea').innerHTML = '<h1>'+esc(MY_CAFE.name)+'</h1>'
     + (src ? '<img src="'+src+'">' : '')
-    + '<p>امسح الكود وشوف Menu واطلب ديركت من التطبيق</p>'
+    + '<p>' + t('dash.print_p') + '</p>'
     + '<p dir="ltr">'+esc(menuUrl(MY_CAFE.slug))+'</p>';
   window.print();
 }
 function copyMenuLink(){
   const url = menuUrl(MY_CAFE.slug);
-  if(navigator.clipboard){ navigator.clipboard.writeText(url).then(()=>toast('✅ تنسخ الرابط')); }
-  else prompt('نسخ الرابط:', url);
+  if(navigator.clipboard){ navigator.clipboard.writeText(url).then(()=>toast(t('dash.toast_link_copied'))); }
+  else prompt(t('dash.prompt_copy'), url);
 }
 function genTableQRs(quiet){
   const n = Math.max(1, Math.min(50, parseInt($('#tablesCount').value) || 8));
@@ -1819,7 +2555,7 @@ function genTableQRs(quiet){
     const cell = document.createElement('div');
     cell.className = 'table-qr-cell';
     setFrameBg(cell, frameBg('طاولة ' + i, MY_CAFE ? cafeBg(MY_CAFE) : LANDING_BG));
-    cell.innerHTML = '<b>🪑 الطاولة ' + i + '</b><div class="qr-holder" id="tqr-' + i + '"></div>'
+    cell.innerHTML = '<b>' + t('table.label', {n:i}) + '</b><div class="qr-holder" id="tqr-' + i + '"></div>'
       + '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap">'
       + '<button class="btn btn-ghost btn-sm" onclick="downloadTableQR(' + i + ')">⬇️ PNG</button>'
       + '<button class="btn btn-ghost btn-sm" id="tqr-st-' + i + '" onclick="toggleTableQr(' + i + ')">…</button></div>';
@@ -1827,24 +2563,24 @@ function genTableQRs(quiet){
     drawQR(cell.querySelector('.qr-holder'), tableUrl(MY_CAFE.slug, i), 120);
   }
   $('#btnPrintTables').disabled = false;
-  if(!quiet) toast('✅ تولّدت أكواد ' + n + ' طاولة');
+  if(!quiet) toast(t('dash.toast_tables_gen', {n}));
   refreshTableQrStatuses();
 }
 function downloadTableQR(n){
   const holder = $('#tqr-' + n);
   if(!holder) return;
   const src = qrImgSrc(holder);
-  if(!src){ toast('ما لقيتش الـ QR'); return; }
+  if(!src){ toast(t('dash.toast_no_qr')); return; }
   const a = document.createElement('a');
   a.href = src; a.download = 'table-' + n + '-' + MY_CAFE.slug + '.png'; a.click();
 }
 function printTables(){
   const n = Math.max(1, Math.min(50, parseInt($('#tablesCount').value) || 8));
-  let h = '<h1>'+esc(MY_CAFE.name)+'</h1><p>امسح الكود وشوف Menu واطلب — الطلب يوصل للمطبخ مع رقم الطاولة</p><div class="pgrid">';
+  let h = '<h1>'+esc(MY_CAFE.name)+'</h1><p>' + t('dash.print_tables_p') + '</p><div class="pgrid">';
   for(let i = 1; i <= n; i++){
     const holder = $('#tqr-' + i);
     const src = holder ? qrImgSrc(holder) : null;
-    h += '<div class="pcell"><h2>🪑 الطاولة ' + i + '</h2>' + (src ? '<img src="'+src+'">' : '') + '</div>';
+    h += '<div class="pcell"><h2>' + t('table.label', {n:i}) + '</h2>' + (src ? '<img src="'+src+'">' : '') + '</div>';
   }
   h += '</div>';
   $('#printArea').innerHTML = h;
@@ -1855,22 +2591,22 @@ function printTables(){
 function renderSubTab(){
   const st = subStatus(MY_CAFE);
   let info = '';
-  if(MY_CAFE.is_active) info = 'اشتراكك فعال ✅ — شكراً ليك. ' + (MY_CAFE.founder ? 'أنت من الأوائل 20، سعرك مثبت للأبد.' : '');
+  if(MY_CAFE.is_active) info = t('dash.sub_active') + (MY_CAFE.founder ? t('dash.sub_founder') : '');
   else {
     const left = daysLeft(MY_CAFE.trial_ends_at);
     info = left > 0
-      ? 'راك في التجربة المجانية — باقي ليك ' + left + ' يوم. بعدها لازم تفعّل الاشتراك باش Menu يبقى خدام.'
-      : 'التجربة المجانية خلصت — فعّل اشتراكك باش Menu يرجع يخدم.';
+      ? t('dash.sub_trial', {n:left})
+      : t('dash.sub_expired');
   }
   $('#subInfo').textContent = info;
-  const msg = 'سلام، أنا صاحب مشروع "' + MY_CAFE.name + '" (' + MY_CAFE.slug + ')، حاب نفعّل اشتراك Menu QR 🍽.';
+  const msg = t('dash.sub_wa_msg', {name: MY_CAFE.name, slug: MY_CAFE.slug});
   $('#subWaBtn').href = 'https://wa.me/' + CONFIG.WA_ISMAIL + '?text=' + encodeURIComponent(msg);
 }
 
 /* ---------------- Menu العامة ---------------- */
 async function showMenu(slug){
   showView('menu');
-  $('#menuContent').innerHTML = '<div class="notice"><h2>جاري تحميل Menu...</h2></div>';
+  $('#menuContent').innerHTML = '<div class="notice"><h2>' + t('menu.loading') + '</h2></div>';
   try{
     const cafe = await Store.getCafeBySlug(slug);
     if(!cafe){
@@ -1881,7 +2617,7 @@ async function showMenu(slug){
     }
     if(isExpired(cafe)){
       $('#view-menu').classList.add('hidden');
-      const msg = 'سلام، أنا صاحب مشروع "' + cafe.name + '"، حاب نفعّل اشتراك Menu QR 🍽.';
+      const msg = t('dash.sub_expired_msg', {name: cafe.name});
       $('#expiredWaBtn').href = 'https://wa.me/' + CONFIG.WA_ISMAIL + '?text=' + encodeURIComponent(msg);
       $('#menuExpired').classList.remove('hidden');
       setPublicBg(cafeBg(cafe));
@@ -1902,7 +2638,7 @@ async function showMenu(slug){
     setPublicBg(cafeBg(cafe));
     updateCartBar();
   }catch(err){
-    $('#menuContent').innerHTML = '<div class="notice"><h2>❌ مشكلة في تحميل Menu</h2><p class="muted">عاود من بعد ولا جرّب Menu التجريبي.</p></div>';
+    $('#menuContent').innerHTML = '<div class="notice"><h2>' + t('menu.err_t') + '</h2><p class="muted">' + t('menu.err_p') + '</p></div>';
     console.error(err);
   }
 }
@@ -1914,12 +2650,15 @@ function thumbHTML(it){
   return '<div class="thumb">' + fb + '</div>';
 }
 /* ---------------- إطار الطاولة المسدودة (فصحى + English) ---------------- */
-let CLOSED_LANG = 'ar';
+let CLOSED_LANG = LANG;
 function closedFrameHTML(){
-  const t = CLOSED_LANG === 'ar'
-    ? {dir:'rtl', title:'🔒 الطاولة ' + esc(TABLE_NO) + ' مغلقة', msg:'يُرجى مناداة النادل ليفتحها لك', btn:'English'}
-    : {dir:'ltr', title:'🔒 Table ' + esc(TABLE_NO) + ' is closed', msg:'Please call the waiter to open it for you', btn:'العربية'};
-  return '<div class="closed-frame" dir="' + t.dir + '"><div class="cf-ico">🪑</div><h3>' + t.title + '</h3><p>' + t.msg + '</p><button class="cf-lang" onclick="toggleClosedLang()">' + t.btn + '</button></div>';
+  // الإطار عندو لغتو الخاصة (زر English/العربية) — يتبع CLOSED_LANG ماشي LANG
+  const L = I18N[CLOSED_LANG] || I18N.ar;
+  const d = {dir: CLOSED_LANG === 'ar' ? 'rtl' : 'ltr',
+    title: String(L['closed.title'] || I18N.ar['closed.title']).split('{n}').join(esc(TABLE_NO)),
+    msg: L['closed.msg'] || I18N.ar['closed.msg'],
+    btn: L['closed.btn'] || I18N.ar['closed.btn']};
+  return '<div class="closed-frame" dir="' + d.dir + '"><div class="cf-ico">🪑</div><h3>' + d.title + '</h3><p>' + d.msg + '</p><button class="cf-lang" onclick="toggleClosedLang()">' + d.btn + '</button></div>';
 }
 function toggleClosedLang(){ CLOSED_LANG = CLOSED_LANG === 'ar' ? 'en' : 'ar'; renderMenu(); }
 
@@ -1932,15 +2671,15 @@ function renderMenu(){
   h += '<h1>' + esc(cafe.name) + '</h1>';
   if(cafe.tagline) h += '<p>' + esc(cafe.tagline) + '</p>';
   h += '<div><span style="display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:99px;padding:3px 12px;font-size:13px;font-weight:700">' + cafeTypeLabel(cafe) + '</span></div>';
-  if(TABLE_NO && !TABLE_CLOSED) h += '<br><span class="table-badge">🪑 الطاولة ' + esc(TABLE_NO) + ' — طلبك يوصل للمطبخ ديركت</span>';
+  if(TABLE_NO && !TABLE_CLOSED) h += '<br><span class="table-badge">' + t('menu.table_badge', {n: esc(TABLE_NO)}) + '</span>';
   // بطاقة رقمية مدمجة: أزرار تواصل + عدد المشاهدات
   const wa = normWA(cafe.whatsapp);
   h += '<div class="contact-row">';
-  if(wa) h += '<a class="c-wa" href="https://wa.me/' + wa + '" target="_blank">💬 واتساب</a>';
-  if(wa) h += '<a class="c-ph" href="tel:+' + wa + '">📞 اتصال</a>';
-  if(cafe.facebook) h += '<a class="c-fb" href="' + esc(cafe.facebook) + '" target="_blank">👍 فايسبوك</a>';
+  if(wa) h += '<a class="c-wa" href="https://wa.me/' + wa + '" target="_blank">' + t('menu.wa') + '</a>';
+  if(wa) h += '<a class="c-ph" href="tel:+' + wa + '">' + t('menu.call') + '</a>';
+  if(cafe.facebook) h += '<a class="c-fb" href="' + esc(cafe.facebook) + '" target="_blank">' + t('menu.fb') + '</a>';
   h += '</div>';
-  h += '<div class="views-pill">👁 ' + (cafe.views || 0) + ' مشاهدة</div>';
+  h += '<div class="views-pill">👁 ' + t('menu.views', {n: (cafe.views || 0)}) + '</div>';
   h += '</div>';
 
   h += '<div class="container">';
@@ -1952,9 +2691,9 @@ function renderMenu(){
     return;
   }
   h += '<div class="cat-nav">';
-  h += '<button class="on" onclick="filterCat(\'all\',this)">الكل</button>';
+  h += '<button class="on" data-cat="all" onclick="filterCat(\'all\',this)">' + t('menu.filter_all') + '</button>';
   VIEW_CATS.forEach(c => {
-    h += '<button onclick="filterCat(\'' + esc(c.id) + '\',this)">' + esc(c.name) + '</button>';
+    h += '<button data-cat="' + esc(c.id) + '" onclick="filterCat(\'' + esc(c.id) + '\',this)">' + esc(c.name) + '</button>';
   });
   h += '</div><div id="menuList" style="padding:18px 0 20px">';
   VIEW_CATS.forEach((c, ciIdx) => {
@@ -1970,7 +2709,7 @@ function renderMenu(){
     });
     h += '</div></div>';
   });
-  if(!VIEW_ITEMS.length) h += '<div class="menu-cat-card" style="' + frameBgStyle('', cafeBg(cafe)) + '"><p class="muted" style="text-align:center;padding:30px">Menu مازال فارغ — صاحب المشروع راح يزيد الأطباق قريباً.</p></div>';
+  if(!VIEW_ITEMS.length) h += '<div class="menu-cat-card" style="' + frameBgStyle('', cafeBg(cafe)) + '"><p class="muted" style="text-align:center;padding:30px">' + t('menu.empty') + '</p></div>';
   h += '</div></div>';
   $('#menuContent').innerHTML = h;
 }
@@ -1978,21 +2717,21 @@ function renderMenu(){
 /* ---------------- منيو بالصورة: معرض + طلب نص حر ---------------- */
 function photoMenuHTML(cafe, firstRender){
   const photos = cafePhotos(cafe);
-  let h = '<div style="text-align:center"><span class="photo-note">💰 الأسعار في الصورة — شوف المنيو واكتب طلبك</span></div>';
+  let h = '<div style="text-align:center"><span class="photo-note">' + t('menu.photo_note') + '</span></div>';
   if(!photos.length){
-    h += '<div class="menu-cat-card" style="' + frameBgStyle('', cafeBg(cafe)) + '"><p class="muted" style="text-align:center;padding:30px">المنيو بالصورة مازال فارغ — صاحب المشروع راح يصوّر المنيو قريباً.</p></div>';
+    h += '<div class="menu-cat-card" style="' + frameBgStyle('', cafeBg(cafe)) + '"><p class="muted" style="text-align:center;padding:30px">' + t('menu.photo_empty') + '</p></div>';
   } else {
     h += '<div class="menu-cat-card' + (firstRender ? ' anim-in' : '') + '" style="' + frameBgStyle('صور المنيو', cafeBg(cafe)) + '"><div class="photo-gallery" id="photoGallery" onscroll="photoGalleryScroll(this)">';
     photos.forEach((u,i) => {
-      h += '<div class="pg-item"><img src="' + esc(u) + '" alt="صفحة المنيو ' + (i+1) + '" onclick="openPhotoZoom(' + i + ')" onerror="this.style.display=\'none\'"></div>';
+      h += '<div class="pg-item"><img src="' + esc(u) + '" alt="' + t('menu.photo_alt', {n: (i+1)}) + '" onclick="openPhotoZoom(' + i + ')" onerror="this.style.display=\'none\'"></div>';
     });
     h += '</div><div class="photo-dots">' + photos.map((_,i) => '<i class="' + (i===0 ? 'on' : '') + '" data-dot="' + i + '"></i>').join('') + '</div>'
-      + '<p class="hint" style="text-align:center">اسحب باش تشوف باقي الصفحات — اضغط على الصورة باش تكبّرها 👆</p></div>';
+      + '<p class="hint" style="text-align:center">' + t('menu.photo_hint') + '</p></div>';
   }
-  h += '<div class="menu-cat-card" style="' + frameBgStyle('طلب', cafeBg(cafe)) + '"><h3>📝 اكتب طلبك</h3>'
-    + '<div class="photo-order"><textarea id="photoOrderText" placeholder="اكتب طلبك هنا... مثال: قهوة + كرواسون ×2" ' + (TABLE_CLOSED ? 'disabled' : '') + '></textarea></div>'
-    + '<button class="btn btn-amber btn-block" style="margin-top:12px" ' + (TABLE_CLOSED ? 'disabled' : '') + ' onclick="openPhotoOrderSheet()">📤 أرسل الطلب' + (TABLE_NO ? ' — الطاولة ' + esc(TABLE_NO) : '') + '</button>'
-    + '<p class="hint" style="margin-top:8px">' + (TABLE_CLOSED ? 'هاد الطاولة مسدودة — عيط للسارفور باش يفتحها.' : (TABLE_NO ? 'طلبك يوصل للمطبخ والكاشير ديركت مع رقم الطاولة.' : 'طلبك يوصل للمطبخ والكاشير ديركت من التطبيق.')) + '</p></div>';
+  h += '<div class="menu-cat-card" style="' + frameBgStyle('طلب', cafeBg(cafe)) + '"><h3>' + t('menu.photo_write') + '</h3>'
+    + '<div class="photo-order"><textarea id="photoOrderText" placeholder="' + t('menu.photo_ph') + '" ' + (TABLE_CLOSED ? 'disabled' : '') + '></textarea></div>'
+    + '<button class="btn btn-amber btn-block" style="margin-top:12px" ' + (TABLE_CLOSED ? 'disabled' : '') + ' onclick="openPhotoOrderSheet()">' + (TABLE_NO ? t('menu.photo_send_table', {n: esc(TABLE_NO)}) : t('menu.photo_send')) + '</button>'
+    + '<p class="hint" style="margin-top:8px">' + (TABLE_CLOSED ? t('menu.photo_hint_closed') : (TABLE_NO ? t('menu.photo_hint_table') : t('menu.photo_hint_app'))) + '</p></div>';
   return h;
 }
 function photoGalleryScroll(el){
@@ -2115,9 +2854,8 @@ function addQty(id, d){
   renderMenu();
   // رجّع الفلتر اللي كان مختار
   const onBtn = document.querySelector('.cat-nav button.on');
-  if(onBtn && onBtn.textContent !== 'الكل'){
-    const catId = VIEW_CATS.find(c => c.name === onBtn.textContent)?.id;
-    if(catId) filterCat(catId, onBtn);
+  if(onBtn && onBtn.dataset.cat && onBtn.dataset.cat !== 'all'){
+    filterCat(onBtn.dataset.cat, onBtn);
   }
   updateCartBar();
   const bar = $('#cartBar');
@@ -2148,7 +2886,7 @@ function updateCartBar(){
   if(!VIEW_CAFE || count === 0 || TABLE_CLOSED){ bar.classList.add('hidden'); document.body.classList.remove('has-cart'); return; }
   bar.classList.remove('hidden');
   document.body.classList.add('has-cart');
-  $('#cartCount').textContent = count + ' طبق';
+  $('#cartCount').textContent = count + ' ' + t(count === 1 ? 'qty.dish_1' : 'qty.dish_n');
   const cc = $('#cartCount');
   cc.classList.remove('pop'); void cc.offsetWidth; cc.classList.add('pop');
   $('#cartTotal').textContent = fmtPrice(total, VIEW_CAFE.currency);
@@ -2182,18 +2920,18 @@ async function submitOrder(e){
   if(isPhotoMenu()) return submitPhotoOrder(e);
   e.preventDefault();
   const type = orderType();
-  if(!validateOrder()){ toast('عمّر الاسم والتيليفون' + (type === 'delivery' ? ' والعنوان' : '') + ' أولاً'); return; }
+  if(!validateOrder()){ toast(t('order.err_fill_base') + (type === 'delivery' ? t('order.err_fill_addr') : '') + t('order.err_fill_end')); return; }
   const cafe = VIEW_CAFE;
   const {lines, total} = cartLines();
-  if(!lines.length){ toast('السلة فارغة'); return; }
+  if(!lines.length){ toast(t('order.err_empty')); return; }
   if(TABLE_NO){
     try{
       TABLE_CLOSED = (await Store.getTableStatus(cafe.id, parseInt(TABLE_NO, 10) || 0)) === 'closed';
-      if(TABLE_CLOSED){ renderMenu(); updateCartBar(); toast('🔒 هاد الطاولة تسدت — عيط للسارفور باش يفتحها'); return; }
+      if(TABLE_CLOSED){ renderMenu(); updateCartBar(); toast(t('order.err_closed')); return; }
     }catch(e){ /* التريغر في القاعدة هو الضمان — نكمّل المحاولة */ }
   }
   const btn = $('#orderConfirmBtn');
-  btn.disabled = true; btn.textContent = '⏳ جاري الإرسال...';
+  btn.disabled = true; btn.textContent = t('order.sending');
   try{
     const items = lines.map(l => ({name: l.it.name, price: l.it.price, qty: l.qty}));
     let order;
@@ -2211,33 +2949,33 @@ async function submitOrder(e){
     $('#orderForm').classList.add('hidden');
     $('#orderSuccess').classList.remove('hidden');
     $('#orderSuccessMsg').textContent = TABLE_NO
-      ? 'الطلب وصل للمطبخ والكاشير — الطاولة ' + TABLE_NO
+      ? t('order.ok_table', {n: TABLE_NO})
       : (type === 'delivery'
-        ? 'الطلب وصل — راح يعيطلك صاحب المقهى باش يكونفيرمي معاك'
-        : 'الطلب وصل — راح يعيطلك صاحب المقهى كي يوجد');
+        ? t('order.ok_delivery')
+        : t('order.ok_pickup'));
   }catch(err){
     const m = (err && err.message) || '';
-    toast('❌ ' + (m.includes('table_closed') ? 'هاد الطاولة تسدت — عيط للسارفور باش يفتحها' : (m || 'ما تبعثش الطلب — عاود')));
+    toast('❌ ' + (m.includes('table_closed') ? t('order.err_closed') : (m || t('order.err_send'))));
   }finally{
-    btn.disabled = false; btn.textContent = '✅ أرسل الطلب';
+    btn.disabled = false; btn.textContent = t('order.send');
   }
 }
 /* ---- طلب نص حر (منيو بالصورة) — ديركت للمطبخ كطلب عادي ---- */
 async function submitPhotoOrder(e){
   e.preventDefault();
-  if(TABLE_CLOSED){ toast('⛔ هاد الطاولة مسدودة — عيط للسارفور باش يفتحها'); return; }
-  if(!validateOrder()){ toast(TABLE_NO ? 'اكتب طلبك أولاً' : 'اكتب طلبك وعمّر الاسم والتيليفون أولاً'); return; }
+  if(TABLE_CLOSED){ toast(t('order.err_closed2')); return; }
+  if(!validateOrder()){ toast(TABLE_NO ? t('order.err_write') : t('order.err_write_info')); return; }
   const cafe = VIEW_CAFE;
   const txt = $('#photoOrderText').value.trim();
   const type = orderType();
   if(TABLE_NO){
     try{
       TABLE_CLOSED = (await Store.getTableStatus(cafe.id, parseInt(TABLE_NO, 10) || 0)) === 'closed';
-      if(TABLE_CLOSED){ renderMenu(); toast('🔒 هاد الطاولة تسدت — عيط للسارفور باش يفتحها'); return; }
+      if(TABLE_CLOSED){ renderMenu(); toast(t('order.err_closed')); return; }
     }catch(err){ /* التريغر في القاعدة هو الضمان — نكمّل المحاولة */ }
   }
   const btn = $('#orderConfirmBtn');
-  btn.disabled = true; btn.textContent = '⏳ جاري الإرسال...';
+  btn.disabled = true; btn.textContent = t('order.sending');
   try{
     const order = TABLE_NO
       ? {cafe_id: cafe.id, kind:'table', table_no: parseInt(TABLE_NO, 10) || null, items:[{name: txt, price:0, qty:1}], total:0}
@@ -2251,28 +2989,28 @@ async function submitPhotoOrder(e){
     $('#orderForm').classList.add('hidden');
     $('#orderSuccess').classList.remove('hidden');
     $('#orderSuccessMsg').textContent = TABLE_NO
-      ? 'الطلب وصل للمطبخ والكاشير — الطاولة ' + TABLE_NO
+      ? t('order.ok_table', {n: TABLE_NO})
       : (type === 'delivery'
-        ? 'الطلب وصل — راح يعيطلك صاحب المقهى باش يكونفيرمي معاك'
-        : 'الطلب وصل — راح يعيطلك صاحب المقهى كي يوجد');
+        ? t('order.ok_delivery')
+        : t('order.ok_pickup'));
   }catch(err){
     const m = (err && err.message) || '';
-    toast('❌ ' + (m.includes('table_closed') ? 'هاد الطاولة تسدت — عيط للسارفور باش يفتحها' : (m || 'ما تبعثش الطلب — عاود')));
+    toast('❌ ' + (m.includes('table_closed') ? t('order.err_closed') : (m || t('order.err_send'))));
   }finally{
-    btn.disabled = false; btn.textContent = '✅ أرسل الطلب';
+    btn.disabled = false; btn.textContent = t('order.send');
   }
 }
 function openPhotoOrderSheet(){
-  if(TABLE_NO && TABLE_CLOSED){ toast('🔒 هاد الطاولة تسدت — عيط للسارفور باش يفتحها'); return; }
+  if(TABLE_NO && TABLE_CLOSED){ toast(t('order.err_closed')); return; }
   const txt = ($('#photoOrderText') ? $('#photoOrderText').value : '').trim();
-  if(!txt){ toast('اكتب طلبك أولاً'); return; }
+  if(!txt){ toast(t('order.err_write')); return; }
   const cafe = VIEW_CAFE;
   $('#orderForm').classList.remove('hidden');
   $('#orderSuccess').classList.add('hidden');
-  $('#orderTitle').textContent = TABLE_NO ? ('🪑 طلب الطاولة ' + TABLE_NO) : '📝 طلبك';
+  $('#orderTitle').textContent = TABLE_NO ? t('order.title_table', {n: TABLE_NO}) : t('order.title_photo');
   $('#orderHint').textContent = TABLE_NO
-    ? 'راجع طلبك — راح يوصل للمطبخ والكاشير ديركت مع رقم الطاولة.'
-    : 'راجع طلبك وعبّي معلوماتك — الطلب يوصل للمطبخ والكاشير ديركت من التطبيق.';
+    ? t('order.hint_table')
+    : t('order.hint_home');
   $('#homeFields').classList.toggle('hidden', !!TABLE_NO);
   if(!TABLE_NO){
     const hasDelivery = !!cafe.delivery_enabled;
@@ -2293,18 +3031,18 @@ function openPhotoOrderSheet(){
 }
 function openOrderSheet(){
   const {lines, total} = cartLines();
-  if(!lines.length){ toast('السلة فارغة — زيد أطباق أولاً'); return; }
-  if(TABLE_NO && TABLE_CLOSED){ toast('🔒 هاد الطاولة تسدت — عيط للسارفور باش يفتحها'); return; }
+  if(!lines.length){ toast(t('order.err_empty2')); return; }
+  if(TABLE_NO && TABLE_CLOSED){ toast(t('order.err_closed')); return; }
   const cafe = VIEW_CAFE;
   $('#orderForm').classList.remove('hidden');
   $('#orderSuccess').classList.add('hidden');
   $('#orderLines').classList.remove('hidden');
   $('#orderTotal').parentElement.classList.remove('hidden');
   $('#photoOrderBox').classList.add('hidden');
-  $('#orderTitle').textContent = TABLE_NO ? ('🪑 طلب الطاولة ' + TABLE_NO) : '🛒 طلبك';
+  $('#orderTitle').textContent = TABLE_NO ? t('order.title_table', {n: TABLE_NO}) : t('order.title_cart');
   $('#orderHint').textContent = TABLE_NO
-    ? 'طلبك راح يوصل للمطبخ والكاشير ديركت مع رقم الطاولة — بلا ما تنادي النادل.'
-    : 'عبّي معلوماتك، والطلب يوصل للمطبخ والكاشير ديركت من التطبيق.';
+    ? t('order.hint_table2')
+    : t('order.hint_home2');
   $('#homeFields').classList.toggle('hidden', !!TABLE_NO);
   if(!TABLE_NO){
     // التوصيل غير إذا صاحب المطعم فعّلو — إذا لا، يبقى غير الاستلام
@@ -2367,16 +3105,16 @@ async function renderOrders(){
   const b = $('#kitchenOrders'); if(b) b.innerHTML = html;
   renderTablesStrip();
   const n = ORDERS_CACHE.filter(o => o.status === 'new').length;
-  const dt = $('#dtOrders'); if(dt) dt.textContent = '📥 الطلبات' + (n ? ' (' + n + ')' : '');
+  const dt = $('#dtOrders'); if(dt) dt.textContent = t('dash.ord_t') + (n ? ' (' + n + ')' : '');
 }
 function ordersHTML(orders){
-  if(!orders.length) return '<div class="card"><p class="muted" style="text-align:center">ما كاش طلبات بعد — كي يطلب زبون يظهر هنا ديركت.</p></div>';
+  if(!orders.length) return '<div class="card"><p class="muted" style="text-align:center">' + t('dash.ord_empty') + '</p></div>';
   const cur = (MY_CAFE && MY_CAFE.currency) || 'دج';
   return orders.map(o => {
     const items = Array.isArray(o.items) ? o.items : [];
-    const when = o.created_at ? new Date(o.created_at).toLocaleTimeString('ar-DZ', {hour:'2-digit', minute:'2-digit'}) : '';
-    const kindLabel = o.kind === 'table' ? ('🪑 الطاولة ' + (o.table_no ?? '—')) : o.kind === 'delivery' ? '🏠 توصيل' : '🛍️ استلام';
-    const st = {new:['جديد','pill-amber'], preparing:['قيد التحضير','pill-blue'], done:['تم ✅','pill-green'], cancelled:['ملغي','pill-red']}[o.status] || [o.status, 'pill-grey'];
+    const when = o.created_at ? new Date(o.created_at).toLocaleTimeString(LANG === 'en' ? 'en-GB' : 'ar-DZ', {hour:'2-digit', minute:'2-digit'}) : '';
+    const kindLabel = o.kind === 'table' ? t('table.label', {n: (o.table_no ?? '—')}) : o.kind === 'delivery' ? t('dash.ord_delivery') : t('dash.ord_pickup');
+    const st = {new:[t('dash.st_new'),'pill-amber'], preparing:[t('dash.st_preparing'),'pill-blue'], done:[t('dash.st_done'),'pill-green'], cancelled:[t('dash.st_cancelled'),'pill-red']}[o.status] || [o.status, 'pill-grey'];
     let h = '<div class="ord ' + esc(o.status) + '"><div class="ord-head"><b>' + kindLabel + ' • ' + when + '</b><span class="pill ' + st[1] + '">' + st[0] + '</span></div>';
     h += '<div class="ord-items">' + items.map(it => '<div><span>' + esc(it.name) + ' × ' + (it.qty || 1) + '</span><b>' + esc(fmtPrice((it.price || 0) * (it.qty || 1), cur)) + '</b></div>').join('') + '</div>';
     h += '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><span class="ord-meta">'
@@ -2385,10 +3123,10 @@ function ordersHTML(orders){
       + (o.address ? '<br>🏠 ' + esc(o.address) : '')
       + '</span><span class="ord-total">' + esc(fmtPrice(o.total || 0, cur)) + '</span></div>';
     const closeBtn = (o.kind === 'table' && o.table_no != null && (o.status === 'new' || o.status === 'preparing'))
-      ? '<button class="btn btn-amber btn-sm" onclick="closeTable(' + o.table_no + ')">✅ تم — سد الطاولة</button>' : '';
-    if(o.status === 'new') h += '<div class="ord-acts"><button class="btn btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'preparing\')">👨‍🍳 قيد التحضير</button><button class="btn btn-ghost btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'cancelled\')">✖ إلغاء</button>' + closeBtn + '</div>';
-    else if(o.status === 'preparing') h += '<div class="ord-acts"><button class="btn btn-amber btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'done\')">✅ تم</button><button class="btn btn-ghost btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'cancelled\')">✖ إلغاء</button>' + closeBtn + '</div>';
-    else if(o.status === 'done') h += '<div class="ord-acts"><button class="btn btn-ghost btn-sm" onclick="deleteOrder(\'' + esc(o.id) + '\')">🗑 محي الطلب</button></div>';
+      ? '<button class="btn btn-amber btn-sm" onclick="closeTable(' + o.table_no + ')">' + t('dash.ord_close_btn') + '</button>' : '';
+    if(o.status === 'new') h += '<div class="ord-acts"><button class="btn btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'preparing\')">' + t('dash.ord_preparing_btn') + '</button><button class="btn btn-ghost btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'cancelled\')">' + t('dash.ord_cancel_btn') + '</button>' + closeBtn + '</div>';
+    else if(o.status === 'preparing') h += '<div class="ord-acts"><button class="btn btn-amber btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'done\')">' + t('dash.ord_done_btn') + '</button><button class="btn btn-ghost btn-sm" onclick="setOrderStatus(\'' + esc(o.id) + '\',\'cancelled\')">' + t('dash.ord_cancel_btn') + '</button>' + closeBtn + '</div>';
+    else if(o.status === 'done') h += '<div class="ord-acts"><button class="btn btn-ghost btn-sm" onclick="deleteOrder(\'' + esc(o.id) + '\')">' + t('dash.ord_del_btn') + '</button></div>';
     return h + '</div>';
   }).join('');
 }
@@ -2403,7 +3141,7 @@ async function closeTable(tableNo){
     const open = ORDERS_CACHE.filter(o => o.kind === 'table' && o.table_no === tableNo && (o.status === 'new' || o.status === 'preparing'));
     for(const o of open){ try{ await Store.updateOrder(o.id, {status:'done'}); }catch(e){} }
     await Store.setTableStatus(MY_CAFE.id, tableNo, 'closed');
-    toast('🔒 الطاولة ' + tableNo + ' تسدت — الزبون ما يقدرش يزيد يطلب حتى تفتحها');
+    toast(t('dash.toast_table_closed', {n: tableNo}));
     renderOrders();
   }catch(e){ toast('❌ ' + e.message); }
 }
@@ -2411,7 +3149,7 @@ async function openTable(tableNo){
   if(!MY_CAFE || tableNo == null) return;
   try{
     await Store.setTableStatus(MY_CAFE.id, tableNo, 'open');
-    toast('🪑 الطاولة ' + tableNo + ' تفتحت — الزبون يقدر يطلب');
+    toast(t('dash.toast_table_open', {n: tableNo}));
     renderOrders();
   }catch(e){ toast('❌ ' + e.message); }
 }
@@ -2420,7 +3158,7 @@ async function saveTablesCount(){
   const n = Math.max(1, Math.min(50, parseInt($('#tablesCountSet').value) || 8));
   try{
     MY_CAFE = await Store.updateCafe(MY_CAFE.id, {tables_count: n});
-    toast('✅ تسجلو ' + n + ' طاولات');
+    toast(t('dash.toast_tables_saved', {n}));
     renderOrders();
   }catch(e){ toast('❌ ' + e.message); }
 }
@@ -2433,7 +3171,7 @@ async function refreshTableQrStatuses(){
     document.querySelectorAll('[id^="tqr-st-"]').forEach(b => {
       const n = parseInt(b.id.replace('tqr-st-', ''), 10);
       const closed = stMap[n] === 'closed';
-      b.textContent = closed ? '🔒 مسدودة — افتحها' : '🪑 مفتوحة — سدّها';
+      b.textContent = closed ? t('dash.table_st_closed') : t('dash.table_st_open');
       b.classList.toggle('btn-amber', closed);
       b.classList.toggle('btn-ghost', !closed);
     });
@@ -2450,8 +3188,8 @@ async function toggleTableQr(n){
 }
 /* ---- محي طلب خالص (اختياري — يسقسي قبل ما يمحي) ---- */
 async function deleteOrder(id){
-  if(!confirm('تمحي هاد الطلب نهائياً؟')) return;
-  try{ await Store.deleteOrder(id); renderOrders(); toast('🗑 تمحى الطلب'); }
+  if(!confirm(t('dash.confirm_del_order'))) return;
+  try{ await Store.deleteOrder(id); renderOrders(); toast(t('dash.toast_order_deleted')); }
   catch(e){ toast('❌ ' + e.message); }
 }
 async function renderTablesStrip(){
@@ -2468,8 +3206,8 @@ async function renderTablesStrip(){
     const stMap = {}; rows.forEach(r => stMap[r.table_no] = r.status);
     el.innerHTML = sorted.map(n => {
       const closed = stMap[n] === 'closed';
-      return '<span class="table-chip' + (closed ? ' closed' : '') + '">🪑 ' + n + ' — ' + (closed ? 'مسدودة' : 'مفتوحة')
-        + ' <button class="btn btn-sm ' + (closed ? '' : 'btn-ghost') + '" onclick="' + (closed ? 'openTable' : 'closeTable') + '(' + n + ')">' + (closed ? 'افتحها' : 'سدّها') + '</button></span>';
+      return '<span class="table-chip' + (closed ? ' closed' : '') + '">🪑 ' + n + ' — ' + (closed ? t('dash.table_closed') : t('dash.table_open'))
+        + ' <button class="btn btn-sm ' + (closed ? '' : 'btn-ghost') + '" onclick="' + (closed ? 'openTable' : 'closeTable') + '(' + n + ')">' + (closed ? t('dash.table_open_btn') : t('dash.table_close_btn')) + '</button></span>';
     }).join('');
   }catch(e){ /* سطر الطاولات اختياري — الطلبات تبقى خدامة */ }
 }
@@ -2497,6 +3235,7 @@ function closeKitchen(){ showView('dash'); }
 
 /* ---------------- التهيئة ---------------- */
 window.addEventListener('DOMContentLoaded', async () => {
+  applyLang();
   await detectMode();
   if(MODE === 'sb'){
     try{

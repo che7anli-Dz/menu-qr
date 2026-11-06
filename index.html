@@ -324,7 +324,7 @@ footer p{font-size:14px;opacity:.8}
 // الروابط الرسمية — GitHub Pages + Release
 var DEMO_URL = 'https://che7anli-dz.github.io/menu-qr/app.html?cafe=diwan';
 var APP_URL  = 'https://che7anli-dz.github.io/menu-qr/app.html';
-var APK_URL  = 'https://github.com/che7anli-Dz/menu-qr/releases/download/v1.1.10/menu-qr.apk';
+var APK_URL  = 'https://github.com/che7anli-Dz/menu-qr/releases/download/v1.1.11/menu-qr.apk';
 var WA_AR = 'https://wa.me/213797475073?text=%D8%B3%D9%84%D8%A7%D9%85%D8%8C%20%D8%AD%D8%A7%D8%A8%20%D9%86%D8%B4%D8%AA%D8%B1%D9%83%20%D9%81%D9%8A%20Menu%20QR';
 var WA_EN = 'https://wa.me/213797475073?text=Hi%2C%20I%27d%20like%20to%20subscribe%20to%20Menu%20QR';
 
@@ -392,6 +392,7 @@ en:{
 'footer.slogan':'Scan, see, order!'
 }};
 var lang = 'ar';
+try{ var _sl = localStorage.getItem('mq_lang'); if(_sl === 'en' || _sl === 'ar') lang = _sl; }catch(e){}
 function setLinks(){
   var wa = lang === 'ar' ? WA_AR : WA_EN;
   ['heroWa','finalWa','priceDzWa','priceGulfWa'].forEach(function(id){ var el=document.getElementById(id); if(el) el.href = wa; });
@@ -404,6 +405,7 @@ function setLinks(){
 function applyLang(){
   document.documentElement.lang = lang;
   document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.title = 'Menu QR 🍽 — ' + STR[lang]['hero.title1'] + ' ' + STR[lang]['hero.title2'] + ' ' + STR[lang]['hero.title3'];
   document.querySelectorAll('[data-t]').forEach(function(el){
     var v = STR[lang][el.getAttribute('data-t')];
     if(v != null) el.innerHTML = v;
@@ -413,6 +415,7 @@ function applyLang(){
 }
 document.getElementById('langBtn').addEventListener('click', function(){
   lang = lang === 'ar' ? 'en' : 'ar';
+  try{ localStorage.setItem('mq_lang', lang); }catch(e){}
   applyLang();
 });
 applyLang();
