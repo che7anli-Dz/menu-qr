@@ -1002,6 +1002,8 @@ function uid(){ return 'x' + Math.random().toString(36).slice(2,10) + Date.now()
 
 const Store = {
   async getCafeBySlug(slug){
+    if(slug === 'diwan') return DEMO_CAFE;
+    if(slug === 'diwan-cafe') return DEMO_CAFE2;
     if(MODE==='sb'){
       const {data, error} = await sb.from('menu_cafes').select('*').eq('slug', slug).maybeSingle();
       if(data) return data;
@@ -1055,6 +1057,7 @@ const Store = {
     return cafes[i];
   },
   async listCats(cafeId){
+    if(cafeId === 'demo' || cafeId === 'demo2') return DEMO_CATS.filter(c => c.cafe_id === cafeId).sort((a,b)=>a.sort-b.sort);
     if(MODE==='sb'){
       const {data, error} = await sb.from('menu_categories').select('*').eq('cafe_id', cafeId).order('sort');
       if(error) throw error;
@@ -1082,6 +1085,7 @@ const Store = {
     LS.set('items', LS.get('items', []).filter(i => i.category_id !== id));
   },
   async listItems(cafeId){
+    if(cafeId === 'demo' || cafeId === 'demo2') return DEMO_ITEMS.filter(i => i.cafe_id === cafeId).sort((a,b)=>a.sort-b.sort);
     if(MODE==='sb'){
       const {data, error} = await sb.from('menu_items').select('*').eq('cafe_id', cafeId).order('sort');
       if(error) throw error;
@@ -1132,7 +1136,7 @@ const Store = {
   },
   /* ---- الطلبات بلا واتساب: الزبون يبعث، المطبخ والكاشير يشوفو من التطبيق ---- */
   async addOrder(order){
-    if(MODE==='sb'){
+    if(MODE==='sb' && order.cafe_id !== 'demo' && order.cafe_id !== 'demo2'){
       // الـ id يولّدو السيرفر (uuid) — ما نبعثوش id محلي
       // بلا .select(): الزبون (anon) ما عندوش صلاحية قراءة الطلبات (فيها أرقام الزبائن)،
       // وselect بعد الإدخال يفشل بـ 42501 — الإدخال بروحو ينجح بلا رجوع
@@ -1177,6 +1181,7 @@ const Store = {
   },
   /* ---- حالات الطاولات: مفتوحة/مسدودة (بلا سطر = مفتوحة) ---- */
   async getTableStatus(cafeId, tableNo){
+    if(cafeId === 'demo' || cafeId === 'demo2') return 'open';
     if(MODE==='sb'){
       const {data, error} = await sb.from('menu_tables').select('status').eq('cafe_id', cafeId).eq('table_no', tableNo).maybeSingle();
       if(error) throw error;
@@ -1199,6 +1204,7 @@ const Store = {
     LS.set('tables', ts);
   },
   async listTables(cafeId){
+    if(cafeId === 'demo' || cafeId === 'demo2') return [];
     if(MODE==='sb'){
       const {data, error} = await sb.from('menu_tables').select('*').eq('cafe_id', cafeId).order('table_no');
       if(error) throw error;
