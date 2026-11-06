@@ -1498,6 +1498,11 @@ function t(k, vars){
   if(vars) for(const key in vars) s = String(s).split('{'+key+'}').join(vars[key]);
   return s;
 }
+/* أسماء الديمو بالإنجليزية: محتوى الديمو يتبدل مع اللغة — محتوى المقاهي الحقيقية يبقى كيما دخلو صاحبها */
+function dispName(o){ if(LANG==='en' && o && o.name_en) return o.name_en; return o ? o.name : ''; }
+function dispDesc(o){ if(LANG==='en' && o && o.description_en) return o.description_en; return o ? (o.description || '') : ''; }
+function dispTagline(c){ if(LANG==='en' && c && c.tagline_en) return c.tagline_en; return c ? (c.tagline || '') : ''; }
+function dispCur(c){ if(LANG==='en' && c && c.currency_en) return c.currency_en; return c ? (c.currency || 'دج') : 'دج'; }
 function toggleLang(){ setLang(LANG === 'ar' ? 'en' : 'ar'); }
 function setLang(l){
   LANG = (l === 'en') ? 'en' : 'ar';
@@ -1667,50 +1672,50 @@ function applyLandingFrameBgs(){
    ديمو بMenu مطعم حقيقي (أطباق رئيسية + مشروبات + حلويات، أسعار بالدج)
    باش يبين أن المنتج ماشي غير للمقاهي. */
 const DEMO_CAFE = {
-  id:'demo', owner_id:'demo', name:'مطعم الديوان', slug:'diwan', type:'restaurant', menu_type:'detailed', photos:[],
-  tagline:'أكل تقليدي وعصري — التوصيل متوفر', delivery_enabled:true,
+  id:'demo', owner_id:'demo', name:'مطعم الديوان', name_en:'Diwan Restaurant', slug:'diwan', type:'restaurant', menu_type:'detailed', photos:[],
+  tagline:'أكل تقليدي وعصري — التوصيل متوفر', tagline_en:'Traditional and modern food — delivery available', delivery_enabled:true,
   logo_url:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=400&q=60', whatsapp:'0797475073',
   phone:'0550123456', facebook:'https://facebook.com/diwan.restaurant',
-  currency:'دج', views:128,
+  currency:'دج', currency_en:'DZD', views:128,
   trial_ends_at: new Date(Date.now()+14*86400000).toISOString(),
   is_active:false, founder:false, created_at:new Date().toISOString()
 };
 /* ديمو ثاني صغير: مقهى الديوان — منيو بالصورة (صورة لوحة منيو حقيقية من Unsplash) */
 const DEMO_CAFE2 = {
-  id:'demo2', owner_id:'demo', name:'مقهى الديوان', slug:'diwan-cafe', type:'cafe', menu_type:'photo',
-  tagline:'قهوة وحلويات — شوف المنيو واكتب طلبك', delivery_enabled:true,
+  id:'demo2', owner_id:'demo', name:'مقهى الديوان', name_en:'Diwan Café', slug:'diwan-cafe', type:'cafe', menu_type:'photo',
+  tagline:'قهوة وحلويات — شوف المنيو واكتب طلبك', tagline_en:'Coffee and sweets — see the menu and write your order', delivery_enabled:true,
   photos:['https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80'],
   logo_url:'', whatsapp:'0797475073',
   phone:'0550123456', facebook:'',
-  currency:'دج', views:64,
+  currency:'دج', currency_en:'DZD', views:64,
   trial_ends_at: new Date(Date.now()+14*86400000).toISOString(),
   is_active:false, founder:false, created_at:new Date().toISOString()
 };
 const DEMO_CATS = [
-  {id:'c1', cafe_id:'demo', name:'🍲 أطباق رئيسية', sort:1},
-  {id:'c2', cafe_id:'demo', name:'🥤 مشروبات', sort:2},
-  {id:'c3', cafe_id:'demo', name:'🍰 حلويات', sort:3}
+  {id:'c1', cafe_id:'demo', name:'🍲 أطباق رئيسية', name_en:'🍲 Main dishes', sort:1},
+  {id:'c2', cafe_id:'demo', name:'🥤 مشروبات', name_en:'🥤 Drinks', sort:2},
+  {id:'c3', cafe_id:'demo', name:'🍰 حلويات', name_en:'🍰 Desserts', sort:3}
 ];
 const DEMO_ITEMS = [
-  {id:'i1', cafe_id:'demo', category_id:'c1', name:'كسكس بالخضرة واللحم', description:'كسكس تقليدي بالخضرة، لحم طري ومرقة', price:450, image_url:'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=400&q=60', emoji:'🍲', available:true, sort:1},
-  {id:'i2', cafe_id:'demo', category_id:'c1', name:'شخشوخة', description:'شخشوخة بالدجاج والمرقة الحارة', price:400, image_url:'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=400&q=60', emoji:'🍲', available:true, sort:2},
-  {id:'i3', cafe_id:'demo', category_id:'c1', name:'طاجين لحم بالبرقوق', description:'لحم بالبرقوق واللوز، على الطريقة التقليدية', price:500, image_url:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=60', emoji:'🍲', available:true, sort:3},
-  {id:'i4', cafe_id:'demo', category_id:'c1', name:'طاجين دجاج بالزيتون', description:'دجاج بالزيتون والليمون المصير', price:450, image_url:'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?auto=format&fit=crop&w=400&q=60', emoji:'🍲', available:true, sort:4},
-  {id:'i5', cafe_id:'demo', category_id:'c1', name:'بيتزا مارغريتا', description:'صلصة طماطم + موزاريلا + ريحان', price:500, image_url:'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&q=60', emoji:'🍕', available:true, sort:5},
-  {id:'i6', cafe_id:'demo', category_id:'c1', name:'بيتزا 4 أجبان', description:'موزاريلا، غورغونزولا، بارميزان، شيدر', price:650, image_url:'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=400&q=60', emoji:'🍕', available:true, sort:6},
-  {id:'i7', cafe_id:'demo', category_id:'c1', name:'برغر لحم', description:'لحم مشوي، جبن، خس، صوص خاص + بطاطا', price:450, image_url:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=60', emoji:'🍔', available:true, sort:7},
-  {id:'i8', cafe_id:'demo', category_id:'c1', name:'ساندويتش شاورما', description:'شاورما دجاج، صوص ثوم، خضرة', price:350, image_url:'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=400&q=60', emoji:'🥪', available:true, sort:8},
-  {id:'i9', cafe_id:'demo', category_id:'c1', name:'سلطة مشكلة', description:'خس، طماطم، خيار، زيتون، جبن', price:250, image_url:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=60', emoji:'🥗', available:true, sort:9},
-  {id:'i10', cafe_id:'demo', category_id:'c2', name:'قهوة عربية', description:'قهوة عربية أصيلة بالهيل، تتقدم مع التمر', price:80, image_url:'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=60', emoji:'☕', available:true, sort:1},
-  {id:'i11', cafe_id:'demo', category_id:'c2', name:'إسبريسو', description:'قهوة مركزة، جرعة وحدة ولا دوز', price:120, image_url:'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=400&q=60', emoji:'☕', available:true, sort:2},
-  {id:'i12', cafe_id:'demo', category_id:'c2', name:'كابتشينو', description:'إسبريسو + حليب مبخر + رغوة', price:200, image_url:'https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&w=400&q=60', emoji:'☕', available:true, sort:3},
-  {id:'i13', cafe_id:'demo', category_id:'c2', name:'عصير برتقال طازج', description:'برتقال معصور في الحين، بلا سكر زايد', price:250, image_url:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=400&q=60', emoji:'🥤', available:true, sort:1},
-  {id:'i14', cafe_id:'demo', category_id:'c2', name:'موهيتو', description:'ليمون + نعناع + صودا، منعش', price:300, image_url:'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?auto=format&fit=crop&w=400&q=60', emoji:'🍹', available:true, sort:2},
-  {id:'i15', cafe_id:'demo', category_id:'c2', name:'مشروب غازي', description:'كولا، فانتا، سبرايت — علبة باردة', price:100, image_url:'https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=400&q=60', emoji:'🥤', available:true, sort:3},
-  {id:'i16', cafe_id:'demo', category_id:'c3', name:'كرواسون', description:'كرواسون بالزبدة، يتقدم سخون', price:100, image_url:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=400&q=60', emoji:'🥐', available:true, sort:1},
-  {id:'i17', cafe_id:'demo', category_id:'c3', name:'تيراميسو', description:'طبقات مسكربوني وقهوة وكاكاو', price:350, image_url:'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=400&q=60', emoji:'🍰', available:true, sort:2},
-  {id:'i18', cafe_id:'demo', category_id:'c3', name:'كيك شوكولاتة', description:'كيك شوكولاتة ذايبة، قطعة كبيرة', price:300, image_url:'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=60', emoji:'🍰', available:true, sort:3},
-  {id:'i19', cafe_id:'demo', category_id:'c3', name:'قلب اللوز', description:'قلب اللوز بالعسل، حلوى تقليدية', price:150, image_url:'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=400&q=60', emoji:'🍩', available:true, sort:4}
+  {id:'i1', cafe_id:'demo', category_id:'c1', name:'كسكس بالخضرة واللحم', name_en:'Couscous with vegetables and meat', description:'كسكس تقليدي بالخضرة، لحم طري ومرقة', description_en:'Traditional couscous with vegetables, tender meat and sauce', price:450, image_url:'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=400&q=60', emoji:'🍲', available:true, sort:1},
+  {id:'i2', cafe_id:'demo', category_id:'c1', name:'شخشوخة', name_en:'Chakhchoukha', description:'شخشوخة بالدجاج والمرقة الحارة', description_en:'Chakhchoukha with chicken and spicy sauce', price:400, image_url:'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=400&q=60', emoji:'🍲', available:true, sort:2},
+  {id:'i3', cafe_id:'demo', category_id:'c1', name:'طاجين لحم بالبرقوق', name_en:'Meat tagine with prunes', description:'لحم بالبرقوق واللوز، على الطريقة التقليدية', description_en:'Meat with prunes and almonds, traditional style', price:500, image_url:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=60', emoji:'🍲', available:true, sort:3},
+  {id:'i4', cafe_id:'demo', category_id:'c1', name:'طاجين دجاج بالزيتون', name_en:'Chicken tagine with olives', description:'دجاج بالزيتون والليمون المصير', description_en:'Chicken with olives and preserved lemon', price:450, image_url:'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?auto=format&fit=crop&w=400&q=60', emoji:'🍲', available:true, sort:4},
+  {id:'i5', cafe_id:'demo', category_id:'c1', name:'بيتزا مارغريتا', name_en:'Pizza Margherita', description:'صلصة طماطم + موزاريلا + ريحان', description_en:'Tomato sauce + mozzarella + basil', price:500, image_url:'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&q=60', emoji:'🍕', available:true, sort:5},
+  {id:'i6', cafe_id:'demo', category_id:'c1', name:'بيتزا 4 أجبان', name_en:'Four-cheese pizza', description:'موزاريلا، غورغونزولا، بارميزان، شيدر', description_en:'Mozzarella, gorgonzola, parmesan, cheddar', price:650, image_url:'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=400&q=60', emoji:'🍕', available:true, sort:6},
+  {id:'i7', cafe_id:'demo', category_id:'c1', name:'برغر لحم', name_en:'Beef burger', description:'لحم مشوي، جبن، خس، صوص خاص + بطاطا', description_en:'Grilled beef, cheese, lettuce, special sauce + fries', price:450, image_url:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=60', emoji:'🍔', available:true, sort:7},
+  {id:'i8', cafe_id:'demo', category_id:'c1', name:'ساندويتش شاورما', name_en:'Shawarma sandwich', description:'شاورما دجاج، صوص ثوم، خضرة', description_en:'Chicken shawarma, garlic sauce, vegetables', price:350, image_url:'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=400&q=60', emoji:'🥪', available:true, sort:8},
+  {id:'i9', cafe_id:'demo', category_id:'c1', name:'سلطة مشكلة', name_en:'Mixed salad', description:'خس، طماطم، خيار، زيتون، جبن', description_en:'Lettuce, tomato, cucumber, olives, cheese', price:250, image_url:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=60', emoji:'🥗', available:true, sort:9},
+  {id:'i10', cafe_id:'demo', category_id:'c2', name:'قهوة عربية', name_en:'Arabic coffee', description:'قهوة عربية أصيلة بالهيل، تتقدم مع التمر', description_en:'Authentic Arabic coffee with cardamom, served with dates', price:80, image_url:'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=60', emoji:'☕', available:true, sort:1},
+  {id:'i11', cafe_id:'demo', category_id:'c2', name:'إسبريسو', name_en:'Espresso', description:'قهوة مركزة، جرعة وحدة ولا دوز', description_en:'Strong coffee, single or double shot', price:120, image_url:'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=400&q=60', emoji:'☕', available:true, sort:2},
+  {id:'i12', cafe_id:'demo', category_id:'c2', name:'كابتشينو', name_en:'Cappuccino', description:'إسبريسو + حليب مبخر + رغوة', description_en:'Espresso + steamed milk + foam', price:200, image_url:'https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&w=400&q=60', emoji:'☕', available:true, sort:3},
+  {id:'i13', cafe_id:'demo', category_id:'c2', name:'عصير برتقال طازج', name_en:'Fresh orange juice', description:'برتقال معصور في الحين، بلا سكر زايد', description_en:'Freshly squeezed orange, no added sugar', price:250, image_url:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=400&q=60', emoji:'🥤', available:true, sort:1},
+  {id:'i14', cafe_id:'demo', category_id:'c2', name:'موهيتو', name_en:'Mojito', description:'ليمون + نعناع + صودا، منعش', description_en:'Lemon + mint + soda, refreshing', price:300, image_url:'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?auto=format&fit=crop&w=400&q=60', emoji:'🍹', available:true, sort:2},
+  {id:'i15', cafe_id:'demo', category_id:'c2', name:'مشروب غازي', name_en:'Soft drink', description:'كولا، فانتا، سبرايت — علبة باردة', description_en:'Cola, Fanta, Sprite — chilled can', price:100, image_url:'https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=400&q=60', emoji:'🥤', available:true, sort:3},
+  {id:'i16', cafe_id:'demo', category_id:'c3', name:'كرواسون', name_en:'Croissant', description:'كرواسون بالزبدة، يتقدم سخون', description_en:'Butter croissant, served warm', price:100, image_url:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=400&q=60', emoji:'🥐', available:true, sort:1},
+  {id:'i17', cafe_id:'demo', category_id:'c3', name:'تيراميسو', name_en:'Tiramisu', description:'طبقات مسكربوني وقهوة وكاكاو', description_en:'Layers of mascarpone, coffee and cocoa', price:350, image_url:'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=400&q=60', emoji:'🍰', available:true, sort:2},
+  {id:'i18', cafe_id:'demo', category_id:'c3', name:'كيك شوكولاتة', name_en:'Chocolate cake', description:'كيك شوكولاتة ذايبة، قطعة كبيرة', description_en:'Melted chocolate cake, generous slice', price:300, image_url:'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=60', emoji:'🍰', available:true, sort:3},
+  {id:'i19', cafe_id:'demo', category_id:'c3', name:'قلب اللوز', name_en:'Qalb el louz', description:'قلب اللوز بالعسل، حلوى تقليدية', description_en:'Almond cake with honey, traditional sweet', price:150, image_url:'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=400&q=60', emoji:'🍩', available:true, sort:4}
 ];
 
 /* ---------------- طبقة التخزين: Supabase ولا localStorage ---------------- */
@@ -2668,8 +2673,8 @@ function renderMenu(){
   window._menuAnimDone = true;
   let h = '<div class="menu-hero' + (firstRender ? ' anim-in' : '') + '">';
   if(cafe.logo_url) h += '<img class="logo" src="' + esc(cafe.logo_url) + '" alt="" onerror="this.style.display=\'none\'">';
-  h += '<h1>' + esc(cafe.name) + '</h1>';
-  if(cafe.tagline) h += '<p>' + esc(cafe.tagline) + '</p>';
+  h += '<h1>' + esc(dispName(cafe)) + '</h1>';
+  if(dispTagline(cafe)) h += '<p>' + esc(dispTagline(cafe)) + '</p>';
   h += '<div><span style="display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:99px;padding:3px 12px;font-size:13px;font-weight:700">' + cafeTypeLabel(cafe) + '</span></div>';
   if(TABLE_NO && !TABLE_CLOSED) h += '<br><span class="table-badge">' + t('menu.table_badge', {n: esc(TABLE_NO)}) + '</span>';
   // بطاقة رقمية مدمجة: أزرار تواصل + عدد المشاهدات
@@ -2693,19 +2698,19 @@ function renderMenu(){
   h += '<div class="cat-nav">';
   h += '<button class="on" data-cat="all" onclick="filterCat(\'all\',this)">' + t('menu.filter_all') + '</button>';
   VIEW_CATS.forEach(c => {
-    h += '<button data-cat="' + esc(c.id) + '" onclick="filterCat(\'' + esc(c.id) + '\',this)">' + esc(c.name) + '</button>';
+    h += '<button data-cat="' + esc(c.id) + '" onclick="filterCat(\'' + esc(c.id) + '\',this)">' + esc(dispName(c)) + '</button>';
   });
   h += '</div><div id="menuList" style="padding:18px 0 20px">';
   VIEW_CATS.forEach((c, ciIdx) => {
     const ci = VIEW_ITEMS.filter(i => i.category_id === c.id);
     if(!ci.length) return;
-    h += '<div class="menu-cat-card' + (firstRender ? ' anim-in' : '') + '" data-cat="' + esc(c.id) + '" style="--ci:' + ciIdx + ';' + frameBgStyle(c.name, cafeBg(cafe)) + '"><h3>' + esc(c.name) + '</h3><div class="menu-grid">';
+    h += '<div class="menu-cat-card' + (firstRender ? ' anim-in' : '') + '" data-cat="' + esc(c.id) + '" style="--ci:' + ciIdx + ';' + frameBgStyle(c.name, cafeBg(cafe)) + '"><h3>' + esc(dispName(c)) + '</h3><div class="menu-grid">';
     ci.forEach((it, idx) => {
       const q = CART[it.id] || 0;
       h += '<div class="menu-item' + (firstRender ? ' anim-in' : '') + '" style="--i:' + idx + '">' + thumbHTML(it)
-        + '<div class="info"><b>' + esc(it.name) + '</b><span>' + esc(it.description || '') + '</span>'
+        + '<div class="info"><b>' + esc(dispName(it)) + '</b><span>' + esc(dispDesc(it)) + '</span>'
         + '<div class="qty"><button ' + (TABLE_CLOSED ? 'disabled' : '') + ' onclick="addQty(\'' + esc(it.id) + '\',-1)">−</button><b>' + q + '</b><button ' + (TABLE_CLOSED ? 'disabled' : '') + ' onclick="addQty(\'' + esc(it.id) + '\',1)">+</button></div></div>'
-        + '<span class="price">' + esc(fmtPrice(it.price, cafe.currency)) + '</span></div>';
+        + '<span class="price">' + esc(fmtPrice(it.price, dispCur(cafe))) + '</span></div>';
     });
     h += '</div></div>';
   });
@@ -2889,7 +2894,7 @@ function updateCartBar(){
   $('#cartCount').textContent = count + ' ' + t(count === 1 ? 'qty.dish_1' : 'qty.dish_n');
   const cc = $('#cartCount');
   cc.classList.remove('pop'); void cc.offsetWidth; cc.classList.add('pop');
-  $('#cartTotal').textContent = fmtPrice(total, VIEW_CAFE.currency);
+  $('#cartTotal').textContent = fmtPrice(total, dispCur(VIEW_CAFE));
 }
 /* ---------------- الطلب بلا واتساب: الزبون يبعث، المطبخ والكاشير يشوفو من التطبيق ---------------- */
 function orderType(){
@@ -2933,7 +2938,7 @@ async function submitOrder(e){
   const btn = $('#orderConfirmBtn');
   btn.disabled = true; btn.textContent = t('order.sending');
   try{
-    const items = lines.map(l => ({name: l.it.name, price: l.it.price, qty: l.qty}));
+    const items = lines.map(l => ({name: dispName(l.it), price: l.it.price, qty: l.qty}));
     let order;
     if(TABLE_NO){
       order = {cafe_id: cafe.id, kind:'table', table_no: parseInt(TABLE_NO, 10) || null, items, total};
@@ -3054,10 +3059,10 @@ function openOrderSheet(){
   }
   let h = '';
   lines.forEach(l => {
-    h += '<div class="order-line"><span>' + esc(l.it.name) + ' × ' + l.qty + '</span><b>' + esc(fmtPrice(l.sub, cafe.currency)) + '</b></div>';
+    h += '<div class="order-line"><span>' + esc(dispName(l.it)) + ' × ' + l.qty + '</span><b>' + esc(fmtPrice(l.sub, dispCur(cafe))) + '</b></div>';
   });
   $('#orderLines').innerHTML = h;
-  $('#orderTotal').textContent = fmtPrice(total, cafe.currency);
+  $('#orderTotal').textContent = fmtPrice(total, dispCur(cafe));
   validateOrder();
   const sh = $('#orderSheet');
   sh.classList.remove('hidden');
