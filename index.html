@@ -324,7 +324,7 @@ footer p{font-size:14px;opacity:.8}
 // الروابط الرسمية — GitHub Pages + Release
 var DEMO_URL = 'https://che7anli-dz.github.io/menu-qr/app.html?cafe=diwan';
 var APP_URL  = 'https://che7anli-dz.github.io/menu-qr/app.html';
-var APK_URL  = 'https://github.com/che7anli-Dz/menu-qr/releases/download/v1.1.13/menu-qr.apk';
+var APK_URL  = 'https://github.com/che7anli-Dz/menu-qr/releases/download/v1.1.14/menu-qr.apk';
 var WA_AR = 'https://wa.me/213797475073?text=%D8%B3%D9%84%D8%A7%D9%85%D8%8C%20%D8%AD%D8%A7%D8%A8%20%D9%86%D8%B4%D8%AA%D8%B1%D9%83%20%D9%81%D9%8A%20Menu%20QR';
 var WA_EN = 'https://wa.me/213797475073?text=Hi%2C%20I%27d%20like%20to%20subscribe%20to%20Menu%20QR';
 
@@ -424,6 +424,8 @@ var io = new IntersectionObserver(function(es){
   es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); } });
 },{threshold:.12});
 document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+// أمان: إذا المراقب ما اشتغلش في متصفح قديم، كل الأقسام تبان بعد 2.5 ثانية
+setTimeout(function(){ document.querySelectorAll('.rv').forEach(function(el){ el.classList.add('on'); }); }, 2500);
 </script>
 </body>
 </html>

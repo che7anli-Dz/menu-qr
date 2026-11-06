@@ -2851,6 +2851,8 @@ function filterCat(catId, btn){
   visible.forEach((el, i) => { el.classList.remove('anim-in'); el.style.setProperty('--i', i); });
   void document.body.offsetWidth;
   visible.forEach(el => el.classList.add('anim-in'));
+  // أمان: نفس تنظيف الأنيميشن — إذا تعلق، الأطباق تبان بعد 1.3 ثانية
+  setTimeout(function(){ visible.forEach(function(el){ el.classList.remove('anim-in'); }); }, 1300);
 }
 
 /* ---------------- السلة والطلب ---------------- */
