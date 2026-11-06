@@ -111,7 +111,7 @@ footer{background:#050807;color:rgba(255,255,255,.7);padding:34px 0;text-align:c
 footer .logo{width:200px;margin:0 auto 12px}
 footer .logo svg{width:100%;height:auto;display:block}
 footer p{font-size:14px;opacity:.8}
-.rv{opacity:1;transform:none}
+.rv{opacity:0;transform:translateY(16px);transition:opacity .6s,transform .6s}
 .rv.on{opacity:1;transform:none}
 /* ---------- الأنيميشن ---------- */
 @keyframes heroDrift{from{transform:scale(1)}to{transform:scale(1.08)}}
@@ -128,8 +128,6 @@ footer p{font-size:14px;opacity:.8}
 .shine::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.38) 50%,transparent 65%);background-size:200% 100%;animation:shine 2.8s linear infinite;pointer-events:none}
 .btn:active{transform:scale(.96)}
 @media (prefers-reduced-motion:reduce){.hero .bg,.cta-final .bg,.hero .logo-big,.hero h1,.hero p.sub,.hero .cta,.hero .trial,.shine::after{animation:none!important}.btn{transition:none!important}}
-/* بلا حركات نهائياً — كل الأنيميشن والانتقالات مطفية، المحتوى يبان ديركت */
-*,*::before,*::after{animation:none!important;transition:none!important}
 @media(max-width:820px){
   .nav nav{display:none}
   .steps,.feats,.dishes{grid-template-columns:1fr}
@@ -326,7 +324,7 @@ footer p{font-size:14px;opacity:.8}
 // الروابط الرسمية — GitHub Pages + Release
 var DEMO_URL = 'https://che7anli-dz.github.io/menu-qr/app.html?cafe=diwan';
 var APP_URL  = 'https://che7anli-dz.github.io/menu-qr/app.html';
-var APK_URL  = 'https://github.com/che7anli-Dz/menu-qr/releases/download/v1.1.16/menu-qr.apk';
+var APK_URL  = 'https://github.com/che7anli-Dz/menu-qr/releases/download/v1.1.17/menu-qr.apk';
 var WA_AR = 'https://wa.me/213797475073?text=%D8%B3%D9%84%D8%A7%D9%85%D8%8C%20%D8%AD%D8%A7%D8%A8%20%D9%86%D8%B4%D8%AA%D8%B1%D9%83%20%D9%81%D9%8A%20Menu%20QR';
 var WA_EN = 'https://wa.me/213797475073?text=Hi%2C%20I%27d%20like%20to%20subscribe%20to%20Menu%20QR';
 
